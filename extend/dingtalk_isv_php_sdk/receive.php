@@ -9,6 +9,8 @@ require_once(__DIR__ . "/crypto/DingtalkCrypt.php");
 $cache = new Cache();
 $activate = new Activate();
 $isvService = new ISVService();
+Log::e('测试写入！');
+echo 123;die();
 
 $signature = $_GET["signature"];
 $timeStamp = $_GET["timestamp"];
