@@ -30,7 +30,7 @@ class Dingtalk extends Base
 
 
     /**
-     * @Route("activateSuite", method="POST")
+     * @Route("activateSuite")
      */
     //激活套件
     public function activateSuite()

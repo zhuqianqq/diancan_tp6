@@ -21,7 +21,7 @@ $crypt = new DingtalkCrypt(TOKEN, ENCODING_AES_KEY, SUITE_KEY);
 
 $msg = "";
 $errCode = $crypt->DecryptMsg($signature, $timeStamp, $nonce, $encrypt, $msg);
-
+Log::e('errCode:'.$errCode);
 if ($errCode != 0)
 {
     Log::e(json_encode($_GET) . "  ERR:" . $errCode);

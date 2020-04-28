@@ -1,1 +1,1 @@
-<?php exit();?>{"suite_access_token":{"suite_access_token":"bd970ea2592632c594b2b542a3907192","expire_time":1588060784,"create_time":1588053784}}
+<?php exit();?>{"suite_access_token":{"suite_access_token":"a43650becaf73baf8b989ee288396093","expire_time":1588080337,"create_time":1588073337}}
