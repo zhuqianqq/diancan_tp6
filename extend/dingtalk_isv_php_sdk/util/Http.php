@@ -32,6 +32,7 @@ Class Http
      * @return string content
      */
     public function post($url, $params, $data,$post_file=false){
+        //echo '<pre>';var_dump($url);var_dump($params);var_dump($data);die();
         $oCurl = curl_init();
         $url = $this->joinParams($url, $params);
         if(stripos($url,"https://")!==FALSE){
@@ -92,14 +93,14 @@ Class Http
     private function joinParams($path, $params)
     {
         $url = OAPI_HOST . $path;
-        if (count($params) > 0)
+        if ($params && count($params) > 0)
         {
             $url = $url . "?";
             foreach ($params as $key => $value)
             {
                 $url = $url . $key . "=" . $value . "&";
             }
-            $length = count($url);
+            $length = strlen($url);
             if ($url[$length - 1] == '&')
             {
                 $url = substr($url, 0, $length - 1);

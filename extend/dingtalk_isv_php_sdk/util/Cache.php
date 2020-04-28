@@ -148,7 +148,7 @@ class FileCache
             $item['expire_time'] = $expire_time;
             $item['create_time'] = time();
             $data["$key"] = $item;
-            $this->set_file("filecache.php",json_encode($data));
+            $this->set_file("../extend/dingtalk_isv_php_sdk/filecache.php",json_encode($data));
         }
     }
 
