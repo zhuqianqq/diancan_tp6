@@ -16,6 +16,9 @@ class DingtalkCrypt
 		$this->m_token = $token;
 		$this->m_encodingAesKey = $encodingAesKey;
 		$this->m_suiteKey = $suiteKey;
+		// $this->m_token = 123456;
+		// $this->m_encodingAesKey = '4g5j64qlyl3zvetqxz5jiocdr586fn2zvjpa8zls3ij';
+		// $this->m_suiteKey = 'suite4xxxxxxxxxxxxxxx';
 	}
 	
     
@@ -67,17 +70,19 @@ class DingtalkCrypt
 		$sha1 = new SHA1;
 		$array = $sha1->getSHA1($this->m_token, $timeStamp, $nonce, $encrypt);
 		$ret = $array[0];
-
+	
 		if ($ret != 0) {
 			return $ret;
 		}
 
 		$verifySignature = $array[1];
+
 		if ($verifySignature != $signature) {
 			return ErrorCode::$ValidateSignatureError;
 		}
 
 		$result = $pc->decrypt($encrypt, $this->m_suiteKey);
+		
 		if ($result[0] != 0) {
 			return $result[0];
 		}

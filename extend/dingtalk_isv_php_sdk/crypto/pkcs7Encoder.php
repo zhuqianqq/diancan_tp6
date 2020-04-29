@@ -52,17 +52,17 @@ class Prpcrypt
 			$random = $this->getRandomStr();
 			$text = $random . pack("N", strlen($text)) . $text . $corpid;
 			// 网络字节序
-			$size = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-			$module = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
+			$size = @mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+			$module = @mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
 			$iv = substr($this->key, 0, 16);
 			//使用自定义的填充方式对明文进行补位填充
 			$pkc_encoder = new PKCS7Encoder;
 			$text = $pkc_encoder->encode($text);
-			mcrypt_generic_init($module, $this->key, $iv);
+			@mcrypt_generic_init($module, $this->key, $iv);
 			//加密
-			$encrypted = mcrypt_generic($module, $text);
-			mcrypt_generic_deinit($module);
-			mcrypt_module_close($module);
+			$encrypted = @mcrypt_generic($module, $text);
+			@mcrypt_generic_deinit($module);
+			@mcrypt_module_close($module);
 
 			//print(base64_encode($encrypted));
 			//使用BASE64对加密后的字符串进行编码
@@ -77,14 +77,14 @@ class Prpcrypt
 	{
 
 		try {
-			$ciphertext_dec = base64_decode($encrypted);
-			$module = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
-			$iv = substr($this->key, 0, 16);
-			mcrypt_generic_init($module, $this->key, $iv);
 
-			$decrypted = mdecrypt_generic($module, $ciphertext_dec);
-			mcrypt_generic_deinit($module);
-			mcrypt_module_close($module);
+			$ciphertext_dec = base64_decode($encrypted);
+			$module = @mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
+			$iv = substr($this->key, 0, 16);
+			@mcrypt_generic_init($module, $this->key, $iv);
+			$decrypted = @mdecrypt_generic($module, $ciphertext_dec);
+			@mcrypt_generic_deinit($module);
+			@mcrypt_module_close($module);
 		} catch (Exception $e) {
 			return array(ErrorCode::$DecryptAESError, null);
 		}

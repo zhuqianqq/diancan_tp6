@@ -18,7 +18,9 @@ $postdata = file_get_contents("php://input");
 $postList = json_decode($postdata,true);
 $encrypt = $postList['encrypt'];
 $crypt = new DingtalkCrypt(TOKEN, ENCODING_AES_KEY, SUITE_KEY);
-
+Log::e('TOKEN:'.TOKEN);
+Log::e('ENCODING_AES_KEY:'.ENCODING_AES_KEY);
+Log::e('SUITE_KEY:'.SUITE_KEY);
 $msg = "";
 $errCode = $crypt->DecryptMsg($signature, $timeStamp, $nonce, $encrypt, $msg);
 Log::e('errCode:'.$errCode);
