@@ -47,7 +47,9 @@ class Dingtalk extends Base
         require_once '../extend/dingtalk_isv_php_sdk/receive.php';
     }
 
-
+    /**
+     * @Route("getSuiteAccessToken")
+     */
     public function getSuiteAccessToken()
     {
         echo 'ISVService';
@@ -70,7 +72,7 @@ class Dingtalk extends Base
     }
 
     /**
-     * @Route("userInfo")
+     * @Route("getUserInfo")
      */
     public function getUserInfo()
     {
@@ -80,5 +82,6 @@ class Dingtalk extends Base
         // $user_info = $User->getUserInfo();
         // dd($user_info);
     }
+
 
 }
