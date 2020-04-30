@@ -47,31 +47,6 @@ class Dingtalk extends Base
         require_once '../extend/dingtalk_isv_php_sdk/receive.php';
     }
 
-    /**
-     * @Route("getSuiteAccessToken", method="GET")
-     */
-    //获取套件的AccessToken
-    // public function getSuiteAccessToken()
-    // {
-    //     echo 'ISVService';
-    //     $ISVService = new \ISVService();
-    //     //获取第三方应用凭证
-    //     $suiteAccessToken = $ISVService->getSuiteAccessToken('10530003');
-
-    //     $dingtalk_auth = new \Auth();
-
-    //     $CorpInfo = json_decode($dingtalk_auth->cache->getCorpInfo(),true);
-    //     foreach ($CorpInfo as $k => $v) {
-    //        $CorpId = $k;
-    //        $permanent_code = $v['permanent_code'];
-    //     }
-    //     //获取企业授权凭证
-    //     $isvCorpAccessToken = $ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
-    //     //获取js_ticket
-    //     $js_ticket = $dingtalk_auth->getTicket($CorpId,$isvCorpAccessToken);
-
-    //     dd($js_ticket);
-    // }
 
     public function getSuiteAccessToken()
     {
@@ -95,7 +70,7 @@ class Dingtalk extends Base
     }
 
     /**
-     * @Route("getUserInfo",method="GET")
+     * @Route("getUserInfo")
      */
     public function getUserInfo()
     {
