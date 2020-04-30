@@ -52,7 +52,7 @@ class Dingtalk extends Base
      */
     public function getSuiteAccessToken()
     {
-        echo 'ISVService';
+        //echo 'ISVService';
         //获取第三方应用凭证
         $suiteAccessToken = $this->ISVService->getSuiteAccessToken('10530003');
 
