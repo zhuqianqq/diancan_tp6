@@ -83,5 +83,16 @@ class Dingtalk extends Base
         // dd($user_info);
     }
 
+    /**
+     * @Route("test")
+     */
+    public function test()
+    {
+       return json_ok(input('param.'));
+        // $User = new \User();
+        // $user_info = $User->getUserInfo();
+        // dd($user_info);
+    }
+
 
 }
