@@ -72,9 +72,9 @@ class Dingtalk extends Base
     }
 
     /**
-     * @Route("getUserInfo")
+     * @Route("DTGetUserInfo")
      */
-    public function getUserInfo()
+    public function DTGetUserInfo()
     {
 
        return json_ok(input('param.'));
