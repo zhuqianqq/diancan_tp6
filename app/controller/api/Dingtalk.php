@@ -77,7 +77,7 @@ class Dingtalk extends Base
         echo 'ISVService';
         //获取第三方应用凭证
         $suiteAccessToken = $this->ISVService->getSuiteAccessToken('10530003');
-
+        dd($suiteAccessToken);
         $CorpInfo = json_decode($this->Auth->cache->getCorpInfo(),true);
         foreach ($CorpInfo as $k => $v) {
            $CorpId = $k;
