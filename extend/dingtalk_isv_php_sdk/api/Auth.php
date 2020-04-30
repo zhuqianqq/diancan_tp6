@@ -7,10 +7,10 @@ require_once(__DIR__ . "/ISVServiceImpl.php");
 
 class Auth
 {
-    private $http;
-    private $cache;
-    private $isvService;
-    private $isvServiceImpl;
+    public $http;
+    public $cache;
+    public $isvService;
+    public $isvServiceImpl;
     public function __construct() {
         $this->http = new Http();
         $this->cache = new Cache();

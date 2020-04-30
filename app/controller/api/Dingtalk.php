@@ -18,14 +18,22 @@ use think\annotation\Route;
  */
 class Dingtalk extends Base
 {
+
+    public $Auth;
+    public $ISVService;
+    public function __construct() {
+        $this->Auth = new \Auth();
+        $this->ISVService = new \ISVService();
+    }
+
+
     /**
      * @Route("index", method="GET")
      */
     public function index()
     {
         echo 'Dingtalk';
-        $dingtalk_auth = new \Auth();
-        dd($dingtalk_auth);
+        dd($this->Auth);
     }
 
 
@@ -41,18 +49,53 @@ class Dingtalk extends Base
     /**
      * @Route("getSuiteAccessToken", method="GET")
      */
-    //激活套件
+    //获取套件的AccessToken
+    // public function getSuiteAccessToken()
+    // {
+    //     echo 'ISVService';
+    //     $ISVService = new \ISVService();
+    //     //获取第三方应用凭证
+    //     $suiteAccessToken = $ISVService->getSuiteAccessToken('10530003');
+
+    //     $dingtalk_auth = new \Auth();
+
+    //     $CorpInfo = json_decode($dingtalk_auth->cache->getCorpInfo(),true);
+    //     foreach ($CorpInfo as $k => $v) {
+    //        $CorpId = $k;
+    //        $permanent_code = $v['permanent_code'];
+    //     }
+    //     //获取企业授权凭证
+    //     $isvCorpAccessToken = $ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
+    //     //获取js_ticket
+    //     $js_ticket = $dingtalk_auth->getTicket($CorpId,$isvCorpAccessToken);
+
+    //     dd($js_ticket);
+    // }
+
     public function getSuiteAccessToken()
     {
         echo 'ISVService';
-        $ISVService = new \ISVService();
         //获取第三方应用凭证
-        $suiteAccessToken = $ISVService->getSuiteAccessToken('10530003');
-        echo $suiteAccessToken;die;
+        $suiteAccessToken = $this->ISVService->getSuiteAccessToken('10530003');
+
+        $CorpInfo = json_decode($this->Auth->cache->getCorpInfo(),true);
+        foreach ($CorpInfo as $k => $v) {
+           $CorpId = $k;
+           $permanent_code = $v['permanent_code'];
+        }
         //获取企业授权凭证
-        $CorpId = 'ding076b713cc1eff17735c2f4657eb6378f';
-        $isvCorpAccessToken = $ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,'10530003');
-        dd($isvCorpAccessToken);
+        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
+        //获取js_ticket
+        $js_ticket = $this->Auth->getTicket($CorpId,$isvCorpAccessToken);
+
+        dd($js_ticket);
+    }
+
+
+    public function getUserInfo()
+    {
+        $user_info = $this->Auth->getUserInfo();
+        dd($user_info);
     }
 
 }
