@@ -95,7 +95,7 @@ class Dingtalk extends Base
     }
 
     /**
-     * @Route("getUserInfo")
+     * @Route("getUserInfo",method="GET")
      */
     public function getUserInfo()
     {
