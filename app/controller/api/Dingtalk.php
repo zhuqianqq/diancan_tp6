@@ -74,6 +74,7 @@ class Dingtalk extends Base
      */
     public function getUserInfo()
     {
+        echo 123;die;
        return json_ok(input('param.'));
         // $User = new \User();
         // $user_info = $User->getUserInfo();
