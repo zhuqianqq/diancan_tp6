@@ -65,10 +65,11 @@ class Dingtalk extends Base
         
         //获取企业授权凭证
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
+        return $isvCorpAccessToken;
         //获取js_ticket
-        $js_ticket = $this->Auth->getTicket($CorpId,$isvCorpAccessToken);
+        //$js_ticket = $this->Auth->getTicket($CorpId,$isvCorpAccessToken);
 
-        dd($js_ticket);
+        //dd($js_ticket);
     }
 
     /**
@@ -76,11 +77,18 @@ class Dingtalk extends Base
      */
     public function DTGetUserInfo()
     {
+       $code = input('code','');
+       $code = '74f6c91b1ce73e16a41796625e41c5e0';
+       if(!$code){
+         return  json_error();
+       }
 
+       $User = new \User();
+       $isvCorpAccessToken = $this->getSuiteAccessToken();
+       $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
+       dd($user_info);
        return json_ok(input('param.'));
-        // $User = new \User();
-        // $user_info = $User->getUserInfo();
-        // dd($user_info);
+        
     }
 
     /**
