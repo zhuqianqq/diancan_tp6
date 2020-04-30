@@ -78,16 +78,16 @@ class Dingtalk extends Base
     public function DTGetUserInfo()
     {
        $code = input('code','');
-       $code = '74f6c91b1ce73e16a41796625e41c5e0';
-       if(!$code){
+
+        if(!$code){
          return  json_error();
        }
 
        $User = new \User();
        $isvCorpAccessToken = $this->getSuiteAccessToken();
        $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
-       dd($user_info);
-       return json_ok(input('param.'));
+
+       return json_ok($user_info);
         
     }
 
