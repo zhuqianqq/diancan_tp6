@@ -79,6 +79,7 @@ class Dingtalk extends Base
         $suiteAccessToken = $this->ISVService->getSuiteAccessToken('10530003');
 
         $CorpInfo = json_decode($this->Auth->cache->getCorpInfo(),true);
+        dd($CorpInfo);
         foreach ($CorpInfo as $k => $v) {
            $CorpId = $k;
            $permanent_code = $v['permanent_code'];
