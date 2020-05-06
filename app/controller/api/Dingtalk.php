@@ -75,6 +75,7 @@ class Dingtalk extends Base
     /**
      * @Route("DTGetUserInfo")
      */
+    //获取钉钉员工信息
     public function DTGetUserInfo()
     {
        $code = input('code','');
@@ -85,9 +86,15 @@ class Dingtalk extends Base
 
        $User = new \User();
        $isvCorpAccessToken = $this->getSuiteAccessToken();
-       $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
+       $_user_info = $User->getUserInfo($isvCorpAccessToken,$code);
+       if($_user_info['userid']){
 
-       return json_ok($user_info);
+         $user_info = $User->get($isvCorpAccessToken,$_user_info['userid']);
+         return json_ok($user_info);
+
+       }else{
+         return json_error(13001);
+       }
         
     }
 
