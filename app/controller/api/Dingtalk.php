@@ -9,6 +9,7 @@ require_once '../extend/dingtalk_isv_php_sdk/api/User.php';
 use app\controller\api\Base;
 use think\annotation\route\Group;
 use think\annotation\Route;
+use app\model\DTCompany;
 
 /**
  * 钉钉接口
@@ -47,10 +48,12 @@ class Dingtalk extends Base
         require_once '../extend/dingtalk_isv_php_sdk/receive.php';
     }
 
+
+
     /**
      * @Route("getSuiteAccessToken")
      */
-    public function getSuiteAccessToken()
+     public function getSuiteAccessToken()
     {
         //echo 'ISVService';
         //获取第三方应用凭证
@@ -62,15 +65,70 @@ class Dingtalk extends Base
            $CorpId = $k;
            $permanent_code = $v['permanent_code'];
         }
-        
+
         //获取企业授权凭证
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
+
         return $isvCorpAccessToken;
         //获取js_ticket
         //$js_ticket = $this->Auth->getTicket($CorpId,$isvCorpAccessToken);
 
         //dd($js_ticket);
     }
+
+
+    // public function getSuiteAccessToken()
+    // {
+    //     //获取套件第三方应用凭证
+    //     $suiteAccessToken = $this->ISVService->getSuiteAccessToken('10530003');
+
+    //     $CorpInfo = json_decode($this->Auth->cache->getCorpInfo(),true);
+        
+    //     foreach ($CorpInfo as $k => $v) {
+    //        $CorpId = $k;
+    //        $permanent_code = $v['permanent_code'];
+    //     }
+
+    //     //获取公司信息
+    //     $DTCompanyModel = new DTCompany;
+    //     $isCompanyRegister = $DTCompanyModel->find($CorpId);
+    //     if(!$isCompanyRegister){
+    //        $CompanyAuthInfo = $this->getCompanyAuthInfo($suiteAccessToken,$CorpId,$permanent_code);
+    //        if($CompanyAuthInfo){
+    //         echo 123;die;
+    //             //$DTCompanyModel->register();
+    //        }
+            
+    //     }
+      
+    //     echo '<pre>';var_dump($authInfo);die;
+
+    //     $AuthCorpInfo = $this->Auth->cache->getAuthInfo("corpAuthInfo_".$CorpId);
+    //     return $AuthCorpInfo;
+        
+    //     //获取企业授权凭证
+    //     $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
+    //     return $isvCorpAccessToken;
+    //     //获取js_ticket
+    //     //$js_ticket = $this->Auth->getTicket($CorpId,$isvCorpAccessToken);
+
+    //     //dd($js_ticket);
+    // }
+
+
+    // //获取公司信息
+    // public function getCompanyAuthInfo($suiteAccessToken,$CorpId,$permanent_code)
+    // {
+    //      return $this->Auth->http->post("/service/get_auth_info",
+    //                 array(
+    //                     "suite_access_token" => $suiteAccessToken
+    //                 ),
+    //                 json_encode(array(
+    //                     "suite_key" => SUITE_KEY,
+    //                     "auth_corpid" => $CorpId,
+    //                     "permanent_code" => $permanent_code
+    //                 )));
+    // }
 
     /**
      * @Route("DTGetUserInfo")
@@ -89,9 +147,12 @@ class Dingtalk extends Base
        $_user_info = $User->getUserInfo($isvCorpAccessToken,$code);
 
        if($_user_info->userid){
-
+         //新用户 注册逻辑
          $user_info = $User->get($isvCorpAccessToken,$_user_info->userid);
          return json_ok($user_info);
+
+         //老用户 更新逻辑
+         
 
        }else{
          return json_error(13001);

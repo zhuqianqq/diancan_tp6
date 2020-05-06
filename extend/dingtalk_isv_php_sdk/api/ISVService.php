@@ -84,7 +84,7 @@ class ISVService
         /**
          * 获取已存储的企业信息
          */
-        $corpInfo = json_decode($this->cache->getCorpInfo());
+        $corpInfo = json_decode($this->cache->getCorpInfo('dingding_corp_info_'.$auth_corp_info->corpid));
 
         if(!is_array($corpInfo)){
             $corpInfo = array();
@@ -95,7 +95,7 @@ class ISVService
          */
         if(!array_key_exists($auth_corp_info->corpid, $corpInfo)){
             $corpInfo[$auth_corp_info->corpid] = $simple_corp;
-            $this->cache->setCorpInfo(json_encode($corpInfo));
+            $this->cache->setCorpInfo('dingding_corp_info_'.$auth_corp_info->corpid,json_encode($corpInfo));
         }
         return $simple_corp;
     }

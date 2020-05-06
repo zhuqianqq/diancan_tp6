@@ -80,14 +80,16 @@ class Cache
         return $memcache->get($key);
     }
 
-    public function setCorpInfo($data){
+    public function setCorpInfo($key,$data){
         $memcache = $this->getMemcache();
-        $memcache->set('dingding_corp_info',$data);
+        //$memcache->set('dingding_corp_info',$data);
+        $memcache->set($key,$data);
     }
 
-    public function getCorpInfo(){
-        $memcache = $this->getMemcache();
-        $corpInfo =  $memcache->get('dingding_corp_info');
+    public function getCorpInfo($key){
+        $memcache = $this->getMemcache($key);
+        //$corpInfo =  $memcache->get('dingding_corp_info');
+        $corpInfo =  $memcache->get($key);
         return $corpInfo;
     }
 
@@ -164,7 +166,6 @@ class FileCache
                 if($item['expire_time']>0&&$item['expire_time'] < time()){
                     return false;
                 }
-
                 return $item["$key"];
             }else{
                 return false;
