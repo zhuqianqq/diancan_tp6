@@ -87,6 +87,8 @@ class Dingtalk extends Base
        $User = new \User();
        $isvCorpAccessToken = $this->getSuiteAccessToken();
        $_user_info = $User->getUserInfo($isvCorpAccessToken,$code);
+       echo $_user_info->userid . '=====';
+       return json_encode($_user_info);
        if($_user_info['userid']){
 
          $user_info = $User->get($isvCorpAccessToken,$_user_info['userid']);
