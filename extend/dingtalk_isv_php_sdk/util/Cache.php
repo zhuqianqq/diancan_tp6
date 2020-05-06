@@ -87,7 +87,7 @@ class Cache
     }
 
     public function getCorpInfo($key){
-        $memcache = $this->getMemcache($key);
+        $memcache = $this->getMemcache();
         //$corpInfo =  $memcache->get('dingding_corp_info');
         $corpInfo =  $memcache->get($key);
         return $corpInfo;
