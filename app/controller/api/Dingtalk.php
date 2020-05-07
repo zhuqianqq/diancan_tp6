@@ -10,6 +10,7 @@ use app\controller\api\Base;
 use think\annotation\route\Group;
 use think\annotation\Route;
 use app\model\DTCompany;
+use app\model\DTUser;
 
 /**
  * 钉钉接口
@@ -160,25 +161,42 @@ class Dingtalk extends Base
     //获取钉钉员工详细信息
     public function DTGetUserInfo()
     {
-       $code = input('code','');
        $userid = input('userid','');
        $corpId = input('corpId','');
 
 
-       if(!$code || !$userid || !$corpId){
+       if(!$userid || !$corpId){
          return  json_error(20005);
        }
 
        //获取企业授权凭证
-       $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
+       $DTUserModel = new DTUser;
+     
+       $isReg = $DTUserModel->where('platform_staffid',$userid)->find();
 
-       $User = new \User();
+       if(!$isReg){
+           //新用户 注册逻辑
+           $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
 
-       //新用户 注册逻辑
-       $user_info = $User->get($isvCorpAccessToken,$userid);
-       return json_ok($user_info);
+           $User = new \User();
 
-       //老用户 更新逻辑
+           $user_info = $User->get($isvCorpAccessToken,$userid);
+   
+           $res = $DTUserModel->registerStaff($user_info,$corpId);
+
+           if($res){
+
+              $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
+              return json_ok($userInfo);
+
+           }else{
+
+              return  json_error(20020);
+
+           }
+       }
+       //老用户查询后返回数据库结果
+       return json_ok($isReg);
 
     }
 

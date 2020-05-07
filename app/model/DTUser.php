@@ -5,6 +5,7 @@ namespace app\model;
 
 use think\Model;
 use app\traits\ModelTrait;
+use think\facade\Db;
 
 /**
  * 用户
@@ -15,14 +16,28 @@ use app\traits\ModelTrait;
 class DTUser extends Model
 {
 
-    //据输出显示的属性
-    public static $showField = ['id', 'openid', 'phone', 'username', 'is_enabled', 'nickname', 'img', 'sex', 'balance', 'birth', 'descript', 'money', 'create_time', 'reg_ip', 'login_ip', 'login_time', 'update_time'];
-
-    //查询类型转换, 与Model 中的type类型转化功能相同，只是新增字符串类型
-    protected $selectType = [
-        'id' => 'string',
-    ];
-
     use ModelTrait;
+
+    protected $table = "dc_company_staff";
+
+    protected $pk = "staffid";
+
+    //注册
+    public function registerStaff($user_info,$cropId){
+    	$data = [];
+    	$data['staff_name'] = $user_info->name ?? '';
+    	$data['department_id'] = $user_info->department[0] ?? '';
+    	$data['avatar'] = $user_info->avatar ?? '';
+    	$data['cropid'] = $cropId;
+    	$data['platform_staffid'] = $user_info->userid ?? '';
+    	$data['staff_status'] = $user_info->active ? 1 : 0;
+    	$data['register_time'] = date('Y-m-d H:i:s',time());
+
+    	$data['company_id'] = Db::table("dc_company_register")
+        ->where('corpid',$cropId)
+        ->value('company_id');
+    	
+    	return self::save($data);
+    }
 }
 
