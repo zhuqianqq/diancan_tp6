@@ -87,13 +87,13 @@ class Activate
     {
         $DTCompanyModel = new DTCompany;
         $data = [];
-        $data['company_name'] = $_data['auth_corp_info']->corp_name ?? '';
-        $data['corpid'] = $_data['auth_corp_info']->corpid ?? '';
-        $data['industry'] = $_data['auth_corp_info']->industry ?? '';
-        $data['corp_logo_url'] = $_data['auth_corp_info']->corp_logo_url ?? '';
+        $data['company_name'] = $_data->auth_corp_info->corp_name ?? '';
+        $data['corpid'] = $_data->auth_corp_info->corpid ?? '';
+        $data['industry'] = $_data->auth_corp_info->industry ?? '';
+        $data['corp_logo_url'] = $_data->auth_corp_info->corp_logo_url ?? '';
         $data['register_time'] = date('Y-m-d H:i:s',time());
         $data['permanent_code'] = $permanetCode;
-        $res = $DTCompanyModel->save($data);
+        return $DTCompanyModel->save($data);
     }
 
     
