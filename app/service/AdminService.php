@@ -24,7 +24,7 @@ class AdminService
      * 登录
      * @param string $username 用户名
      * @param string $password 未加密的密码
-     * @return array 对象数组，包含字段：userToken，已编码的用户访问令牌；user，用户信息。
+     * @return array 对象数组
      * @throws \app\MyException
      */
     public static function login($username, $password)

@@ -202,3 +202,12 @@ function transform($value, $type)
 
     return $value;
 }
+
+/**
+ * 根据用户id获取用户信息
+ */
+function getUserInfoById($user_id)
+{
+    $userInfo = \app\model\CompanyAdmin::where('userid', $user_id)->find();
+    return $userInfo;
+}
