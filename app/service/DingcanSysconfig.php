@@ -2,7 +2,7 @@
 declare (strict_types=1);
 namespace app\service;
 
-use app\model\Food as F;
+use app\model\DingcanSysconfig as DF;
 use app\MyException;
 use app\traits\ServiceTrait;
 
@@ -22,15 +22,36 @@ class DingcanSysconfig
      * @return array 对象数组
      * @throws \app\MyException
      */
-    public static function setting()
+    public static function setting($data)
     {
-        try {
-            $foodM = new F;
-            $foodM->save($data);
-            return [];
-        }catch (\Exception $e){
-            throw new MyException(14001, $e->getMessage());
+        //获取用户信息
+        $user_id = input('user_id', '', 'int');
+        if (!$user_id) {
+            return json_error(15001);
         }
+        $userInfo = getUserInfoById($user_id);
+        if (!$userInfo) {
+            throw new MyException(15002);
+        }
+        $data['company_id'] = $userInfo['company_id'];
+
+        $oneSys = DF::where('company_id', $data['company_id'])->find();
+        if (!$oneSys) {//新增
+            try {
+                $sysConfig = new DF;
+                $sysConfig->save($data);
+            }catch (\Exception $e){
+               throw new MyException(15004, $e->getMessage());
+            }
+        } else {
+            try {
+                $oneSys->save($data);
+            }catch (\Exception $e){
+                throw new MyException(15004, $e->getMessage());
+            }
+        }
+
+        return [];
     }
 
 }

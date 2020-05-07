@@ -30,20 +30,17 @@ class Eatery
         if (!$user_id) {
             return json_error(13001);
         }
-
-        //获取company_id
-        $userInfo = CompanyAdmin::where('userid', $user_id)->find();
+        $userInfo = getUserInfoById($user_id);
         if (!$userInfo) {
             throw new MyException(13002);
         }
         $eateryArr = [];
-
         $eatery = E::where('is_delete = 0 AND company_id = '.$userInfo->company_id)->field('eatery_id')->select();
         foreach ($eatery as $v){
             $eateryArr[] = $v['eatery_id'];
         }
-
         $list = ER::with(['food'])->select($eateryArr);
+
         return json_ok($list->toArray(),13003);
     }
 

@@ -10,10 +10,10 @@ namespace app\controller\admin;
 
 use app\controller\admin\Base;
 use app\traits\ControllerTrait;
-use app\service\D as F;
+use app\service\DingcanSysconfig as SD;
 use think\annotation\route\Group;
 use think\annotation\Route;
-use app\validate\DingcanSysconfig as DS;
+use app\validate\DingcanSysconfig as VDS;
 use think\annotation\route\Validate;
 use think\exception\ValidateException;
 
@@ -22,7 +22,7 @@ use think\exception\ValidateException;
  * Class DingcanSysconfig
  * @package app\controller\admin
  * @author  2066362155@qq.com
- * @Group("admin/Food")
+ * @Group("admin/DingcanSysconfig")
  */
 class DingcanSysconfig extends Base
 {
@@ -33,14 +33,14 @@ class DingcanSysconfig extends Base
 
     /**
     * 更新或者创建餐馆
-    *  @Validate(VF::class,scene="save",batch="true")
+     * @Validate(VDS::class,scene="save",batch="true")
     * @Route("setting", method="POST")
     */
     public function setting()
     {
         $data = input('post.');
-        $result = F::addOrUpdata($data);
-        return json_ok($result, 14003);
+        $result = SD::setting($data);
+        return json_ok($result, 15003);
     }
 
 }

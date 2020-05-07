@@ -16,24 +16,24 @@ class DingcanSysconfig extends Validate
 {
     //验证规则
     protected $rule = [
-        'company_id'   => ['require','integer'],
-        'end_time_type' => ['require'],
+        'user_id'   => ['require','integer'],
+        'end_time_type' => ['require','integer'],
         'dc_date' => ['require'],
         'news_time_type' => ['require'],
     ];
 
     //提示信息
     protected $message = [
-        'company_id.require'   => '用户ID必须',
-        'company_id.integer'   => '用户ID必须事正整数',
+        'user_id.require'   => '用户ID必须',
+        'user_id.integer'   => '用户ID必须事正整数',
         'end_time_type'   => '订餐截止时间必须',
         'dc_date'   => '订餐日必须选择',
         'news_time_type'    => '自动消息提醒类型必须选择',
     ];
 
     //验证场景
-   /* protected $scene = [
-        'save' => [ 'user_id','type','eatery_name', 'contacts','proive','city','district','address','eat_type','mobile'],
-    ];*/
+    protected $scene = [
+        'save' => [ 'company_id','end_time_type','dc_date', 'news_time_type'],
+    ];
 
 }
