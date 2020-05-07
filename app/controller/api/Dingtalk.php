@@ -156,31 +156,30 @@ class Dingtalk extends Base
     /**
      * @Route("DTGetUserInfo")
      */
-    //获取钉钉员工信息
+
+    //获取钉钉员工详细信息
     public function DTGetUserInfo()
     {
        $code = input('code','');
+       $userid = input('userid','');
+       $corpId = input('corpId','');
 
-        if(!$code){
-         return  json_error();
+
+       if(!$code || !$userid || !$corpId){
+         return  json_error(20005);
        }
+
+       //获取企业授权凭证
+       $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
 
        $User = new \User();
-       $isvCorpAccessToken = $this->getSuiteAccessToken();
-       $_user_info = $User->getUserInfo($isvCorpAccessToken,$code);
 
-       if($_user_info->userid){
-         //新用户 注册逻辑
-         $user_info = $User->get($isvCorpAccessToken,$_user_info->userid);
-         return json_ok($user_info);
+       //新用户 注册逻辑
+       $user_info = $User->get($isvCorpAccessToken,$userid);
+       return json_ok($user_info);
 
-         //老用户 更新逻辑
-         
+       //老用户 更新逻辑
 
-       }else{
-         return json_error(13001);
-       }
-        
     }
 
     /**
@@ -188,7 +187,11 @@ class Dingtalk extends Base
      */
     public function test()
     {
-       return json_ok(input('param.'));
+         //获取公司信息
+        $DTCompanyModel = new DTCompany;
+        dd($DTCompanyModel);
+
+       //return json_ok(input('param.'));
         // $User = new \User();
         // $user_info = $User->getUserInfo();
         // dd($user_info);
