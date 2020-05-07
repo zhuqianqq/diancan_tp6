@@ -47,6 +47,10 @@ class Dingtalk extends Base
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
 
+        //判定设备型号
+        $request = request();
+        $user_info->isMobile = $request->isMobile();
+        
         return json_ok($user_info);
     }
 
@@ -100,60 +104,6 @@ class Dingtalk extends Base
     }
 
 
-
-    // public function getSuiteAccessToken()
-    // {
-    //     //获取套件第三方应用凭证
-    //     $suiteAccessToken = $this->ISVService->getSuiteAccessToken('10530003');
-
-    //     $CorpInfo = json_decode($this->Auth->cache->getCorpInfo(),true);
-        
-    //     foreach ($CorpInfo as $k => $v) {
-    //        $CorpId = $k;
-    //        $permanent_code = $v['permanent_code'];
-    //     }
-
-    //     //获取公司信息
-    //     $DTCompanyModel = new DTCompany;
-    //     $isCompanyRegister = $DTCompanyModel->find($CorpId);
-    //     if(!$isCompanyRegister){
-    //        $CompanyAuthInfo = $this->getCompanyAuthInfo($suiteAccessToken,$CorpId,$permanent_code);
-    //        if($CompanyAuthInfo){
-    //         echo 123;die;
-    //             //$DTCompanyModel->register();
-    //        }
-            
-    //     }
-      
-    //     echo '<pre>';var_dump($authInfo);die;
-
-    //     $AuthCorpInfo = $this->Auth->cache->getAuthInfo("corpAuthInfo_".$CorpId);
-    //     return $AuthCorpInfo;
-        
-    //     //获取企业授权凭证
-    //     $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
-    //     return $isvCorpAccessToken;
-    //     //获取js_ticket
-    //     //$js_ticket = $this->Auth->getTicket($CorpId,$isvCorpAccessToken);
-
-    //     //dd($js_ticket);
-    // }
-
-
-    // //获取公司信息
-    // public function getCompanyAuthInfo($suiteAccessToken,$CorpId,$permanent_code)
-    // {
-    //      return $this->Auth->http->post("/service/get_auth_info",
-    //                 array(
-    //                     "suite_access_token" => $suiteAccessToken
-    //                 ),
-    //                 json_encode(array(
-    //                     "suite_key" => SUITE_KEY,
-    //                     "auth_corpid" => $CorpId,
-    //                     "permanent_code" => $permanent_code
-    //                 )));
-    // }
-
     /**
      * @Route("DTGetUserInfo")
      */
@@ -197,6 +147,19 @@ class Dingtalk extends Base
        }
        //老用户查询后返回数据库结果
        return json_ok($isReg);
+
+    }
+
+
+     /**
+     * @Route("DTGetDepartment")
+     */
+
+    //获取钉钉企业部门信息
+    public function DTGetDepartment()
+    {
+       $userid = input('userid','');
+       $corpId = input('corpId','');
 
     }
 
