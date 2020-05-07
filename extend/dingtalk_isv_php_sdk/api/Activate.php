@@ -43,6 +43,9 @@ class Activate
 
         //获取永久授权码以及corpid等信息，持久化，并激活临时授权码
         $permanetCodeInfo = $this->isvService->getPermanentCodeInfo($suiteAccessToken, $tmpAuthCode);
+
+        Log::i("[kevinActivate] permanetCodeInfo: " . json_encode($permanetCodeInfo));
+
         if(null == $permanetCodeInfo){
             Log::e("[activeSuite]: permanetCodeInfo is empty");
             return false;
