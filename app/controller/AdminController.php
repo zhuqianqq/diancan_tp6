@@ -20,9 +20,9 @@ class AdminController extends BaseController
     {
         $this->user = $this->request->sys_user;
         //权限验证,1=超级管理员，放行
-        if ($this->user->group_id !== 1) {
+        /*if ($this->user->group_id !== 1) {
 
-        }
+        }*/
     }
 
 }
