@@ -36,10 +36,17 @@ class Dingtalk extends Base
     public function index()
     {   
         $corpId = input('corpId','');
-        if(!$corpId){
+        $code = input('code','');
+        if(!$corpId && !$code){
             return json_error(20001);
         }
-        return json_ok($corpId);
+        //获取企业授权凭证
+        $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
+
+        $User = new \User();
+        $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
+
+        return json_ok($user_info);
     }
 
 
@@ -65,17 +72,6 @@ class Dingtalk extends Base
 
         return $suiteAccessToken;
 
-        $CorpInfo = json_decode($this->Auth->cache->getCorpInfo(),true);
-
-        foreach ($CorpInfo as $k => $v) {
-           $CorpId = $k;
-           $permanent_code = $v['permanent_code'];
-        }
-
-        //获取企业授权凭证
-        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
-
-        return $isvCorpAccessToken;
         //获取js_ticket
         //$js_ticket = $this->Auth->getTicket($CorpId,$isvCorpAccessToken);
 
@@ -83,8 +79,22 @@ class Dingtalk extends Base
     }
 
     //isv应用免登陆的公司AccessToken
-    public function getIsvCorpAccessToken()
+    public function getIsvCorpAccessToken($corpId)
     {
+        $key = 'dingding_corp_info_'.$corpId;
+
+        $CorpInfo = json_decode($this->Auth->cache->getCorpInfo($key),true);
+
+        foreach ($CorpInfo as $k => $v) {
+           $CorpId = $k;
+           $permanent_code = $v['permanent_code'];
+        }
+
+        $suiteAccessToken = $this->getSuiteAccessToken();
+        //获取企业授权凭证
+        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
+
+        return $isvCorpAccessToken;
 
     }
 
