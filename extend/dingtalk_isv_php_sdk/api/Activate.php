@@ -44,8 +44,6 @@ class Activate
         //获取永久授权码以及corpid等信息，持久化，并激活临时授权码
         $permanetCodeInfo = $this->isvService->getPermanentCodeInfo($suiteAccessToken, $tmpAuthCode);
 
-        Log::i("[kevinActivate] permanetCodeInfo: " . json_encode($permanetCodeInfo));
-
         if(null == $permanetCodeInfo){
             Log::e("[activeSuite]: permanetCodeInfo is empty");
             return false;
@@ -69,8 +67,8 @@ class Activate
         $res = $this->isvService->getAuthInfo($suiteAccessToken, $authCorpId, $permanetCode);
         Log::i("[Activate] getAuthInfo: " . json_encode($res));
         self::check($res);
-        //注册公司 返回结果
-        if(self::registerCompany($res,$permanetCode)){
+        //注册公司 返回结果 kevin
+        if(!self::registerCompany($res,$permanetCode)){
             Log::e("registerCompanyFailed:" . json_encode($res));
             exit("registerCompanyFailed: " . json_encode($res));
         };
