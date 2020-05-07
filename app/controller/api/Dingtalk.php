@@ -38,6 +38,15 @@ class Dingtalk extends Base
     }
 
 
+
+    public function getAccessToken()
+    {
+        echo 33;die;
+        $key = 'IsvCorpAccessToken_'.config('CORPID');
+        echo $key;die;
+    }
+
+
     /**
      * @Route("activateSuite")
      */
@@ -48,8 +57,31 @@ class Dingtalk extends Base
     }
 
     /**
-     * @Route("getSuiteAccessToken")
+     * @Route("getSuiteAccessToken", method="GET")
      */
+    //获取套件的AccessToken
+    // public function getSuiteAccessToken()
+    // {
+    //     echo 'ISVService';
+    //     $ISVService = new \ISVService();
+    //     //获取第三方应用凭证
+    //     $suiteAccessToken = $ISVService->getSuiteAccessToken('10530003');
+
+    //     $dingtalk_auth = new \Auth();
+
+    //     $CorpInfo = json_decode($dingtalk_auth->cache->getCorpInfo(),true);
+    //     foreach ($CorpInfo as $k => $v) {
+    //        $CorpId = $k;
+    //        $permanent_code = $v['permanent_code'];
+    //     }
+    //     //获取企业授权凭证
+    //     $isvCorpAccessToken = $ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
+    //     //获取js_ticket
+    //     $js_ticket = $dingtalk_auth->getTicket($CorpId,$isvCorpAccessToken);
+
+    //     dd($js_ticket);
+    // }
+
     public function getSuiteAccessToken()
     {
         echo 'ISVService';
@@ -62,7 +94,7 @@ class Dingtalk extends Base
            $CorpId = $k;
            $permanent_code = $v['permanent_code'];
         }
-        
+
         //获取企业授权凭证
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
         //获取js_ticket
@@ -71,28 +103,33 @@ class Dingtalk extends Base
         dd($js_ticket);
     }
 
-    /**
-     * @Route("getUserInfo")
-     */
-    public function getUserInfo()
-    {
-
-       return json_ok(input('param.'));
-        // $User = new \User();
-        // $user_info = $User->getUserInfo();
-        // dd($user_info);
-    }
 
     /**
      * @Route("test")
      */
     public function test()
     {
+        echo 999;die;
+    }
+
+    /**
+     * @Route("getDepartmentInfo")
+     */
+    public function getDepartmentInfo()
+    {
+        $key = 'IsvCorpAccessToken_'.config('CORPID');
+        echo $key;
+    }
+
+    /**
+     * @Route("getUserInfo")
+     */
+    public function getUserInfo()
+    {
        return json_ok(input('param.'));
         // $User = new \User();
         // $user_info = $User->getUserInfo();
         // dd($user_info);
     }
-
 
 }
