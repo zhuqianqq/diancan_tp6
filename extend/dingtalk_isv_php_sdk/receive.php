@@ -10,7 +10,7 @@ $cache = new Cache();
 $activate = new Activate();
 $isvService = new ISVService();
 /**/
-//$activate->autoActivateSuite(123);
+$activate->autoActivateSuite('5b76e1ef9c9e378392d2a289f61d8311');
 /**/
 Log::e('回调开始');
 
