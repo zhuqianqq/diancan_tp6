@@ -32,10 +32,14 @@ class Dingtalk extends Base
     /**
      * @Route("index", method="GET")
      */
+    //钉钉登录首页
     public function index()
-    {
-        echo 'Dingtalk';
-        dd($this->Auth);
+    {   
+        $corpId = input('corpId','');
+        if(!$corpId){
+            return json_error(20001);
+        }
+        return json_ok($corpId);
     }
 
 
@@ -53,11 +57,13 @@ class Dingtalk extends Base
     /**
      * @Route("getSuiteAccessToken")
      */
+    //获取isv套件应用凭证
      public function getSuiteAccessToken()
     {
         //echo 'ISVService';
-        //获取第三方应用凭证
         $suiteAccessToken = $this->ISVService->getSuiteAccessToken('10530003');
+
+        return $suiteAccessToken;
 
         $CorpInfo = json_decode($this->Auth->cache->getCorpInfo(),true);
 
@@ -75,6 +81,13 @@ class Dingtalk extends Base
 
         //dd($js_ticket);
     }
+
+    //isv应用免登陆的公司AccessToken
+    public function getIsvCorpAccessToken()
+    {
+
+    }
+
 
 
     // public function getSuiteAccessToken()
