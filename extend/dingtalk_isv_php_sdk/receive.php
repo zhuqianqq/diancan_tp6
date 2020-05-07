@@ -9,6 +9,9 @@ require_once(__DIR__ . "/crypto/DingtalkCrypt.php");
 $cache = new Cache();
 $activate = new Activate();
 $isvService = new ISVService();
+/**/
+//$activate->autoActivateSuite('5b76e1ef9c9e378392d2a289f61d8311');
+/**/
 Log::e('回调开始');
 
 $signature = $_GET["signature"];
