@@ -81,6 +81,15 @@ class DTUser extends Model
         ->update(['login_time'=> date('Y-m-d H:i:s',time()),'login_ip'=> GetIp()]);
 
     }
+
+
+    public function isAdmin($cropId,$userid){
+
+        return Db::table("dc_company_admin")
+        ->where(['corpid'=>$cropId,'platform_userid'=>$userid])
+        ->find();
+    }
+
 }
 
 
