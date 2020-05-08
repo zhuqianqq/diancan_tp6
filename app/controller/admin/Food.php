@@ -37,7 +37,7 @@ class Food extends Base
     {
         $data = input('post.');
         $result = F::addOrUpdata($data);
-        return json_ok($result, 14003);
+        return json_ok($result);
     }
 
     /**
@@ -53,7 +53,7 @@ class Food extends Base
         }
 
         $result = F::deleteFood($food_id);
-        return json_ok($result, 13003);
+        return json_ok($result);
     }
 
 }

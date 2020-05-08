@@ -40,7 +40,7 @@ class DingcanSysconfig extends Base
     {
         $data = input('post.');
         $result = SD::setting($data);
-        return json_ok($result, 15003);
+        return json_ok($result);
     }
 
 }
