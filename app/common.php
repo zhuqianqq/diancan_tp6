@@ -248,7 +248,6 @@ function getCompAndDeptInfoById($user_id)
     return $result;
 }
 
-
 /**
  * 判定今天是否为工作日的外网接口 文档 https://www.kancloud.cn/xiaoggvip/holiday_free
  * 请求地址 http://tool.bitefu.net/jiari/  请求方式 POST , GET
@@ -257,9 +256,37 @@ function getCompAndDeptInfoById($user_id)
  */
 function isWorkDay()
 {
-    echo 123;die;
-    $Http = new \util\Http();
-    dd($Http);
+    $api_url = 'http://tool.bitefu.net/jiari/';
+    $today = date('Ymd');
+    $Http = new \app\util\Http();
+    $res = $Http->get($api_url,['d'=>$today]);
+
+    if($res == 0){
+
+        return ['res'=> 1,'msg'=>'工作日','nextWorkDay'=>''];
+
+    }else{
+
+        $i = 1;
+
+        do {
+            $checkDay = date('Ymd',strtotime("+$i day"));
+
+            //$checkDay = date("Ymd",strtotime("+$i day",strtotime("20200501"))); //测试用  指定日期增加天数
+
+            if($Http->get($api_url,['d'=>$checkDay]) == 0){
+
+                break;
+            }
+
+            $i++;
+
+        } while ( $i <= 8);
+
+
+        return ['res'=> 0,'msg'=>'非工作日','nextWorkDay'=>$checkDay];
+
+    }
     
 }
 
@@ -299,3 +326,4 @@ function GetIp()
     $realip = preg_match("/[\d\.]{7,15}/", $realip, $matches) ? $matches[0] : $unknown;
     return $realip;
 }
+

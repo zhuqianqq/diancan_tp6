@@ -52,8 +52,39 @@ class Order extends Base
      */
     public function myOrder()
     {
-        $user_id = input('get.user_id');
+        $user_id = input('get.user_id','','int');
+        if (!$user_id) {
+            return json_error(10002);
+        }
         $result = SF::detail($user_id);
         return $result;
+    }
+
+    /**
+     * 获取系统订餐设置
+     * @Route("getSysconfig", method="GET")
+     */
+    public function getSysconfig()
+    {
+        $user_id = input('get.user_id');
+        if (!$user_id) {
+            return json_error(10002);
+        }
+        $sysConf = SF::getSysConfigById($user_id);
+        return json_ok($sysConf);
+    }
+
+    /**
+     * 判断今天有无订餐
+     * @Route("isOrder", method="GET")
+     */
+    public function isOrder()
+    {
+        $user_id = input('get.user_id');
+        if (!$user_id) {
+            return json_error(10002);
+        }
+        $result = SF::isOrder($user_id);
+        return json_ok($result);
     }
 }
