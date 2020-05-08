@@ -211,3 +211,18 @@ function getUserInfoById($user_id)
     $userInfo = \app\model\CompanyAdmin::where('userid', $user_id)->find();
     return $userInfo;
 }
+
+
+/**
+ * 判定今天是否为工作日的外网接口 文档 https://www.kancloud.cn/xiaoggvip/holiday_free
+ * 请求地址 http://tool.bitefu.net/jiari/  请求方式 POST , GET
+ * @param  d 日期  
+ * @return int 0工作日 1 假日 2节日
+ */
+function isWorkDay()
+{
+    echo 123;die;
+    $Http = new \util\Http();
+    dd($Http);
+    
+}
