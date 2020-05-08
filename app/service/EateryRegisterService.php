@@ -92,8 +92,9 @@ class EateryRegisterService
      * @throws \app\MyException
      */
     public static function eateryDelete(){
-        $eatery_id = input('post.eatery_id');
-        $user_id = input('post.user_id');
+        $eatery_id = input('eatery_id');
+        $user_id = input('user_id');
+        
         $oneEateryRegister = self::$repository::getInfoById($eatery_id);
         $oneEatery = Eatery::where('eatery_id', $eatery_id)->find();
         if (!$oneEateryRegister || !$oneEatery) {
@@ -105,7 +106,7 @@ class EateryRegisterService
         $eateryRecord = Order::where($where)->select();
 
         if ($eateryRecord->count()==0) {
-            echo 111;die;
+
             Db::startTrans();
 
             //物理删除
@@ -118,7 +119,7 @@ class EateryRegisterService
                 throw new MyException(13001, $e->getMessage());
             }
         } else {
-            echo 222;die;
+
             //软删除
             try{
                 $oneEatery->is_delete = 1;
