@@ -106,10 +106,6 @@ class EateryRegisterService
         $eateryRecord = Order::where($where)->select();
 
         if ($eateryRecord->count()==0) {
-<<<<<<< HEAD
-=======
-
->>>>>>> f7bd7404656130cd9bdc699bffb28c66a15adaa6
             Db::startTrans();
 
             //物理删除
@@ -122,10 +118,6 @@ class EateryRegisterService
                 throw new MyException(13001, $e->getMessage());
             }
         } else {
-<<<<<<< HEAD
-=======
-
->>>>>>> f7bd7404656130cd9bdc699bffb28c66a15adaa6
             //软删除
             try{
                 $oneEatery->is_delete = 1;

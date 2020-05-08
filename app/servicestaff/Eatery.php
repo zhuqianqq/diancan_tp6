@@ -31,7 +31,6 @@ class Eatery
             throw new MyException(13001);
         }
         $userInfo = getUserInfoById($user_id);
-        print_r($userInfo->toArray());die;
         if (!$userInfo) {
             throw new MyException(13002);
         }
