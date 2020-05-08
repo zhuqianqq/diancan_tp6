@@ -30,7 +30,7 @@ class Eatery
         if (!$user_id) {
             return json_error(13001);
         }
-        $userInfo = getUserInfoById($user_id);
+        $userInfo = getAdminInfoById($user_id);
         if (!$userInfo) {
             throw new MyException(13002);
         }
@@ -41,7 +41,7 @@ class Eatery
         }
         $list = ER::with(['food'])->select($eateryArr);
 
-        return json_ok($list->toArray(),13003);
+        return json_ok($list->toArray());
     }
 
 }

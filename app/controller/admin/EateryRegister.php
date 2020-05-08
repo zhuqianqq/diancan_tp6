@@ -47,7 +47,7 @@ class EateryRegister extends Base
     {
         $data = input('post.');
         $result = EateryRegisterService::registerEatery($data);
-        return json_ok($result, 13003);
+        return json_ok($result);
     }
 
     /**
@@ -63,7 +63,7 @@ class EateryRegister extends Base
         }
 
         $result = EateryRegisterService::delete($eatery_id);
-        return json_ok($result, 13003);
+        return json_ok($result);
     }
 
 }

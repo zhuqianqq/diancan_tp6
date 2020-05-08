@@ -204,12 +204,46 @@ function transform($value, $type)
 }
 
 /**
- * 根据用户id获取用户信息
+ * 根据用户id获取管理员信息
  */
-function getUserInfoById($user_id)
+function getAdminInfoById($user_id)
 {
     $userInfo = \app\model\CompanyAdmin::where('userid', $user_id)->find();
     return $userInfo;
+}
+
+
+/**
+ * 根据平台id获取用户id
+ */
+function getUserIdByPlatformId($platformId)
+{
+    $userInfo = \app\model\CompanyAdmin::where('platform_userid', $platformId)->find();
+    return $userInfo->userid;
+}
+
+/**
+ * 根据用户id获取员工信息
+ */
+function getUserInfoById($user_id)
+{
+    $userInfo = \app\model\CompanyStaff::where('staffid', $user_id)->find();
+    return $userInfo;
+}
+
+/**
+ * 根据用户id获取公司和部门信息
+ */
+function getCompAndDeptInfoById($user_id)
+{
+    $where = ['staffid' => $user_id, 'staff_status' => 1];
+    $result = \think\facade\Db::table('dc_company_staff')
+        ->alias('s')
+        ->join('dc_company_register r', 'r.company_id = s.company_id')
+        ->join('dc_company_department d', 'd.company_id = s.company_id and d.department_id = s.platform_departid')
+        ->where($where)
+        //->field(['id','title','content'])
+        ->select();
 }
 
 
