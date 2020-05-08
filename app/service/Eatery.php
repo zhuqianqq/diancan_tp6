@@ -55,10 +55,13 @@ class Eatery
     {
         $user_id = input('post.user_id', '', 'int');
         $eatery_id = input('post.eatery_id', '', 'int');
+        echo $user_id;
+        echo $eatery_id;
         if (!$user_id || !$eatery_id) {
+            echo 333;
             throw new MyException(13001);
         }
-
+echo 444;die;
         $eateryInfo = ER::find($eatery_id);
         if (!$eateryInfo) {
             throw new MyException(13002);
