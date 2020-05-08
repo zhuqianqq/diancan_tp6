@@ -135,7 +135,7 @@ class Dingtalk extends Base
            $User = new \User();
 
            $user_info = $User->get($isvCorpAccessToken,$userid);
-   
+
            $res = $DTUserModel->registerStaff($user_info,$corpId);
 
            if($res){
