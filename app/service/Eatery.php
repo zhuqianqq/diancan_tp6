@@ -34,8 +34,9 @@ class Eatery
         if (!$userInfo) {
             throw new MyException(13002);
         }
+        $where = ['is_delete'=>0,'company_id'=>$userInfo->company_id];
         $eateryArr = [];
-        $eatery = E::where('is_delete = 0 AND company_id = '.$userInfo->company_id)->field('eatery_id')->select();
+        $eatery = E::where($where)->field('eatery_id')->select();
         foreach ($eatery as $v){
             $eateryArr[] = $v['eatery_id'];
         }
