@@ -206,7 +206,7 @@ class Dingtalk extends Base
          //获取公司信息
         // $DTCompanyModel = new DTCompany;
         // dd($DTCompanyModel);
-        isWorkDay();
+       return json_ok(isWorkDay()); 
        //return json_ok(input('param.'));
         // $User = new \User();
         // $user_info = $User->getUserInfo();

@@ -249,15 +249,43 @@ function getCompAndDeptInfoById($user_id)
 
 /**
  * 判定今天是否为工作日的外网接口 文档 https://www.kancloud.cn/xiaoggvip/holiday_free
- * 请求地址 http://tool.bitefu.net/jiari/  请求方式 POST , GET
+ * 请求地址 http://tool.bitefu.net/jiari/  请求方式 POST , GET 接口返回 int 0工作日 1 假日 2节日
  * @param  d 日期  
- * @return int 0工作日 1 假日 2节日
+ * @return 方法返回: 1 工作日 0 非工作日
  */
 function isWorkDay()
 {
-    echo 123;die;
-    $Http = new \util\Http();
-    dd($Http);
+    $api_url = 'http://tool.bitefu.net/jiari/';
+    $today = date('Ymd');
+    $Http = new \app\util\Http();
+    $res = $Http->get($api_url,['d'=>$today]);
+    
+    if($res == 0){
+
+        return ['res'=> 1,'msg'=>'工作日','nextWorkDay'=>''];
+
+    }else{
+
+        $i = 1;
+
+        do {
+           $checkDay = date('Ymd',strtotime("+$i day"));
+            
+           //$checkDay = date("Ymd",strtotime("+$i day",strtotime("20200501"))); //测试用  指定日期增加天数
+
+           if($Http->get($api_url,['d'=>$checkDay]) == 0){
+ 
+                break;
+           }
+           
+           $i++;
+       
+        } while ( $i <= 8);
+
+     
+        return ['res'=> 0,'msg'=>'非工作日','nextWorkDay'=>$checkDay];
+
+    }
     
 }
 

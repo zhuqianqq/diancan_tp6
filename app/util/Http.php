@@ -1,5 +1,5 @@
 <?php
-namespace util;
+namespace app\util;
 
 use think\facade\Log;
 
