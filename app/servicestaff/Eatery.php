@@ -30,7 +30,9 @@ class Eatery
         if (!$user_id) {
             throw new MyException(13001);
         }
+
         $userInfo = getUserInfoById($user_id);
+
         if (!$userInfo) {
             throw new MyException(13002);
         }
