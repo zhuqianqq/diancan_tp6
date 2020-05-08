@@ -138,16 +138,14 @@ class Dingtalk extends Base
 
            $res = $DTUserModel->registerStaff($user_info,$corpId);
 
-           if($res){
+           $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
 
-              $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
-              return json_ok($userInfo);
+           return json_ok($userInfo);
 
-           }else{
-
-              return  json_error(20020);
-
-           }
+       }else{
+           //管理员 维护其登录时间login_time login_ip字段
+           $DTUserModel->updateAdminInfo($corpId,$userid);
+            
        }
        //老用户查询后返回数据库结果
        return json_ok($isReg);
