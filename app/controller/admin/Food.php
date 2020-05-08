@@ -34,6 +34,7 @@ class Food extends Base
      */
     public function getEateryFoods()
     {
+        header("Access-Control-Allow-Origin: *");
         $data = input('post.');
         $result = F::getInfo($data);
         return json_ok($result);

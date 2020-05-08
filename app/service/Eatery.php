@@ -61,7 +61,7 @@ class Eatery
 
         $eateryInfo = ER::find($eatery_id);
         if (!$eateryInfo) {
-            throw new MyException(13001);
+            throw new MyException(13002);
         }
 
         $userInfo = getAdminInfoById($user_id);
