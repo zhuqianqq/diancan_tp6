@@ -55,6 +55,7 @@ class Eatery
     {
         $user_id = input('post.user_id', '', 'int');
         $eatery_id = input('post.eatery_id', '', 'int');
+        echo 111;die;
         echo $user_id;
         echo $eatery_id;
         if (!$user_id || !$eatery_id) {
