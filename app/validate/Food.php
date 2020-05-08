@@ -18,16 +18,12 @@ class Food extends Validate
     protected $rule = [
         'food_id' => ['require','integer'],
         'eatery_id'   => ['require','integer'],
-        'food_name' => ['require'],
-        'price' => ['require','checkMoney'],
     ];
 
     //提示信息
     protected $message = [
         'eatery_id.require'   => '餐馆ID必须',
         'eatery_id.integer'   => '餐馆ID必须为正整数',
-        'food_name'   => '菜品名称必须',
-        'price'    => '价格必须',
         'food_id'    => '菜品ID必须',
     ];
 

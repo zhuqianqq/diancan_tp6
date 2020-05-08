@@ -39,11 +39,24 @@ class Food
     public static function addOrUpdata($data)
     {
         $food_id = isset($data['food_id']) && preg_match("/^[1-9][0-9]*$/" ,$data['food_id']) ? $data['food_id'] : 0;
+        try {
+            $eateryArr = \GuzzleHttp\json_decode($data['eatrey_food_info'], true);
+        }catch (\Exception $e){
+            throw new MyException(14005, $e->getMessage());
+        }
         if ($food_id==0) {//新增
             try {
-                $foodM = new F;
-                $foodM->save($data);
-                return [];
+                foreach ($eateryArr as $k => $v) {
+                    $money_reg = '/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/';
+                    if(!preg_match($money_reg, $v)){
+                        throw new MyException(14005);
+                    }
+                    $foodM = new F;
+                    $foodM->food_name = $k;
+                    $foodM->price = $v;
+                    $foodM->eatery_id = $data['eatery_id'];
+                    $foodM->save();
+                }
             }catch (\Exception $e){
                 throw new MyException(14001, $e->getMessage());
             }
@@ -54,11 +67,11 @@ class Food
             }
             try {
                 $oneFood->save($data);
-                return [];
             }catch (\Exception $e){
                 throw new MyException(14001, $e->getMessage());
             }
         }
+        return [];
     }
 
     /**

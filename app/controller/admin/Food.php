@@ -40,7 +40,7 @@ class Food extends Base
     }
 
     /**
-    * 更新或者创建餐馆
+    * 更新或者创建菜品
     *  @Validate(VF::class,scene="save",batch="true")
     * @Route("addOrUpdata", method="POST")
     */
