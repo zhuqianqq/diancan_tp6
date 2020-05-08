@@ -26,7 +26,7 @@ class Eatery
      */
     public static function getEaterylists()
     {
-        $user_id = input('user_id', '', 'int');
+        $user_id = input('get.user_id', '', 'int');
         if (!$user_id) {
             throw new MyException(13001);
         }
