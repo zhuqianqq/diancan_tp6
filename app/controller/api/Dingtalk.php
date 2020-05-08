@@ -171,7 +171,7 @@ class Dingtalk extends Base
     //获取钉钉企业部门信息
     public function DTGetDepartment()
     {
-       $corpId = input('corpId','ding076b713cc1eff17735c2f4657eb6378f');
+       $corpId = input('corpId','');
 
        if(!$corpId){
               return  json_error(20002);
