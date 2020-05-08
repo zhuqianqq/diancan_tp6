@@ -5,6 +5,7 @@ namespace app\service;
 use app\model\Food as F;
 use app\MyException;
 use app\traits\ServiceTrait;
+use app\service\Eatery;
 
 /**
  * 菜品
@@ -19,6 +20,15 @@ class Food
     public static $repository = 'app\repository\EateryRegisterRepository';
 
     use ServiceTrait;
+
+    /**
+     * 菜品列表
+     */
+    public static function getInfo()
+    {
+        $result = Eatery::getlist();
+        return $result;
+    }
 
     /**
      * 更新或者创建菜品

@@ -1,6 +1,6 @@
 <?php
 declare (strict_types=1);
-namespace app\service;
+namespace app\servicestaff;
 
 use app\model\Eatery as E;
 use app\model\EateryRegister as ER;
@@ -24,13 +24,13 @@ class Eatery
      * @return array 对象数组
      * @throws \app\MyException
      */
-    public static function getlists()
+    public static function getEaterylists()
     {
         $user_id = input('user_id', '', 'int');
         if (!$user_id) {
             throw new MyException(13001);
         }
-        $userInfo = getAdminInfoById($user_id);
+        $userInfo = getUserInfoById($user_id);
         if (!$userInfo) {
             throw new MyException(13002);
         }
@@ -42,37 +42,6 @@ class Eatery
         }
         $list = ER::with(['food'])->select($eateryArr);
         if($list) return $list->toArray();
-        return [];
-    }
-
-    /**
-     * 获取指定的餐馆和菜品信息
-     * @param array $data
-     * @return array 对象数组
-     * @throws \app\MyException
-     */
-    public static function getlist()
-    {
-        $user_id = input('post.user_id', '', 'int');
-        $eatery_id = input('post.eatery_id', '', 'int');
-        if (!$user_id || !$eatery_id) {
-            throw new MyException(13001);
-        }
-
-        $eateryInfo = ER::find($eatery_id);
-        if (!$eateryInfo) {
-            throw new MyException(13001);
-        }
-
-        $userInfo = getAdminInfoById($user_id);
-        if (!$userInfo) {
-            throw new MyException(13002);
-        }
-        $where = ['is_delete'=>0, 'company_id'=>$userInfo->company_id, 'eatery_id'=>$eatery_id];
-        $list = E::with(['food'])->where($where)->select();
-        if ($list) {
-            return $list->toArray();
-        }
         return [];
     }
 

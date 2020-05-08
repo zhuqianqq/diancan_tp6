@@ -40,4 +40,9 @@ class Eatery extends Model
 
     use ModelTrait;
 
+    public function food()
+    {
+        return $this->hasMany(Food::class,'eatery_id');
+    }
+
 }

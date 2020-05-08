@@ -1,6 +1,6 @@
 <?php
 declare (strict_types=1);
-namespace app\service;
+namespace app\servicestaff;
 
 use app\model\Order as MO;
 use app\model\OrderDetail as MD;
@@ -155,7 +155,8 @@ class Order
             throw new MyException(13002);
         }
 
-        return $sysConf->toArray();
+        if ($sysConf) return $sysConf->toArray();
+        return [];
     }
 
 }

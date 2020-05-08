@@ -110,7 +110,6 @@ class EateryRegisterService
         $eateryRecord = Order::where($where)->select();
 
         if ($eateryRecord->count()==0) {
-            echo 111;die;
             Db::startTrans();
 
             //物理删除
@@ -123,7 +122,6 @@ class EateryRegisterService
                 throw new MyException(13001, $e->getMessage());
             }
         } else {
-            echo 222;die;
             //软删除
             try{
                 $oneEatery->is_delete = 1;
