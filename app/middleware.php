@@ -10,4 +10,7 @@ return [
     //\think\middleware\Throttle::class,
     // 签名验证
     //app\middleware\CheckSign::class,
+
+    // 允许跨域请求
+    \app\middleware\AllowCors::class,
 ];

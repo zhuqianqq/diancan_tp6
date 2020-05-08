@@ -8,26 +8,33 @@ class Department
         $this->http = new Http();
     }
 
-    public static function createDept($accessToken, $dept)
+    public function createDept($accessToken, $dept)
     {
-        $response = Http::post("/department/create", 
+        $response = $this->http->post("/department/create", 
             array("access_token" => $accessToken), 
             json_encode($dept));
         return $response;
     }
     
     
-    public static function listDept($accessToken)
+    public function listDept($accessToken)
     {
-        $response = Http::get("/department/list", 
+        $response = $this->http->get("/department/list", 
             array("access_token" => $accessToken));
+        return $response;
+    }
+
+     public function detailDept($accessToken, $id)
+    {
+        $response = $this->http->get("/department/get", 
+            array("access_token" => $accessToken,"id" => $id));
         return $response;
     }
     
     
-    public static function deleteDept($accessToken, $id)
+    public function deleteDept($accessToken, $id)
     {
-        $response = Http::get("/department/delete", 
+        $response = $this->http->get("/department/delete", 
             array("access_token" => $accessToken, "id" => $id));
         return $response;
     }

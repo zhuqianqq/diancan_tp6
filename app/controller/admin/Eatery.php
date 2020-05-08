@@ -35,4 +35,13 @@ class Eatery extends Base
         return $result;
     }
 
+    /**
+     * 最近订餐
+     * @Route("recentlyOrder", method="GET")
+     */
+    public function recentlyOrdering()
+    {
+
+    }
+
 }
