@@ -240,10 +240,12 @@ function getCompAndDeptInfoById($user_id)
     $result = \think\facade\Db::table('dc_company_staff')
         ->alias('s')
         ->join('dc_company_register r', 'r.company_id = s.company_id')
-        ->join('dc_company_department d', 'd.company_id = s.company_id and d.department_id = s.platform_departid')
+        ->join('dc_company_department d', 'd.company_id = s.company_id and d.platform_departid = s.department_id')
         ->where($where)
-        //->field(['id','title','content'])
-        ->select();
+        ->field(['id','s.company_id','staff_name','department_id','company_name','platform_departid','dept_name'])
+        ->find();
+
+    return $result;
 }
 
 

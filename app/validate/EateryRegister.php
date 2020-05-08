@@ -45,6 +45,7 @@ class EateryRegister extends Validate
     //验证场景
     protected $scene = [
         'save' => [ 'user_id','type','eatery_name', 'contacts','proive','city','district','address','eat_type','mobile'],
+        'delete' => ['user_id','eatery_id']
     ];
 
 }

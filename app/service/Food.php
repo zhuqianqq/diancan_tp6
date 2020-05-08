@@ -28,7 +28,7 @@ class Food
      */
     public static function addOrUpdata($data)
     {
-        $food_id = isset($data['food_id']) && preg_match("/^[1-9][0-9]*$/" ,$data['food_id']) ?? 0;
+        $food_id = isset($data['food_id']) && preg_match("/^[1-9][0-9]*$/" ,$data['food_id']) ? $data['food_id'] : 0;
         if ($food_id==0) {//新增
             try {
                 $foodM = new F;

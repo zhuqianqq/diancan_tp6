@@ -44,4 +44,16 @@ class Eatery
         return json_ok($list->toArray());
     }
 
+    /**
+     * 根据餐馆id获取餐馆名称
+     */
+    public static function getNameById($eateryId)
+    {
+        if (!$eateryId) {
+            return json_error(13001);
+        }
+        $eatryInfo = E::where('eatery_id',$eateryId)->find();
+
+        return $eatryInfo->toArray();
+    }
 }

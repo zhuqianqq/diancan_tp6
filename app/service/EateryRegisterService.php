@@ -8,6 +8,7 @@ use app\model\EateryRegister as ER;
 use app\MyException;
 use think\facade\Db;
 use app\model\CompanyAdmin;
+use app\model\Order;
 
 /**
  * 餐馆
@@ -32,7 +33,7 @@ class EateryRegisterService
      */
     public static function registerEatery($data)
     {
-        $eatery_id = isset($data['eatery_id']) ?? 0;
+        $eatery_id = isset($data['eatery_id']) && preg_match("/^[1-9][0-9]*$/" ,$data['eatery_id']) ? $data['eatery_id'] : 0;
         $userId = $data['user_id'];
         $userInfo = CompanyAdmin::where('userid', $userId)->find();
         if (!$userInfo) {
@@ -90,21 +91,47 @@ class EateryRegisterService
      * @return array 对象数组
      * @throws \app\MyException
      */
-    public static function delete($eateryId){
-        $oneEatery = self::$repository::getInfoById($eateryId);
+    public static function delete(){
+        $eatery_id = input('post.eatery_id');
+        $user_id = input('post.user_id');
+        if (!$eatery_id || !$user_id) {
+            return json_error('13001');
+        }
 
-        //todo
-        //获取订餐记录
-
-
-        if (!$oneEatery) {
+        $oneEateryRegister = self::$repository::getInfoById($eatery_id);
+        $oneEatery = Eatery::where('eatery_id', $eatery_id)->find();
+        if (!$oneEateryRegister || !$oneEatery) {
             throw new MyException(13002);
         }
-        if (!$oneEatery->delete()) {
-            throw new MyException(13004);
+
+        $compAndDeptInfo = getCompAndDeptInfoById($user_id);
+        //获取订餐记录
+        $where = ['company_id'=>$compAndDeptInfo['company_id'], 'eatery_id'=>$eatery_id];
+        $eateryRecord = Order::where($where)->select();
+
+        if ($eateryRecord->count()==0) {
+            Db::startTrans();
+
+            //物理删除
+            try {
+                $oneEateryRegister->delete();
+                $oneEatery->delete();
+                Db::commit();
+            }catch (\Exception $e){
+                Db::rollback();
+                throw new MyException(13001, $e->getMessage());
+            }
+        } else {
+            //软删除
+            try{
+                $oneEatery->is_delete = 1;
+                $oneEatery->save();
+            }catch (\Exception $e){
+                throw new MyException(13001, $e->getMessage());
+            }
         }
 
-        return true;
+        return [];
     }
 
 }

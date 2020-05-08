@@ -52,17 +52,12 @@ class EateryRegister extends Base
 
     /**
      * 删除餐馆
-     * @Route("deleteEatery", method="GET")
+     * @Route("deleteEatery", method="POST")
      * @Validate(VE::class,scene="delete",batch="true")
      */
     public function deleteEatery()
     {
-        $eatery_id = input('get.eatery_id');
-        if (!$eatery_id) {
-           return json_error('13001');
-        }
-
-        $result = EateryRegisterService::delete($eatery_id);
+        $result = EateryRegisterService::delete();
         return json_ok($result);
     }
 
