@@ -125,7 +125,7 @@ class Dingtalk extends Base
 
        //获取企业授权凭证
        $DTUserModel = new DTUser;
-     
+       
        $isReg = $DTUserModel->where('platform_staffid',$userid)->find();
 
        if(!$isReg){
@@ -135,19 +135,28 @@ class Dingtalk extends Base
            $User = new \User();
 
            $user_info = $User->get($isvCorpAccessToken,$userid);
+           
+           $DTUserModel->registerStaff($user_info,$corpId);
 
-           $res = $DTUserModel->registerStaff($user_info,$corpId);
-
-           if($res){
-
-              $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
-              return json_ok($userInfo);
+           if($user_info->isAdmin === true){
+                //管理员身份
+                $userInfo = $DTUserModel->isAdmin($corpId,$userid);
 
            }else{
-
-              return  json_error(20020);
-
+                //员工身份
+                $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
            }
+
+           return json_ok($userInfo);
+
+       }else{
+           //若为管理员 维护其登录时间login_time login_ip字段 同时把返回前端信息换成管理员数据库信息
+           $isAdmin = $DTUserModel->isAdmin($corpId,$userid);
+           if($isAdmin){
+                $DTUserModel->updateAdminInfo($corpId,$userid);
+                $isReg = $isAdmin;
+           }
+            
        }
        //老用户查询后返回数据库结果
        return json_ok($isReg);
@@ -162,7 +171,7 @@ class Dingtalk extends Base
     //获取钉钉企业部门信息
     public function DTGetDepartment()
     {
-       $corpId = input('corpId','ding076b713cc1eff17735c2f4657eb6378f');
+       $corpId = input('corpId','');
 
        if(!$corpId){
               return  json_error(20002);
@@ -208,7 +217,7 @@ class Dingtalk extends Base
          //获取公司信息
         // $DTCompanyModel = new DTCompany;
         // dd($DTCompanyModel);
-        isWorkDay();
+       return json_ok(isWorkDay()); 
        //return json_ok(input('param.'));
         // $User = new \User();
         // $user_info = $User->getUserInfo();
