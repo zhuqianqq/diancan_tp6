@@ -5,12 +5,16 @@ namespace app\controller\api;
 require_once '../extend/dingtalk_isv_php_sdk/api/Auth.php';
 require_once '../extend/dingtalk_isv_php_sdk/api/ISVService.php';
 require_once '../extend/dingtalk_isv_php_sdk/api/User.php';
+require_once '../extend/dingtalk_isv_php_sdk/api/Department.php';
 
 use app\controller\api\Base;
 use think\annotation\route\Group;
 use think\annotation\Route;
 use app\model\DTCompany;
 use app\model\DTUser;
+use app\model\DTDepartment;
+use think\facade\Db;
+
 
 /**
  * 钉钉接口
@@ -131,7 +135,7 @@ class Dingtalk extends Base
            $User = new \User();
 
            $user_info = $User->get($isvCorpAccessToken,$userid);
-   
+
            $res = $DTUserModel->registerStaff($user_info,$corpId);
 
            if($res){
@@ -158,9 +162,42 @@ class Dingtalk extends Base
     //获取钉钉企业部门信息
     public function DTGetDepartment()
     {
-       $userid = input('userid','');
-       $corpId = input('corpId','');
+       $corpId = input('corpId','ding076b713cc1eff17735c2f4657eb6378f');
 
+       if(!$corpId){
+              return  json_error(20002);
+       }
+
+       $company_id = Db::table("dc_company_register")
+        ->where('corpid',$corpId)
+        ->value('company_id');
+
+       if(!$company_id){
+              return  json_error(20050);
+       }
+
+       $DTDepartmentModel = new DTDepartment;
+       $isReg = $DTDepartmentModel->where('company_id',$company_id)->find();
+
+       if(!$isReg){
+             try {
+               //钉钉接口获取部门信息
+               $Department = new \Department();
+               $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
+               $departmentList = $Department->listDept($isvCorpAccessToken);
+               foreach ($departmentList->department as $k => $v) {
+                    $departmentDetail = $Department->detailDept($isvCorpAccessToken,$v->id);
+                    $departmentList->department[$k]->detail = $departmentDetail;
+               }
+               //部门信息加入数据库
+               $DTDepartmentModel->registerDepartment($departmentList,$company_id);
+             } catch (\Exception $e) {
+                throw new \app\MyException(20060);
+             }
+          
+       }
+
+       return json_ok();
     }
 
     /**
@@ -169,9 +206,9 @@ class Dingtalk extends Base
     public function test()
     {
          //获取公司信息
-        $DTCompanyModel = new DTCompany;
-        dd($DTCompanyModel);
-
+        // $DTCompanyModel = new DTCompany;
+        // dd($DTCompanyModel);
+        isWorkDay();
        //return json_ok(input('param.'));
         // $User = new \User();
         // $user_info = $User->getUserInfo();
