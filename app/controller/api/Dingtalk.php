@@ -209,6 +209,50 @@ class Dingtalk extends Base
        return json_ok();
     }
 
+
+
+    /**
+     * @Route("sendMessage")
+     */
+    //发送订餐消息（钉钉工作消息类型）
+    public function sendMessage()
+    {
+        $corpId = input('corpId','');
+
+        if(!$corpId){
+              return  json_error(20002);
+        }
+
+        require_once '../extend/dingtalk_isv_php_sdk/api/Message.php';
+        $Message = new \Message();
+        $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
+
+        $opt =[];
+        $Message->corpConversation($isvCorpAccessToken,$opt);
+//         dd($Message);
+
+//         {
+//     "agent_id":"759850263",
+//     "msg":{
+//         "msgtype":"action_card",
+//         "action_card":{
+//             "btn_json_list":{
+//                 "action_url":"http://www.baidu.com",
+//                 "title":"kevin测试"
+//             },
+//             "title":"天天点餐",
+//             "btn_orientation":"1",
+//             "single_title":"立即订餐"
+//         }
+//     },
+//     "dept_id_list":"1"
+// }
+
+        echo 123;die;
+    }
+
+
+
     /**
      * @Route("test")
      */

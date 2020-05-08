@@ -91,25 +91,25 @@ class EateryRegisterService
      * @return array 对象数组
      * @throws \app\MyException
      */
-    public static function delete(){
-        $eatery_id = input('post.eatery_id');
-        $user_id = input('post.user_id');
-        if (!$eatery_id || !$user_id) {
-            return json_error('13001');
-        }
-
+    public static function eateryDelete(){
+        $eatery_id = input('eatery_id');
+        $user_id = input('user_id');
+        
         $oneEateryRegister = self::$repository::getInfoById($eatery_id);
         $oneEatery = Eatery::where('eatery_id', $eatery_id)->find();
         if (!$oneEateryRegister || !$oneEatery) {
             throw new MyException(13002);
         }
-
         $compAndDeptInfo = getCompAndDeptInfoById($user_id);
         //获取订餐记录
         $where = ['company_id'=>$compAndDeptInfo['company_id'], 'eatery_id'=>$eatery_id];
         $eateryRecord = Order::where($where)->select();
 
         if ($eateryRecord->count()==0) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> f7bd7404656130cd9bdc699bffb28c66a15adaa6
             Db::startTrans();
 
             //物理删除
@@ -122,6 +122,10 @@ class EateryRegisterService
                 throw new MyException(13001, $e->getMessage());
             }
         } else {
+<<<<<<< HEAD
+=======
+
+>>>>>>> f7bd7404656130cd9bdc699bffb28c66a15adaa6
             //软删除
             try{
                 $oneEatery->is_delete = 1;

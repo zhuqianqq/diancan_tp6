@@ -19,7 +19,6 @@ use think\annotation\route\Validate;
 use think\exception\ValidateException;
 
 
-
 /**
  * 餐馆注册接口
  * Class EateryRegister
@@ -29,6 +28,7 @@ use think\exception\ValidateException;
  */
 class EateryRegister extends Base
 {
+   
     //服务，带命名空间
     public static $service = 'app\service\EateryRegisterService';
     //验证器名称
@@ -52,12 +52,13 @@ class EateryRegister extends Base
 
     /**
      * 删除餐馆
-     * @Route("deleteEatery", method="POST")
+     * @Route("deleteEatery")
      * @Validate(VE::class,scene="delete",batch="true")
      */
     public function deleteEatery()
     {
-        $result = EateryRegisterService::delete();
+        header("Access-Control-Allow-Origin: *");
+        $result = EateryRegisterService::eateryDelete();
         return json_ok($result);
     }
 
