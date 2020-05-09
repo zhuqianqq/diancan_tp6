@@ -35,4 +35,15 @@ class Eatery extends Base
         return json_ok($result);
     }
 
+    /**
+     * 最近订餐
+     * @Route("recentlyOrder")
+     */
+    public function recentlyOrdering()
+    {
+        $result = SE::getRecentlyOrders();
+        return json_ok($result);
+    }
+
+
 }

@@ -179,4 +179,22 @@ class Order
         return $sysConf->toArray();
     }
 
+
+    public static function analyseSysConfig($sysConf)
+    {
+        if(!$sysConf){
+            return [];
+        }
+
+        //订餐状态
+        $DingcanStauts = checkDingcanStauts($sysConf);
+
+        $confEndTime = confEndTimeType($sysConf['end_time_type']);
+
+        dd($DingcanStauts,$confEndTime,$sysConf);
+        dd(isWorkDay());
+
+    }
+    
+
 }

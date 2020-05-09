@@ -243,8 +243,10 @@ class Dingtalk extends Base
         $opt['msg']['action_card'] = $sub_data;
 
         $opt['dept_id_list'] = '1';
-
+    
+       
         $res = $Message->corpConversation($isvCorpAccessToken,$opt);
+            //return json_ok($opt); 
         dd($res);
 
 //         {
@@ -275,6 +277,8 @@ class Dingtalk extends Base
     public function test()
     {
 
+        $list = Db::table("dc_company_staff")->where('staffid',1)->select();
+        echo Db::table("dc_company_staff")->getLastSql();die;
        return json_ok(isWorkDay()); 
 
     }

@@ -43,6 +43,7 @@ class Eatery
             $eateryArr[] = $v['eatery_id'];
         }
         $list = ER::with(['food'])->select($eateryArr);
+
         if($list) return $list->toArray();
         return [];
     }

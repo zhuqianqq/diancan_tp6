@@ -28,7 +28,7 @@ class EateryRegister extends Model
     //只读字段，不允许被更改
     protected $readonly = [];
     //数据输出隐藏的属性
-    protected $hidden = [];
+    protected $hidden = ['password'];
 
     //据输出显示的属性
     public static $showField = ['eatery_id', 'eatery_name', 'contacts', 'mobile', 'proive', 'city', 'district', 'address', 'eat_type', 'create_time'];
