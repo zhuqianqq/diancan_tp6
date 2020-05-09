@@ -126,18 +126,20 @@ class Order
     public static function detail($userId){
         //获取系统设置
         $sysConf = self::getSysConfigById($userId);
-        $send_time_arr = \GuzzleHttp\json_decode($sysConf['send_time_info'], true);
-        $nowTime = time();
-
         //获取我的订单
         $where = ['company_id' => $sysConf['company_id'], 'staffid' => $userId];
-        $order = Db::table('dc_order')
-            ->where($where)
-            ->order('create_time','desc')
-            ->find();
-
+        $todaytime=date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
+        $order = MO::where($where)->where('create_time','>',$todaytime)->order('create_time', 'desc')->find();
+        if (!$order) {
+            $code = 16002;
+            throw new MyException($code, config('error')[$code]);
+        }
         $orderDetail = $order->orderDetail;
-        return ['order' => $orderDetail, 'sysConfig' => $send_time_arr];
+        if (!$orderDetail) {
+            $code = 16002;
+            throw new MyException($code, config('error')[$code]);
+        }
+        return ['order'=>$order->toArray(), 'sysConfig' => $sysConf];
     }
 
     /**

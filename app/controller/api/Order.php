@@ -48,7 +48,7 @@ class Order extends Base
 
     /**
      * 我的订单
-     * @Route("index", method="GET")
+     * @Route("myOrder", method="GET")
      */
     public function myOrder()
     {
@@ -57,7 +57,7 @@ class Order extends Base
             return json_error(10002);
         }
         $result = SF::detail($user_id);
-        return $result;
+        return json_ok($result);
     }
 
     /**
