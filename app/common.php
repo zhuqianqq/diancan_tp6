@@ -327,3 +327,20 @@ function GetIp()
     $realip = preg_match("/[\d\.]{7,15}/", $realip, $matches) ? $matches[0] : $unknown;
     return $realip;
 }
+
+
+
+//生成省市区js文件
+function area_tree()
+{
+
+   ini_set('max_execution_time', '0');
+   $TreeUtil = new \app\util\TreeUtil;
+   $list = Db::table("dc_sys_area")->select()->toArray();
+   $content = json_encode($TreeUtil->list_to_tree($list,0,'area_id','parent_id'));
+   $log_name = 'sys_area.js';
+   $log_file = app()->getRuntimePath() . "log/" . ltrim($log_name, "/"); //保存在runtime/log/目录下
+   $path = dirname($log_file);
+   !is_dir($path) && @mkdir($path, 0755, true); //创建目录
+   @file_put_contents($log_file, $content, FILE_APPEND);
+}
