@@ -38,8 +38,7 @@ class DingcanSysconfig extends Base
     */
     public function setting()
     {
-        $data = input('post.');
-        $result = SD::setting($data);
+        $result = SD::setting(input('param.'));
         return json_ok($result);
     }
 
@@ -54,7 +53,7 @@ class DingcanSysconfig extends Base
             return json_error(10002);
         }
         $sysConf = SD::getSysConfigById($user_id);
-    
+
         return json_ok($sysConf);
     }
 

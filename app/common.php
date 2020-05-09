@@ -366,7 +366,6 @@ function checkDingcanStauts($sysConf)
     //1.判断配置的订餐日信息
     $isMutiChoose = strpos($sysConf['dc_date'], ',');
     $DingcanDay = 0; //默认不是订餐日
-    $DingcanStauts = 0; //0 订餐未开始  1 订餐报名中 2 报名结束送餐中
     $nextWorkDay = ''; //默认下个工作日为空
     //判断星期几; 数字度0表示是星期天,数字123456表示星期一到六知
     $no = date("w");
@@ -374,7 +373,7 @@ function checkDingcanStauts($sysConf)
         $no = 7;
     }
 
-    if(!$isMutiChoose){
+    if(!$isMutiChoose !== false){
         //判断工作日
         if($sysConf['dc_date'] == 0){
              $isWorkDay = isWorkDay();
@@ -392,11 +391,11 @@ function checkDingcanStauts($sysConf)
         
     }else{
 
-         if(strpos($sysConf['dc_date'], $no)){
+         if(strpos($sysConf['dc_date'], $no) !== false){
                 $DingcanDay = 1;
          }else{
             //是否都选工作日
-            if(strpos($sysConf['dc_date'], 0)){
+            if(strpos($sysConf['dc_date'], '0') !== false){
                  $isWorkDay = isWorkDay();
                  if($isWorkDay['res'] == 1){
                     $DingcanDay = 1;
@@ -407,13 +406,41 @@ function checkDingcanStauts($sysConf)
          }
     }
     
+    $DingcanStauts = 0; //0 订餐未开始(默认)  1 订餐报名中 2 报名结束送餐中
+    //送餐日
+    if($DingcanDay == 1){
 
-    //判断上午还是下午
-    $no=date("H",time());
-    if ($no<12){
-        $send_time_key = 1;
-    }else{
-        $send_time_key = 2;
+        //判断上午还是下午
+        $no=date("H",time());
+        if ($no<12){
+            $send_time_key = 1;
+            $send_time_text = '上午';
+        }else{
+            $send_time_key = 2;
+            $send_time_text = '下午';
+        }
+        //获取具体的送餐时间
+        $send_time_info = json_decode($sysConf['send_time_info'],true);
+        $send_time = $send_time_info[$send_time_key];
+        $send_time_str = date('Y-m-d',time()).$send_time.':00';
+     
+        //获取报餐截止时间
+        $confEndTime = confEndTimeType($sysConf['end_time_type']);
+        //送餐时间戳
+        $sendTimeStamp = strtotime($send_time_str);
+        //现在的时间戳
+        $nowTimeStamp = strtotime("now");
+        
+        if($sendTimeStamp-$nowTimeStamp-$confEndTime){
+echo 111;
+        }
+
+
+        echo $sendTimeStamp;
+        echo $confEndTime; die;
+
     }
+
+    
     
 }

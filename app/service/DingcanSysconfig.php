@@ -34,9 +34,11 @@ class DingcanSysconfig
         if (!$userInfo) {
             throw new MyException(15002);
         }
+
         $data['company_id'] = $userInfo['company_id'];
 
         $oneSys = DF::where('company_id', $data['company_id'])->find();
+
         if (!$oneSys) {//新增
             try {
                 $sysConfig = new DF;
@@ -45,6 +47,7 @@ class DingcanSysconfig
                throw new MyException(15004, $e->getMessage());
             }
         } else {
+
             try {
                 $oneSys->save($data);
             }catch (\Exception $e){
