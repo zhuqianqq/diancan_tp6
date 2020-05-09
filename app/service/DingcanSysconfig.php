@@ -18,7 +18,7 @@ class DingcanSysconfig
     use ServiceTrait;
 
     /**
-     * 更新或者创建菜品
+     * 订餐设置
      * @param array $data
      * @return array 对象数组
      * @throws \app\MyException

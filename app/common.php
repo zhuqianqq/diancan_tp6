@@ -232,7 +232,23 @@ function getUserInfoById($user_id)
 }
 
 /**
- * 根据用户id获取公司和部门信息
+ * 根据员工id获取公司和部门信息
+ */
+function getCompAndDeptInfoByUserId($user_id)
+{
+    $where = ['userid' => $user_id, 'is_enabled' => 1];
+    $result = \think\facade\Db::table('dc_company_admin')
+        ->alias('s')
+        ->join('dc_company_register r', 'r.company_id = s.company_id')
+        ->join('dc_company_department d', 'd.company_id = s.company_id and d.platform_departid = s.department_id')
+        ->where($where)
+        ->field(['userid','s.company_id','real_name','department_id','company_name','platform_departid','dept_name'])
+        ->find();
+    return $result;
+}
+
+/**
+ * 根据员工id获取公司和部门信息
  */
 function getCompAndDeptInfoById($user_id)
 {
@@ -242,7 +258,7 @@ function getCompAndDeptInfoById($user_id)
         ->join('dc_company_register r', 'r.company_id = s.company_id')
         ->join('dc_company_department d', 'd.company_id = s.company_id and d.platform_departid = s.department_id')
         ->where($where)
-        ->field(['id','s.company_id','staff_name','department_id','company_name','platform_departid','dept_name'])
+        ->field(['staffid','s.company_id','staff_name','department_id','company_name','platform_departid','dept_name'])
         ->find();
 
     return $result;
