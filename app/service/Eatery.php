@@ -8,6 +8,7 @@ use app\MyException;
 use app\traits\ServiceTrait;
 use app\model\CompanyAdmin;
 use think\Db;
+use app\service\DingcanSysconfig as SD;
 
 /**
  * 菜品
@@ -94,12 +95,29 @@ class Eatery
      */
     public static function getRecentlyOrders()
     {
-        $user_id = input('post.user_id', '', 'int');
-        $eatery_id = input('post.eatery_id', '', 'int');
-        if (!$user_id || !$eatery_id) {
+        $user_id = input('user_id', '', 'int');
+     
+        if (!$user_id) {
             throw new MyException(13001);
         }
 
+        $userInfo = getAdminInfoById($user_id);
+        if (!$userInfo) {
+            throw new MyException(13002);
+        }
+
+        $sysConf = SD::getSysConfigById($user_id);
+
+        dd($sysConf);
+        $where = ['is_delete'=>0,'company_id'=>$userInfo->company_id];
+        $eateryArr = [];
+        $eatery = E::where($where)->order('create_time','asc')->field('eatery_id')->select();
+        foreach ($eatery as $v){
+            $eateryArr[] = $v['eatery_id'];
+        }
+        $list = ER::with(['food'])->select($eateryArr);
+        if($list) return $list->toArray();
+        return [];
 
 
     }

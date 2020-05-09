@@ -343,3 +343,77 @@ function GetIp()
     return $realip;
 }
 
+
+/**
+ * 系统订餐截止时间
+ * @param  `end_time_type` '订餐截止时间 0-送餐前30分钟  1-送餐前1小时  2-送餐前2小时',
+ * @return int 分钟
+ */
+function confEndTimeType($end_time_type = 1)
+{
+
+    switch ($end_time_type){
+        case 0:$minutes = 30;break;
+        case 1:$minutes =  60;break;
+        case 2:$minutes =  120;break;
+    }
+    return $minutes;
+}
+
+
+function checkDingcanStauts($sysConf)
+{
+    //1.判断配置的订餐日信息
+    $isMutiChoose = strpos($sysConf['dc_date'], ',');
+    $DingcanDay = 0; //默认不是订餐日
+    $DingcanStauts = 0; //0 订餐未开始  1 订餐报名中 2 报名结束送餐中
+    $nextWorkDay = ''; //默认下个工作日为空
+    //判断星期几; 数字度0表示是星期天,数字123456表示星期一到六知
+    $no = date("w");
+    if($no==0){
+        $no = 7;
+    }
+
+    if(!$isMutiChoose){
+        //判断工作日
+        if($sysConf['dc_date'] == 0){
+             $isWorkDay = isWorkDay();
+             if($isWorkDay['res'] == 1){
+                $DingcanDay = 1;
+             }else{
+                $nextWorkDay = $isWorkDay['nextWorkDay'];
+             }
+        //判断具体日期         
+        }else{
+            if($sysConf['dc_date'] == $no){
+                $DingcanDay = 1;
+            }
+        }
+        
+    }else{
+
+         if(strpos($sysConf['dc_date'], $no)){
+                $DingcanDay = 1;
+         }else{
+            //是否都选工作日
+            if(strpos($sysConf['dc_date'], 0)){
+                 $isWorkDay = isWorkDay();
+                 if($isWorkDay['res'] == 1){
+                    $DingcanDay = 1;
+                 }else{
+                    $nextWorkDay = $isWorkDay['nextWorkDay'];
+                 }
+            }
+         }
+    }
+    
+
+    //判断上午还是下午
+    $no=date("H",time());
+    if ($no<12){
+        $send_time_key = 1;
+    }else{
+        $send_time_key = 2;
+    }
+    
+}

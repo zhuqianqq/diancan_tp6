@@ -49,11 +49,12 @@ class DingcanSysconfig extends Base
      */
     public function info()
     {
-        $user_id = input('get.user_id','','int');
+        $user_id = input('get.user_id','');
         if (!$user_id) {
             return json_error(10002);
         }
         $sysConf = SD::getSysConfigById($user_id);
+    
         return json_ok($sysConf);
     }
 

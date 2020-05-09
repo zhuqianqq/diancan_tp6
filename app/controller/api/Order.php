@@ -28,9 +28,12 @@ class Order extends Base
      */
     public function index()
     {
+
         $staffid = input('get.user_id','');
         $eateryList = SE::getEaterylists();
         $sysConf = SF::getSysConfigById($staffid);
+        $res = SF::analyseSysConfig($sysConf);
+
         return json_ok(['list'=>$eateryList, 'sysConfig'=>$sysConf]);
     }
 
