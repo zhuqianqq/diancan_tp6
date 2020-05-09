@@ -43,4 +43,18 @@ class DingcanSysconfig extends Base
         return json_ok($result);
     }
 
+    /**
+     * 获取系统订餐设置
+     * @Route("info", method="GET")
+     */
+    public function info()
+    {
+        $user_id = input('get.user_id','','int');
+        if (!$user_id) {
+            return json_error(10002);
+        }
+        $sysConf = SD::getSysConfigById($user_id);
+        return json_ok($sysConf);
+    }
+
 }

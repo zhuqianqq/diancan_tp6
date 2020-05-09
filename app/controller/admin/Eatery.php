@@ -32,7 +32,7 @@ class Eatery extends Base
     public function lists()
     {
         $result = SE::getlists();
-        return $result;
+        return json_ok($result);
     }
 
     /**

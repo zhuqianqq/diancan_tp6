@@ -5,6 +5,7 @@ namespace app\service;
 use app\model\Food as F;
 use app\MyException;
 use app\traits\ServiceTrait;
+use app\service\Eatery;
 
 /**
  * 菜品
@@ -21,6 +22,15 @@ class Food
     use ServiceTrait;
 
     /**
+     * 菜品列表
+     */
+    public static function getInfo()
+    {
+        $result = Eatery::getlist();
+        return $result;
+    }
+
+    /**
      * 更新或者创建菜品
      * @param array $data
      * @return array 对象数组
@@ -29,11 +39,24 @@ class Food
     public static function addOrUpdata($data)
     {
         $food_id = isset($data['food_id']) && preg_match("/^[1-9][0-9]*$/" ,$data['food_id']) ? $data['food_id'] : 0;
+        try {
+            $eateryArr = \GuzzleHttp\json_decode($data['eatrey_food_info'], true);
+        }catch (\Exception $e){
+            throw new MyException(14005, $e->getMessage());
+        }
         if ($food_id==0) {//新增
             try {
-                $foodM = new F;
-                $foodM->save($data);
-                return [];
+                foreach ($eateryArr as $k => $v) {
+                    $money_reg = '/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/';
+                    if(!preg_match($money_reg, $v)){
+                        throw new MyException(14005);
+                    }
+                    $foodM = new F;
+                    $foodM->food_name = $k;
+                    $foodM->price = $v;
+                    $foodM->eatery_id = $data['eatery_id'];
+                    $foodM->save();
+                }
             }catch (\Exception $e){
                 throw new MyException(14001, $e->getMessage());
             }
@@ -44,11 +67,11 @@ class Food
             }
             try {
                 $oneFood->save($data);
-                return [];
             }catch (\Exception $e){
                 throw new MyException(14001, $e->getMessage());
             }
         }
+        return [];
     }
 
     /**

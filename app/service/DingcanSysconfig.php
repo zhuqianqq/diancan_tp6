@@ -5,6 +5,7 @@ namespace app\service;
 use app\model\DingcanSysconfig as DF;
 use app\MyException;
 use app\traits\ServiceTrait;
+use app\model\CompanyAdmin;
 
 /**
  * 订餐设置
@@ -51,6 +52,26 @@ class DingcanSysconfig
             }
         }
 
+        return [];
+    }
+
+    /**
+     * 根据用户ID获取订餐设置
+     * @param $userId 用户id
+     * @return array
+     */
+    public static function getSysConfigById($userId)
+    {
+        //获取员工信息
+        $staffInfo = CompanyAdmin::where('userid', $userId)->find();
+        if (!$staffInfo) {
+            throw new MyException(10001);
+        }
+        $company_id = $staffInfo->company_id;
+
+        //获取订餐设置
+        $sysConf = DF::where('company_id', $company_id)->find();
+        if ($sysConf) return $sysConf->toArray();
         return [];
     }
 

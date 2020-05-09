@@ -29,7 +29,18 @@ class Food extends Base
     use ControllerTrait;
 
     /**
-    * 更新或者创建餐馆
+     * 根据餐馆id获取餐馆菜品信息
+     * @Route("getEateryFoods", method="POST")
+     */
+    public function getEateryFoods()
+    {
+        $data = input('post.');
+        $result = F::getInfo($data);
+        return json_ok($result);
+    }
+
+    /**
+    * 更新或者创建菜品
     *  @Validate(VF::class,scene="save",batch="true")
     * @Route("addOrUpdata", method="POST")
     */

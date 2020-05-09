@@ -9,8 +9,8 @@ use think\annotation\Route;
 use app\validate\Order as VO;
 use think\annotation\route\Validate;
 use think\exception\ValidateException;
-use app\service\Order as SF;
-use app\service\Eatery as SE;
+use app\servicestaff\Order as SF;
+use app\servicestaff\Eatery as SE;
 
 /**
  * 订餐接口
@@ -28,8 +28,10 @@ class Order extends Base
      */
     public function index()
     {
-        $result = SE::getlists();
-        return $result;
+        $staffid = input('get.user_id','');
+        $eateryList = SE::getEaterylists();
+        $sysConf = SF::getSysConfigById($staffid);
+        return json_ok(['list'=>$eateryList, 'sysConfig'=>$sysConf]);
     }
 
     /**
@@ -46,12 +48,43 @@ class Order extends Base
 
     /**
      * 我的订单
-     * @Route("index", method="GET")
+     * @Route("myOrder", method="GET")
      */
     public function myOrder()
     {
-        $user_id = input('get.user_id');
+        $user_id = input('get.user_id','','int');
+        if (!$user_id) {
+            return json_error(10002);
+        }
         $result = SF::detail($user_id);
-        return $result;
+        return json_ok($result);
+    }
+
+    /**
+     * 获取系统订餐设置
+     * @Route("getSysconfig", method="GET")
+     */
+    public function getSysconfig()
+    {
+        $user_id = input('get.user_id');
+        if (!$user_id) {
+            return json_error(10002);
+        }
+        $sysConf = SF::getSysConfigById($user_id);
+        return json_ok($sysConf);
+    }
+
+    /**
+     * 判断今天有无订餐
+     * @Route("isOrder", method="GET")
+     */
+    public function isOrder()
+    {
+        $user_id = input('get.user_id');
+        if (!$user_id) {
+            return json_error(10002);
+        }
+        $result = SF::isOrder($user_id);
+        return json_ok($result);
     }
 }

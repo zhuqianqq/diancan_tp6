@@ -248,12 +248,11 @@ function getCompAndDeptInfoById($user_id)
     return $result;
 }
 
-
 /**
  * 判定今天是否为工作日的外网接口 文档 https://www.kancloud.cn/xiaoggvip/holiday_free
- * 请求地址 http://tool.bitefu.net/jiari/  请求方式 POST , GET 接口返回 int 0工作日 1 假日 2节日
- * @param  d 日期  
- * @return 方法返回: 1 工作日 0 非工作日
+ * 请求地址 http://tool.bitefu.net/jiari/  请求方式 POST , GET
+ * @param  d 日期
+ * @return int 0工作日 1 假日 2节日
  */
 function isWorkDay()
 {
@@ -261,7 +260,7 @@ function isWorkDay()
     $today = date('Ymd');
     $Http = new \app\util\Http();
     $res = $Http->get($api_url,['d'=>$today]);
-    
+
     if($res == 0){
 
         return ['res'=> 1,'msg'=>'工作日','nextWorkDay'=>''];
@@ -271,20 +270,20 @@ function isWorkDay()
         $i = 1;
 
         do {
-           $checkDay = date('Ymd',strtotime("+$i day"));
-            
-           //$checkDay = date("Ymd",strtotime("+$i day",strtotime("20200501"))); //测试用  指定日期增加天数
+            $checkDay = date('Ymd',strtotime("+$i day"));
 
-           if($Http->get($api_url,['d'=>$checkDay]) == 0){
- 
+            //$checkDay = date("Ymd",strtotime("+$i day",strtotime("20200501"))); //测试用  指定日期增加天数
+
+            if($Http->get($api_url,['d'=>$checkDay]) == 0){
+
                 break;
-           }
-           
-           $i++;
-       
+            }
+
+            $i++;
+
         } while ( $i <= 8);
 
-     
+
         return ['res'=> 0,'msg'=>'非工作日','nextWorkDay'=>$checkDay];
 
     }
@@ -328,19 +327,3 @@ function GetIp()
     return $realip;
 }
 
-
-
-//生成省市区js文件
-function area_tree()
-{
-
-   ini_set('max_execution_time', '0');
-   $TreeUtil = new \app\util\TreeUtil;
-   $list = Db::table("dc_sys_area")->select()->toArray();
-   $content = json_encode($TreeUtil->list_to_tree($list,0,'area_id','parent_id'));
-   $log_name = 'sys_area.js';
-   $log_file = app()->getRuntimePath() . "log/" . ltrim($log_name, "/"); //保存在runtime/log/目录下
-   $path = dirname($log_file);
-   !is_dir($path) && @mkdir($path, 0755, true); //创建目录
-   @file_put_contents($log_file, $content, FILE_APPEND);
-}
