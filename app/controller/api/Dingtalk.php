@@ -143,8 +143,10 @@ class Dingtalk extends Base
                 $userInfo = $DTUserModel->isAdmin($corpId,$userid);
 
            }else{
-                //员工身份
+                //员工身份 
                 $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
+                //统一userid字段
+                $userInfo->userid = $userInfo->staffid;
            }
 
            return json_ok($userInfo);
@@ -155,6 +157,9 @@ class Dingtalk extends Base
            if($isAdmin){
                 $DTUserModel->updateAdminInfo($corpId,$userid);
                 $isReg = $isAdmin;
+           }else{
+             //员工身份 统一userid字段
+             $isReg->userid = $isReg->staffid;
            }
             
        }
@@ -217,7 +222,7 @@ class Dingtalk extends Base
     //发送订餐消息（钉钉工作消息类型）
     public function sendMessage()
     {
-        $corpId = input('corpId','');
+        $corpId = input('corpId','dingfecc037dae3b317624f2f5cc6abecb85');
 
         if(!$corpId){
               return  json_error(20002);
@@ -227,9 +232,20 @@ class Dingtalk extends Base
         $Message = new \Message();
         $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
 
-        $opt =[];
-        $Message->corpConversation($isvCorpAccessToken,$opt);
-//         dd($Message);
+        $opt = $sub_data = [];
+        $opt['agent_id'] = '759850263';
+
+        $opt['msg']['msgtype'] = 'action_card';
+        $sub_data['btn_json_list'] = ['action_url'=>"http://www.baidu.com",'title'=>"kevin测试"];
+        $sub_data['title'] = "天天点餐";
+        $sub_data['btn_orientation'] = "1";
+        $sub_data['single_title'] = "立即订餐";
+        $opt['msg']['action_card'] = $sub_data;
+
+        $opt['dept_id_list'] = '1';
+
+        $res = $Message->corpConversation($isvCorpAccessToken,$opt);
+        dd($res);
 
 //         {
 //     "agent_id":"759850263",
@@ -258,14 +274,28 @@ class Dingtalk extends Base
      */
     public function test()
     {
-         //获取公司信息
-        // $DTCompanyModel = new DTCompany;
-        // dd($DTCompanyModel);
+
        return json_ok(isWorkDay()); 
-       //return json_ok(input('param.'));
-        // $User = new \User();
-        // $user_info = $User->getUserInfo();
-        // dd($user_info);
+
+    }
+
+
+    /**
+     * @Route("area_tree")
+     */
+    //生成省市区js文件
+    public function area_tree()
+    {
+
+       ini_set('max_execution_time', '0');
+       $TreeUtil = new \app\util\TreeUtil;
+       $list = Db::table("dc_sys_area")->select()->toArray();
+       $content = json_encode($TreeUtil->list_to_tree($list,0,'area_id','parent_id'));
+       $log_name = 'sys_area.js';
+       $log_file = app()->getRuntimePath() . "log/" . ltrim($log_name, "/"); //保存在runtime/log/目录下
+       $path = dirname($log_file);
+       !is_dir($path) && @mkdir($path, 0755, true); //创建目录
+       @file_put_contents($log_file, $content, FILE_APPEND);
     }
 
 

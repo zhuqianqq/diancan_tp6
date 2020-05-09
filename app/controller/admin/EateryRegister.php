@@ -52,7 +52,7 @@ class EateryRegister extends Base
 
     /**
      * 删除餐馆
-     * @Route("deleteEatery")
+     * @Route("deleteEatery", method="POST")
      * @Validate(VE::class,scene="delete",batch="true")
      */
     public function deleteEatery()

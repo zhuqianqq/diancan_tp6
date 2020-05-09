@@ -88,4 +88,21 @@ class Eatery
         if ($eatryInfo) return $eatryInfo->toArray();
         return [];
     }
+
+    /**
+     * 最近订餐
+     */
+    public static function getRecentlyOrders()
+    {
+        $user_id = input('post.user_id', '', 'int');
+        $eatery_id = input('post.eatery_id', '', 'int');
+        if (!$user_id || !$eatery_id) {
+            throw new MyException(13001);
+        }
+
+
+
+    }
+
+
 }

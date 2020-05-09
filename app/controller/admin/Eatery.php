@@ -35,5 +35,4 @@ class Eatery extends Base
         return json_ok($result);
     }
 
-
 }
