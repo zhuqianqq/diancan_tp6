@@ -406,7 +406,8 @@ function checkDingcanStauts($sysConf)
          }
     }
     
-    $DingcanStauts = 0; //0 订餐未开始(默认)  1 订餐报名中 2 报名结束送餐中
+    $DingcanStauts = 0; //0 订餐未开始(默认)  1 订餐报名中 2 报名结束送餐中 3 送餐完毕
+    $baomingEndTimeStamp = 0; //订餐报名截止时间  默认0
     //送餐日
     if($DingcanDay == 1){
 
@@ -424,23 +425,27 @@ function checkDingcanStauts($sysConf)
         $send_time = $send_time_info[$send_time_key];
         $send_time_str = date('Y-m-d',time()).$send_time.':00';
      
-        //获取报餐截止时间
-        $confEndTime = confEndTimeType($sysConf['end_time_type']);
+        //获取报餐提前多久的系统设置
+        $confEndTime = confEndTimeType($sysConf['end_time_type'])*60;
         //送餐时间戳
         $sendTimeStamp = strtotime($send_time_str);
+
+        //报名截止时间戳
+        $baomingEndTimeStamp = $sendTimeStamp - $confEndTime;
+
         //现在的时间戳
         $nowTimeStamp = strtotime("now");
         
-        if($sendTimeStamp-$nowTimeStamp-$confEndTime){
-echo 111;
+        if( $nowTimeStamp < $baomingEndTimeStamp){
+            $DingcanStauts = 1;//订餐日 报名中
+        }else if( ($nowTimeStamp >= $baomingEndTimeStamp) && ($nowTimeStamp < $sendTimeStamp) ){
+            $DingcanStauts = 2;//订餐日 报名已截止 送餐中
+        }else{
+            $DingcanStauts = 3;//订餐日 送餐完毕
         }
-
-
-        echo $sendTimeStamp;
-        echo $confEndTime; die;
 
     }
 
-    
+    return ['isDingcanDay' => $DingcanDay,'DingcanStauts' => $DingcanStauts,'baomingEndTimeStamp'=>$baomingEndTimeStamp];
     
 }

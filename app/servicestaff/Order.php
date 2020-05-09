@@ -187,13 +187,7 @@ class Order
         }
 
         //订餐状态
-        $DingcanStauts = checkDingcanStauts($sysConf);
-
-        $confEndTime = confEndTimeType($sysConf['end_time_type']);
-
-        dd($DingcanStauts,$confEndTime,$sysConf);
-        dd(isWorkDay());
-
+        return checkDingcanStauts($sysConf);
     }
     
 
