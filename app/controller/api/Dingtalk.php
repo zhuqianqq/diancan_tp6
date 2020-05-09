@@ -143,8 +143,10 @@ class Dingtalk extends Base
                 $userInfo = $DTUserModel->isAdmin($corpId,$userid);
 
            }else{
-                //员工身份
+                //员工身份 
                 $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
+                //统一userid字段
+                $userInfo->userid = $userInfo->staffid;
            }
 
            return json_ok($userInfo);
@@ -155,6 +157,9 @@ class Dingtalk extends Base
            if($isAdmin){
                 $DTUserModel->updateAdminInfo($corpId,$userid);
                 $isReg = $isAdmin;
+           }else{
+             //员工身份 统一userid字段
+             $isReg->userid = $isReg->staffid;
            }
             
        }
@@ -272,6 +277,25 @@ class Dingtalk extends Base
 
        return json_ok(isWorkDay()); 
 
+    }
+
+
+    /**
+     * @Route("area_tree")
+     */
+    //生成省市区js文件
+    public function area_tree()
+    {
+
+       ini_set('max_execution_time', '0');
+       $TreeUtil = new \app\util\TreeUtil;
+       $list = Db::table("dc_sys_area")->select()->toArray();
+       $content = json_encode($TreeUtil->list_to_tree($list,0,'area_id','parent_id'));
+       $log_name = 'sys_area.js';
+       $log_file = app()->getRuntimePath() . "log/" . ltrim($log_name, "/"); //保存在runtime/log/目录下
+       $path = dirname($log_file);
+       !is_dir($path) && @mkdir($path, 0755, true); //创建目录
+       @file_put_contents($log_file, $content, FILE_APPEND);
     }
 
 

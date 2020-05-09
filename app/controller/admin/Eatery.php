@@ -41,7 +41,8 @@ class Eatery extends Base
      */
     public function recentlyOrdering()
     {
-
+        $result = SE::getRecentlyOrders();
+        return json_ok($result);
     }
 
 }
