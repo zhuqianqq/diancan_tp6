@@ -6,6 +6,7 @@ use app\MyException;
 use app\traits\ServiceTrait;
 use app\service\DingcanSysconfig;
 use app\model\CompanyRegister;
+use app\model\CompanyStaff;
 
 /**
  * 首页
@@ -44,9 +45,11 @@ class Index
      */
     public static function companySetting($data)
     {
-        $companyInfo = getCompAndDeptInfoByUserId($data['user_id']);
+        $companyStaffModel = new CompanyStaff;
+        $companyInfo = $companyStaffModel->where('staffid',$data['user_id'])->find();
         $where = ['company_id'=>$companyInfo['company_id']];
         $allowField = ['contact','mobile','province','city','address'];
+
         try{
             $company = CompanyRegister::where($where)->find();
             $company->allowField($allowField)->save($data);

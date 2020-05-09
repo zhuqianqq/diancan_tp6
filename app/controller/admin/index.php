@@ -55,12 +55,12 @@ class index extends Base
      */
     public function companySetting()
     {
-        $data['user_id'] = input('post.user_id','','int');
-        $data['contact'] = input('post.contact','','string');
-        $data['mobile'] = input('post.mobile','','string');
-        $data['province'] = input('post.province','','string');
-        $data['city'] = input('post.city','','string');
-        $data['address'] = input('post.address','','string');
+        $data['user_id'] = input('user_id','');
+        $data['contact'] = input('contact','');
+        $data['mobile'] = input('mobile','');
+        $data['province'] = input('province','');
+        $data['city'] = input('city','');
+        $data['address'] = input('address','');
         $result = I::companySetting($data);
         return json_ok($result);
     }
