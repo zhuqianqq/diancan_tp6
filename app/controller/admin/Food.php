@@ -34,8 +34,7 @@ class Food extends Base
      */
     public function getEateryFoods()
     {
-        $data = input('post.');
-        $result = F::getInfo($data);
+        $result = F::getInfo();
         return json_ok($result);
     }
 

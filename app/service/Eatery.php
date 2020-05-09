@@ -54,8 +54,9 @@ class Eatery
      */
     public static function getlist()
     {
-        $user_id = input('post.user_id', '', 'int');
-        $eatery_id = input('post.eatery_id', '', 'int');
+        $user_id = input('user_id', '', 'int');
+        $eatery_id = input('eatery_id', '', 'int');
+
         if (!$user_id || !$eatery_id) {
             throw new MyException(13001);
         }
@@ -109,6 +110,9 @@ class Eatery
         $sysConf = SD::getSysConfigById($user_id);
 
         dd($sysConf);
+
+        $list = E::with(['orderDetail'])->where($where)->select();
+
         $where = ['is_delete'=>0,'company_id'=>$userInfo->company_id];
         $eateryArr = [];
         $eatery = E::where($where)->order('create_time','asc')->field('eatery_id')->select();
