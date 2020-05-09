@@ -217,7 +217,7 @@ class Dingtalk extends Base
     //发送订餐消息（钉钉工作消息类型）
     public function sendMessage()
     {
-        $corpId = input('corpId','');
+        $corpId = input('corpId','dingfecc037dae3b317624f2f5cc6abecb85');
 
         if(!$corpId){
               return  json_error(20002);
@@ -227,9 +227,20 @@ class Dingtalk extends Base
         $Message = new \Message();
         $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
 
-        $opt =[];
-        $Message->corpConversation($isvCorpAccessToken,$opt);
-//         dd($Message);
+        $opt = $sub_data = [];
+        $opt['agent_id'] = '759850263';
+
+        $opt['msg']['msgtype'] = 'action_card';
+        $sub_data['btn_json_list'] = ['action_url'=>"http://www.baidu.com",'title'=>"kevin测试"];
+        $sub_data['title'] = "天天点餐";
+        $sub_data['btn_orientation'] = "1";
+        $sub_data['single_title'] = "立即订餐";
+        $opt['msg']['action_card'] = $sub_data;
+
+        $opt['dept_id_list'] = '1';
+
+        $res = $Message->corpConversation($isvCorpAccessToken,$opt);
+        dd($res);
 
 //         {
 //     "agent_id":"759850263",
@@ -258,14 +269,9 @@ class Dingtalk extends Base
      */
     public function test()
     {
-         //获取公司信息
-        // $DTCompanyModel = new DTCompany;
-        // dd($DTCompanyModel);
+
        return json_ok(isWorkDay()); 
-       //return json_ok(input('param.'));
-        // $User = new \User();
-        // $user_info = $User->getUserInfo();
-        // dd($user_info);
+
     }
 
 
