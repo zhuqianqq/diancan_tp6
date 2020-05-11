@@ -293,13 +293,14 @@ class Dingtalk extends Base
 
        ini_set('max_execution_time', '0');
        $TreeUtil = new \app\util\TreeUtil;
-       $list = Db::table("dc_sys_area")->select()->toArray();
+       //数据库中香港 澳门 台湾三区不返回
+       $list = Db::table("dc_sys_area")->whereRaw('area_id Not IN (710000,810000,820000)')->select()->toArray();
        $content = json_encode($TreeUtil->list_to_tree($list,0,'area_id','parent_id'));
        $log_name = 'sys_area.js';
-       $log_file = app()->getRuntimePath() . "log/" . ltrim($log_name, "/"); //保存在runtime/log/目录下
+       $log_file = app()->getRootPath() . "public/js/" . ltrim($log_name, "/"); //保存在runtime/log/目录下
        $path = dirname($log_file);
        !is_dir($path) && @mkdir($path, 0755, true); //创建目录
-       @file_put_contents($log_file, $content, FILE_APPEND);
+       @file_put_contents($log_file, $content);
     }
 
 
