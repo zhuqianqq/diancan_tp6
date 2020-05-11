@@ -28,13 +28,14 @@ class Order extends Base
      */
     public function index()
     {
-        
+
         $staffid = input('get.user_id', '');
         $eateryList = SE::getEaterylists();
         $sysConf = SF::getSysConfigById($staffid);
         $dingcanStauts = SF::analyseSysConfig($sysConf);
+        $isOrder = SF::isOrder($staffid);
 
-        return json_ok(['list' => $eateryList, 'dingcanStauts' => $dingcanStauts]);
+        return json_ok(['list' => $eateryList, 'dingcanStauts' => $dingcanStauts,'isOrder'=>$isOrder]);
     }
 
     /**
