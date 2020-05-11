@@ -140,16 +140,16 @@ class Order
         $todaytime=date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
         $order = MO::where($where)->where('create_time','>',$todaytime)->order('create_time', 'desc')->find();
 
-        // if (!$order) {
-        //     $code = 16002;
-        //     throw new MyException($code);
-        // }
-        // $orderDetail = $order->orderDetail;
-        // if (!$orderDetail) {
-        //     $code = 16002;
-        //     throw new MyException($code);
-        // }
-        return ['order'=>$order??[]];
+        if (!$order) {
+            $code = 16002;
+            throw new MyException($code);
+        }
+        $orderDetail = $order->orderDetail;
+        if (!$orderDetail) {
+            $code = 16002;
+            throw new MyException($code);
+        }
+        return ['order'=>$order];
     }
 
     /**
