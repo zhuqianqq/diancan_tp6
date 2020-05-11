@@ -319,7 +319,7 @@ function isWorkDayJs()
     }
     $today = date('md');
     //echo '<pre>';var_dump($workdayArr);
-    
+
     if(!isset($workdayArr[$today])){
 
         return ['res'=> 1,'msg'=>'工作日','nextWorkDay'=>''];
@@ -489,6 +489,12 @@ function checkDingcanStauts($sysConf)
 
     }
 
-    return ['isDingcanDay' => $DingcanDay,'DingcanStauts' => $DingcanStauts,'baomingEndTimeStamp'=>$baomingEndTimeStamp];
+    return [
+        'isDingcanDay' => $DingcanDay,
+        'DingcanStauts' => $DingcanStauts,
+        'baomingEndTimeStamp'=>$baomingEndTimeStamp,
+        'send_time_key' => $send_time_key,
+        'send_time_text' => $send_time_text
+    ];
     
 }
