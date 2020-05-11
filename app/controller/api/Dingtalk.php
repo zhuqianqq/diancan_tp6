@@ -54,6 +54,10 @@ class Dingtalk extends Base
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
+
+        //该用户是否有部门信息
+        $DTDepartmentModel = new DTDepartment;
+        $user_info->hasDepartment = $DTDepartmentModel->where('company_id',$user_info->company_id)->count();
         
         return json_ok($user_info);
     }

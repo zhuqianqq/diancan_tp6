@@ -150,10 +150,14 @@ class Eatery
             $eater_names = OrdD::where(['company_id'=>$userInfo->company_id,'eat_type'=>2,'eatery_id'=>$v['eatery_id'],'food_name'=>$v['food_name']])
             ->whereTime('create_time','today')
             ->column('staff_name');
-            
-            dd(array_unique($eater_names));
+
+            $v['eater_names'] = array_unique($eater_names);
             $list[$v['eatery_id']][] = $v;
-           // $list[$v['eatery_id']][$v['food_name']]['eater_name'][] = $v->staff_name;
+           
+        }
+        foreach ($list as $k2 => $v2) {
+
+           $list[$k2]['eatery_name'] = ER::getEateryName($k2);
         }
 
         //$list[$v['eatery_id']]['eatery_name'] = ER::getEateryName($v->eatery_id);
