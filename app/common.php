@@ -318,7 +318,8 @@ function isWorkDayJs()
         throw new \app\MyException(20700);
     }
     $today = date('md');
-
+    //echo '<pre>';var_dump($workdayArr);
+    
     if(!isset($workdayArr[$today])){
 
         return ['res'=> 1,'msg'=>'工作日','nextWorkDay'=>''];
@@ -328,8 +329,10 @@ function isWorkDayJs()
         $i = 1;
 
         do {
-            $checkDay = date('md',strtotime("+$i day"));
 
+            $checkDay = date('md',strtotime("+$i day"));
+            //$checkDay = date("md",strtotime("+$i day",strtotime("20200501"))); //测试用  指定日期增加天数
+            // echo $i .'<br>'; echo $checkDay . '<br>';
             if(!isset($workdayArr[$checkDay])){
 
                 break;
@@ -339,7 +342,6 @@ function isWorkDayJs()
 
         } while ( $i <= 8);
 
-        dd(['res'=> 0,'msg'=>'非工作日','nextWorkDay'=>$checkDay]);
         return ['res'=> 0,'msg'=>'非工作日','nextWorkDay'=>$checkDay];
 
     }
@@ -417,7 +419,7 @@ function checkDingcanStauts($sysConf)
     if(!$isMutiChoose !== false){
         //判断工作日
         if($sysConf['dc_date'] == 0){
-             $isWorkDay = isWorkDay();
+             $isWorkDay = isWorkDayJs();
              if($isWorkDay['res'] == 1){
                 $DingcanDay = 1;
              }else{
@@ -437,7 +439,7 @@ function checkDingcanStauts($sysConf)
          }else{
             //是否都选工作日
             if(strpos($sysConf['dc_date'], '0') !== false){
-                 $isWorkDay = isWorkDay();
+                 $isWorkDay = isWorkDayJs();
                  if($isWorkDay['res'] == 1){
                     $DingcanDay = 1;
                  }else{
