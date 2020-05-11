@@ -44,4 +44,6 @@ class EateryRegister extends Model
     {
         return $this->hasMany(Food::class,'eatery_id');
     }
+
+    
 }

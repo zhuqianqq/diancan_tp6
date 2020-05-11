@@ -11,7 +11,7 @@ use think\Db;
 use app\service\DingcanSysconfig as SD;
 use app\model\Order as Ord;
 use app\model\OrderDetail as OrdD;
-
+use app\model\SysArea;
 /**
  * 菜品
  * Class Eatery
@@ -44,7 +44,15 @@ class Eatery
             $eateryArr[] = $v['eatery_id'];
         }
         $list = ER::with(['food'])->select($eateryArr);
-        if($list) return $list->toArray();
+       
+        if($list) {
+            foreach ($list as $k => $v) {
+               $list[$k]->province_name = SysArea::getAreaName($v->proive);
+               $list[$k]->city_name = SysArea::getAreaName($v->city);
+               $list[$k]->district_name = SysArea::getAreaName($v->district);
+            }
+            return $list->toArray();
+        }
         return [];
     }
 
