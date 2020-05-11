@@ -121,24 +121,42 @@ class Eatery
 
         $dayStart = date('Y-m-d 00:00:00',time());
         $dayEnd = date('Y-m-d 23:59:59',time());
-       
-        $OrderDetails = OrdD::where(['company_id'=>$userInfo->company_id,'eat_type'=>2])
-                ->whereBetween('create_time',[$dayStart,$dayEnd])
-                ->select();
-        $list = [];
+       $list = [];
+        // $OrderDetails = OrdD::where(['company_id'=>$userInfo->company_id,'eat_type'=>2])
+        //         ->whereBetween('create_time',[$dayStart,$dayEnd])
+        //         ->select();
+        // $list = [];
 
-        foreach($OrderDetails as $k => $v){
-            $list[$v['eatery_id']][$v['food_name']]['food_name'] = $v->food_name;
-            $list[$v['eatery_id']][$v['food_name']]['eater_name'][] = $v->staff_name;
-            if(!isset($list[$v['eatery_id']][$v['food_name']]['nums'])){
-                $list[$v['eatery_id']][$v['food_name']]['nums'] = 0;
-            }
-            $list[$v['eatery_id']][$v['food_name']]['nums'] += $v->report_num;
-            if(!isset($list[$v['eatery_id']][$v['food_name']]['price'])){
-                $list[$v['eatery_id']][$v['food_name']]['price'] = 0;
-            }
-            $list[$v['eatery_id']][$v['food_name']]['price'] += $v->price;
+        // foreach($OrderDetails as $k => $v){
+        //     $list[$v['eatery_id']][$v['food_name']]['food_name'] = $v->food_name;
+        //     $list[$v['eatery_id']][$v['food_name']]['eater_name'][] = $v->staff_name;
+        //     if(!isset($list[$v['eatery_id']][$v['food_name']]['nums'])){
+        //         $list[$v['eatery_id']][$v['food_name']]['nums'] = 0;
+        //     }
+        //     $list[$v['eatery_id']][$v['food_name']]['nums'] += $v->report_num;
+        //     if(!isset($list[$v['eatery_id']][$v['food_name']]['price'])){
+        //         $list[$v['eatery_id']][$v['food_name']]['price'] = 0;
+        //     }
+        //     $list[$v['eatery_id']][$v['food_name']]['price'] += $v->price;
+        // }
+
+        $OrderDetails = OrdD::where(['company_id'=>$userInfo->company_id,'eat_type'=>2])
+                ->field('eatery_id,food_name,SUM(report_num) AS total_num,SUM(price) AS total_price')
+                ->whereTime('create_time','today')
+                ->group('eatery_id,food_name')
+                ->select()->toArray();
+
+        foreach ($OrderDetails as $k => $v) {
+            $eater_names = OrdD::where(['company_id'=>$userInfo->company_id,'eat_type'=>2,'eatery_id'=>$v['eatery_id'],'food_name'=>$v['food_name']])
+            ->whereTime('create_time','today')
+            ->column('staff_name');
+            
+            dd(array_unique($eater_names));
+            $list[$v['eatery_id']][] = $v;
+           // $list[$v['eatery_id']][$v['food_name']]['eater_name'][] = $v->staff_name;
         }
+
+        //$list[$v['eatery_id']]['eatery_name'] = ER::getEateryName($v->eatery_id);
 
         dd($list);
 

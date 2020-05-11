@@ -45,5 +45,8 @@ class EateryRegister extends Model
         return $this->hasMany(Food::class,'eatery_id');
     }
 
-    
+    public static function getEateryName($eatery_id)
+    {
+        return self::where('eatery_id',$eatery_id)->value('eatery_name');
+    }
 }

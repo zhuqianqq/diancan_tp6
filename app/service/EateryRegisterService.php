@@ -33,7 +33,7 @@ class EateryRegisterService
      */
     public static function registerEatery($data)
     {
-        $eatery_id = isset($data['eatery_id']) && preg_match("/^[1-9][0-9]*$/" ,$data['eatery_id']) ? $data['eatery_id'] : 0;
+        $eatery_id =  $data['eatery_id'] ?? 0;
         $userId = $data['user_id'];
         $userInfo = CompanyAdmin::where('userid', $userId)->find();
         if (!$userInfo) {
@@ -59,7 +59,7 @@ class EateryRegisterService
                 return [];
             }catch (\Exception $e){
                 Db::rollback();
-                throw new MyException(13001, $e->getMessage());
+                throw new MyException(13100);
             }
         } else { //编辑
             try {
