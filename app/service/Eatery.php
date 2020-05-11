@@ -9,6 +9,8 @@ use app\traits\ServiceTrait;
 use app\model\CompanyAdmin;
 use think\Db;
 use app\service\DingcanSysconfig as SD;
+use app\model\Order as Ord;
+use app\model\OrderDetail as OrdD;
 
 /**
  * 菜品
@@ -109,9 +111,28 @@ class Eatery
 
         $sysConf = SD::getSysConfigById($user_id);
 
-        dd($sysConf);
+        $dayStart = date('Y-m-d 00:00:00',time());
+        $dayEnd = date('Y-m-d 23:59:59',time());
+       
+        $OrderDetails = OrdD::where(['company_id'=>$userInfo->company_id,'eat_type'=>2])
+                ->whereBetween('create_time',[$dayStart,$dayEnd])
+                ->select();
+        $list = [];
 
-        $list = E::with(['orderDetail'])->where($where)->select();
+        foreach($OrderDetails as $k => $v){
+            $list[$v['eatery_id']][$v['food_name']]['food_name'] = $v->food_name;
+            $list[$v['eatery_id']][$v['food_name']]['eater_name'][] = $v->staff_name;
+            if(!isset($list[$v['eatery_id']][$v['food_name']]['nums'])){
+                $list[$v['eatery_id']][$v['food_name']]['nums'] = 0;
+            }
+            $list[$v['eatery_id']][$v['food_name']]['nums'] += $v->report_num;
+            if(!isset($list[$v['eatery_id']][$v['food_name']]['price'])){
+                $list[$v['eatery_id']][$v['food_name']]['price'] = 0;
+            }
+            $list[$v['eatery_id']][$v['food_name']]['price'] += $v->price;
+        }
+
+        dd($list);
 
         $where = ['is_delete'=>0,'company_id'=>$userInfo->company_id];
         $eateryArr = [];
