@@ -277,9 +277,9 @@ class Dingtalk extends Base
     public function test()
     {
 
-        $list = Db::table("dc_company_staff")->where('staffid',1)->select();
-        echo Db::table("dc_company_staff")->getLastSql();die;
-       return json_ok(isWorkDay()); 
+        //$list = Db::table("dc_company_staff")->where('staffid',1)->select();
+        //echo Db::table("dc_company_staff")->getLastSql();die;
+       return json_ok(isWorkDayJs()); 
 
     }
 

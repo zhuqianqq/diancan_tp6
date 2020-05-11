@@ -307,6 +307,47 @@ function isWorkDay()
 }
 
 
+//判断工作日 直接读取本地已经生成的工作日的js文件
+function isWorkDayJs()
+{
+    try {
+        $filename = app()->getRootPath() . 'public/js/2020_workday.js';
+        $_workdayArr = json_decode(file_get_contents($filename),true);
+        $workdayArr = $_workdayArr['2020'];
+    } catch (Exception $e) {
+        throw new \app\MyException(20700);
+    }
+    $today = date('md');
+
+    if(!isset($workdayArr[$today])){
+
+        return ['res'=> 1,'msg'=>'工作日','nextWorkDay'=>''];
+
+    }else{
+
+        $i = 1;
+
+        do {
+            $checkDay = date('md',strtotime("+$i day"));
+
+            if(!isset($workdayArr[$checkDay])){
+
+                break;
+            }
+
+            $i++;
+
+        } while ( $i <= 8);
+
+        dd(1);
+        return ['res'=> 0,'msg'=>'非工作日','nextWorkDay'=>$checkDay];
+
+    }
+    
+}
+
+
+
 function GetIp()
 {
     $realip  = '';

@@ -3,7 +3,7 @@
 require_once(__DIR__ . "/../util/Log.php");
 require_once(__DIR__ . "/../util/Http.php");
 require_once(__DIR__ . "/ISVService.php");
-use app\model\DTCompany;
+use app\model\CompanyRegister;
 
 /**
  * 激活ISV套件方法类
@@ -83,7 +83,7 @@ class Activate
     
     static function registerCompany($_data,$permanetCode='')
     {
-        $DTCompanyModel = new DTCompany;
+        $DTCompanyModel = new CompanyRegister;
         $data = [];
         $data['company_name'] = $_data->auth_corp_info->corp_name ?? '';
         $data['corpid'] = $_data->auth_corp_info->corpid ?? '';
