@@ -69,7 +69,7 @@ Class Http
      */
     public function http_request($url, $data = "", $type = "")
     {
-
+        echo 'http_requestStart' . date('Y-m-d H:i:s',time()) . '<br>';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
 
@@ -137,7 +137,7 @@ Class Http
                 return simplexml_load_string($request_data);
             }
         }
-
+        echo 'http_requestEnd' . date('Y-m-d H:i:s',time()) . '<br>';
         return $request_data;
     }
 
