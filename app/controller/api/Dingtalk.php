@@ -54,10 +54,6 @@ class Dingtalk extends Base
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
-
-        //该用户是否有部门信息
-        $DTDepartmentModel = new DTDepartment;
-        $user_info->hasDepartment = $DTDepartmentModel->where('company_id',$user_info->company_id)->count();
         
         return json_ok($user_info);
     }
@@ -129,6 +125,7 @@ class Dingtalk extends Base
 
        //获取企业授权凭证
        $DTUserModel = new DTUser;
+       $DTDepartmentModel = new DTDepartment;
        
        $isReg = $DTUserModel->where('platform_staffid',$userid)->find();
 
@@ -153,6 +150,9 @@ class Dingtalk extends Base
                 $userInfo->userid = $userInfo->staffid;
            }
 
+           //判断该用户数据库是否有部门信息
+           $user_info->hasDepartment = $DTDepartmentModel->where('company_id',$user_info->company_id)->count();
+
            return json_ok($userInfo);
 
        }else{
@@ -165,8 +165,11 @@ class Dingtalk extends Base
              //员工身份 统一userid字段
              $isReg->userid = $isReg->staffid;
            }
-            
+           
+           //判断该用户数据库是否有部门信息
+           $isReg->hasDepartment = $DTDepartmentModel->where('company_id',$isReg->company_id)->count();
        }
+
        //老用户查询后返回数据库结果
        return json_ok($isReg);
 
