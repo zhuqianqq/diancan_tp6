@@ -110,6 +110,9 @@ Class Http
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curl_errno = curl_errno($ch);
         $curl_error = curl_error($ch);
+        echo 'http_code' . $http_code . '<br>';
+        echo 'curl_errno' . $curl_errno . '<br>';
+        echo 'curl_error' . $curl_error . '<br>'; die();
 
         if (($http_code != 404 && $http_code >= 400) || $curl_errno > 0) {
             curl_close($ch);
