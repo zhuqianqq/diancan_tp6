@@ -28,7 +28,7 @@ class Order extends Base
      */
     public function index()
     {
-
+        
         $staffid = input('get.user_id', '');
         $eateryList = SE::getEaterylists();
         $sysConf = SF::getSysConfigById($staffid);
@@ -59,6 +59,8 @@ class Order extends Base
             return json_error(10002);
         }
         $result = SF::detail($user_id);
+        $sysConf = SF::getSysConfigById($user_id);
+        $result['dingcanStauts'] = SF::analyseSysConfig($sysConf);
         return json_ok($result);
     }
 

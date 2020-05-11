@@ -129,22 +129,27 @@ class Order
      * @throws \app\MyException
      */
     public static function detail($userId){
-        //获取系统设置
-        $sysConf = self::getSysConfigById($userId);
+
+        //获取员工对应的公司id
+        $company_id = CompanyStaff::where('staffid', $userId)->value('company_id');
+        if (!$company_id) {
+            throw new MyException(10001);
+        }
         //获取我的订单
-        $where = ['company_id' => $sysConf['company_id'], 'staffid' => $userId];
+        $where = ['company_id' => $company_id, 'staffid' => $userId];
         $todaytime=date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
         $order = MO::where($where)->where('create_time','>',$todaytime)->order('create_time', 'desc')->find();
-        if (!$order) {
-            $code = 16002;
-            throw new MyException($code, config('error')[$code]);
-        }
-        $orderDetail = $order->orderDetail;
-        if (!$orderDetail) {
-            $code = 16002;
-            throw new MyException($code, config('error')[$code]);
-        }
-        return ['order'=>$order->toArray(), 'sysConfig' => $sysConf];
+
+        // if (!$order) {
+        //     $code = 16002;
+        //     throw new MyException($code);
+        // }
+        // $orderDetail = $order->orderDetail;
+        // if (!$orderDetail) {
+        //     $code = 16002;
+        //     throw new MyException($code);
+        // }
+        return ['order'=>$order??[]];
     }
 
     /**
