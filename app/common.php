@@ -363,7 +363,6 @@ function confEndTimeType($end_time_type = 1)
 
 function checkDingcanStauts($sysConf)
 {
-    echo 'checkDingcanStautsStart' . date('Y-m-d H:i:s',time()) . '<br>';
     //1.判断配置的订餐日信息
     $isMutiChoose = strpos($sysConf['dc_date'], ',');
     $DingcanDay = 0; //默认不是订餐日
@@ -378,7 +377,6 @@ function checkDingcanStauts($sysConf)
         //判断工作日
         if($sysConf['dc_date'] == 0){
              $isWorkDay = isWorkDay();
-             echo 'isWorkDay1' . date('Y-m-d H:i:s',time()) . '<br>';
              if($isWorkDay['res'] == 1){
                 $DingcanDay = 1;
              }else{
@@ -399,7 +397,6 @@ function checkDingcanStauts($sysConf)
             //是否都选工作日
             if(strpos($sysConf['dc_date'], '0') !== false){
                  $isWorkDay = isWorkDay();
-                 echo 'isWorkDay2' . date('Y-m-d H:i:s',time()) . '<br>';
                  if($isWorkDay['res'] == 1){
                     $DingcanDay = 1;
                  }else{
@@ -448,7 +445,7 @@ function checkDingcanStauts($sysConf)
         }
 
     }
-    echo 'checkDingcanStautsEnd' . date('Y-m-d H:i:s',time()) . '<br>';
+
     return ['isDingcanDay' => $DingcanDay,'DingcanStauts' => $DingcanStauts,'baomingEndTimeStamp'=>$baomingEndTimeStamp];
     
 }

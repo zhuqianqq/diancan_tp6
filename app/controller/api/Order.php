@@ -11,7 +11,6 @@ use think\annotation\route\Validate;
 use think\exception\ValidateException;
 use app\servicestaff\Order as SF;
 use app\servicestaff\Eatery as SE;
-use think\facade\Db;
 
 /**
  * 订餐接口
@@ -29,15 +28,12 @@ class Order extends Base
      */
     public function index()
     {
-        echo '开始' . date('Y-m-d H:i:s',time()) . '<br>';
+
         $staffid = input('get.user_id', '');
-        
         $eateryList = SE::getEaterylists();
-        echo 'eateryList' . date('Y-m-d H:i:s',time()) . '<br>';
         $sysConf = SF::getSysConfigById($staffid);
-        echo 'sysConf' . date('Y-m-d H:i:s',time()) . '<br>';
         $dingcanStauts = SF::analyseSysConfig($sysConf);
-        echo 'dingcanStauts' . date('Y-m-d H:i:s',time()) . '<br>';die;
+
         return json_ok(['list' => $eateryList, 'dingcanStauts' => $dingcanStauts]);
     }
 

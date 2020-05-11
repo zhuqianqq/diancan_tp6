@@ -169,9 +169,9 @@ class Order
             throw new MyException(10001);
         }
         $company_id = $staffInfo->company_id;
+
         //获取订餐设置
         $sysConf = DS::where('company_id', $company_id)->find();
-
         if (!$sysConf) {
             throw new MyException(10001);
         }

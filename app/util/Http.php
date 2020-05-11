@@ -69,7 +69,7 @@ Class Http
      */
     public function http_request($url, $data = "", $type = "")
     {
-        echo 'http_requestStart' . date('Y-m-d H:i:s',time()) . '<br>';
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
 
@@ -110,9 +110,6 @@ Class Http
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curl_errno = curl_errno($ch);
         $curl_error = curl_error($ch);
-        echo 'http_code:' . $http_code . '<br>';
-        echo 'curl_errno:' . $curl_errno . '<br>';
-        echo 'curl_error:' . $curl_error . '<br>'; 
 
         if (($http_code != 404 && $http_code >= 400) || $curl_errno > 0) {
             curl_close($ch);
@@ -140,7 +137,7 @@ Class Http
                 return simplexml_load_string($request_data);
             }
         }
-        echo 'http_requestEnd' . date('Y-m-d H:i:s',time()) . '<br>';
+
         return $request_data;
     }
 
