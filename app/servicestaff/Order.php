@@ -35,6 +35,11 @@ class Order
         $sysConf = self::getSysConfigById($staffid);
         //$send_time_arr = \GuzzleHttp\json_decode($sysConf['send_time_info'], true);
         $compAndDeptInfo = getCompAndDeptInfoById($staffid);
+
+        if(!$compAndDeptInfo){
+            throw new MyException(20060);
+        }
+
         foreach ($compAndDeptInfo as $k=>$v) {
             $data[$k] = $v;
         }

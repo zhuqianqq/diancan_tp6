@@ -339,7 +339,7 @@ function isWorkDayJs()
 
         } while ( $i <= 8);
 
-        dd(1);
+        dd(['res'=> 0,'msg'=>'非工作日','nextWorkDay'=>$checkDay]);
         return ['res'=> 0,'msg'=>'非工作日','nextWorkDay'=>$checkDay];
 
     }

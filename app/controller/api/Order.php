@@ -44,8 +44,7 @@ class Order extends Base
      */
     public function submit()
     {
-        $data = input('post.');
-        $result = SF::submit($data);
+        $result = SF::submit(input('post.'));
         return json_ok($result);
     }
 
