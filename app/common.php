@@ -363,6 +363,7 @@ function confEndTimeType($end_time_type = 1)
 
 function checkDingcanStauts($sysConf)
 {
+    echo 'checkDingcanStautsStart' . date('Y-m-d H:i:s',time()) . '<br>';
     //1.判断配置的订餐日信息
     $isMutiChoose = strpos($sysConf['dc_date'], ',');
     $DingcanDay = 0; //默认不是订餐日
@@ -447,7 +448,7 @@ function checkDingcanStauts($sysConf)
         }
 
     }
-
+    echo 'checkDingcanStautsEnd' . date('Y-m-d H:i:s',time()) . '<br>';
     return ['isDingcanDay' => $DingcanDay,'DingcanStauts' => $DingcanStauts,'baomingEndTimeStamp'=>$baomingEndTimeStamp];
     
 }
