@@ -76,15 +76,11 @@ class Dingtalk extends Base
     //获取isv套件应用凭证
      public function getSuiteAccessToken()
     {
-        //echo 'ISVService';
+
         $suiteAccessToken = $this->ISVService->getSuiteAccessToken('10530003');
 
         return $suiteAccessToken;
 
-        //获取js_ticket
-        //$js_ticket = $this->Auth->getTicket($CorpId,$isvCorpAccessToken);
-
-        //dd($js_ticket);
     }
 
     //isv应用免登陆的公司AccessToken
@@ -93,6 +89,29 @@ class Dingtalk extends Base
         $key = 'dingding_corp_info_'.$corpId;
 
         $CorpInfo = json_decode($this->Auth->cache->getCorpInfo($key),true);
+
+        foreach ($CorpInfo as $k => $v) {
+           $CorpId = $k;
+           $permanent_code = $v['permanent_code'];
+        }
+
+        $suiteAccessToken = $this->getSuiteAccessToken();
+        //获取企业授权凭证
+        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
+
+        return $isvCorpAccessToken;
+
+    }
+
+    //获取订单公司授权信息 cache数据
+    public function getIsvCorpAuthInfo($corpId)
+    {
+
+        $key = 'corpAuthInfo_'.$corpId;
+
+        $corpAuthInfo = json_decode($this->Auth->cache->getAuthInfo($key),true);
+
+        dd($corpAuthInfo);
 
         foreach ($CorpInfo as $k => $v) {
            $CorpId = $k;
@@ -123,7 +142,6 @@ class Dingtalk extends Base
          return  json_error(20005);
        }
 
-       //获取企业授权凭证
        $DTUserModel = new DTUser;
        $DTDepartmentModel = new DTDepartment;
        
@@ -131,6 +149,7 @@ class Dingtalk extends Base
 
        if(!$isReg){
            //新用户 注册逻辑
+           //获取企业授权凭证
            $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
 
            $User = new \User();
@@ -151,7 +170,7 @@ class Dingtalk extends Base
            }
 
            //判断该用户数据库是否有部门信息
-           $user_info->hasDepartment = $DTDepartmentModel->where('company_id',$user_info->company_id)->count();
+           $userInfo->hasDepartment = $DTDepartmentModel->where('company_id',$userInfo->company_id)->count();
 
            return json_ok($userInfo);
 
@@ -234,6 +253,8 @@ class Dingtalk extends Base
         if(!$corpId){
               return  json_error(20002);
         }
+
+        //$this->
 
         require_once '../extend/dingtalk_isv_php_sdk/api/Message.php';
         $Message = new \Message();
