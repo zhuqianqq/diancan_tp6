@@ -170,7 +170,7 @@ class Dingtalk extends Base
            }
 
            //判断该用户数据库是否有部门信息
-           $userInfo->hasDepartment = $DTDepartmentModel->where('company_id',$userInfo->company_id)->count();
+           $userInfo['hasDepartment'] = $DTDepartmentModel->where('company_id',$userInfo['company_id'])->count();
 
            return json_ok($userInfo);
 
@@ -184,9 +184,9 @@ class Dingtalk extends Base
              //员工身份 统一userid字段
              $isReg->userid = $isReg->staffid;
            }
-           
+      
            //判断该用户数据库是否有部门信息
-           $isReg->hasDepartment = $DTDepartmentModel->where('company_id',$isReg->company_id)->count();
+           $isReg['hasDepartment'] = $DTDepartmentModel->where('company_id',$isReg['company_id'])->count();
        }
 
        //老用户查询后返回数据库结果
