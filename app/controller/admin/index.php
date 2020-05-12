@@ -10,13 +10,14 @@ namespace app\controller\admin;
 
 use app\controller\admin\Base;
 use app\model\CompanyAdmin;
+use app\model\CompanyRegister;
 use app\traits\ControllerTrait;
 use app\service\Index AS I;
 use think\annotation\route\Group;
 use think\annotation\Route;
 use app\validate\Index AS VI;
 use think\annotation\route\Validate;
-
+use app\service\Eatery as SE;
 
 /**
  * 订餐后台首页
@@ -66,13 +67,30 @@ class index extends Base
         return json_ok($result);
     }
 
+
+    /**
+     * 公司设置
+     * @Route("getCompanySetting")
+     */
+    public function getCompanySetting()
+    {
+        $user_id = input('user_id','','int');
+        if (!$user_id) {
+            return json_error(10002);
+        }
+        $result = I::getCompanySetting($user_id);
+        return json_ok($result);
+    }
+
+
     /**
      * 最近订餐
      * @Route("recentlyOrder", method="GET")
      */
     public function recentlyOrdering()
     {
-
+        $result = SE::getRecentlyOrders();
+        return json_ok($result);
     }
 
 }
