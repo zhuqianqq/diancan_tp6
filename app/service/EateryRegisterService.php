@@ -24,7 +24,6 @@ class EateryRegisterService
 
     use ServiceTrait;
 
-
     /**
      * 更新或者创建餐馆
      * @param array $data
@@ -35,7 +34,7 @@ class EateryRegisterService
     {
         $eatery_id =  $data['eatery_id'] ?? 0;
         $userId = $data['user_id'];
-        $userInfo = CompanyAdmin::where('userid', $userId)->find();
+        $userInfo = CompanyAdmin::where('userid=:userid', ['userid' => $userId])->find();
         if (!$userInfo) {
             throw new MyException(13002);
         }
@@ -96,14 +95,14 @@ class EateryRegisterService
         $user_id = input('user_id');
         
         $oneEateryRegister = self::$repository::getInfoById($eatery_id);
-        $oneEatery = Eatery::where('eatery_id', $eatery_id)->find();
+        $oneEatery = Eatery::where('eatery_id=:eatery_id', ['eatery_id' => $eatery_id])->find();
         if (!$oneEateryRegister || !$oneEatery) {
             throw new MyException(13002);
         }
         $compAndDeptInfo = getCompAndDeptInfoById($user_id);
         //获取订餐记录
         $where = ['company_id'=>$compAndDeptInfo['company_id'], 'eatery_id'=>$eatery_id];
-        $eateryRecord = Order::where($where)->select();
+        $eateryRecord = Order::where('company_id=:company_id and eatery_id=:eatery_id', $where)->select();
 
         if ($eateryRecord->count()==0) {
             Db::startTrans();

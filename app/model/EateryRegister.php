@@ -5,9 +5,7 @@
  * Date: 2020/5/5
  * Time: 12:04
  */
-
 namespace app\model;
-
 
 use think\Model;
 use app\traits\ModelTrait;
@@ -47,6 +45,6 @@ class EateryRegister extends Model
 
     public static function getEateryName($eatery_id)
     {
-        return self::where('eatery_id',$eatery_id)->value('eatery_name');
+        return self::where('eatery_id=:eatery_id',['eatery_id' => $eatery_id])->value('eatery_name');
     }
 }

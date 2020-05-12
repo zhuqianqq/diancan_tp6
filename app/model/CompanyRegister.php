@@ -28,8 +28,8 @@ class CompanyRegister extends Model
     protected $readonly = [];
     //数据输出隐藏的属性
     protected $hidden = [];
+    //关闭自动写入update_time
     protected $updateTime = false;
-
 
     use ModelTrait;
 }

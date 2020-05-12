@@ -39,9 +39,8 @@ class Eatery
         if (!$userInfo) {
             throw new MyException(13002);
         }
-        $where = ['is_delete'=>0,'company_id'=>$userInfo->company_id];
         $eateryArr = [];
-        $eatery = E::where($where)->order('create_time','asc')->field('eatery_id')->select();
+        $eatery = E::where('is_delete=0 and company_id=:company_id', ['company_id' => $userInfo->company_id])->order('create_time','asc')->field('eatery_id')->select();
         foreach ($eatery as $v){
             $eateryArr[] = $v['eatery_id'];
         }
@@ -82,8 +81,9 @@ class Eatery
         if (!$userInfo) {
             throw new MyException(13002);
         }
-        $where = ['is_delete'=>0, 'company_id'=>$userInfo->company_id, 'eatery_id'=>$eatery_id];
-        $list = E::with(['food'])->where($where)->select();
+
+        $where = ['company_id'=>$userInfo->company_id, 'eatery_id'=>$eatery_id];
+        $list = E::with(['food'])->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
         if ($list) {
             return $list->toArray();
         }
@@ -98,7 +98,7 @@ class Eatery
         if (!$eateryId) {
             return json_error(13001);
         }
-        $eatryInfo = E::where('eatery_id',$eateryId)->find();
+        $eatryInfo = E::where('eatery_id=:eatery_id', ['eatery_id' => $eateryId])->find();
         if ($eatryInfo) return $eatryInfo->toArray();
         return [];
     }
@@ -109,7 +109,6 @@ class Eatery
     public static function getRecentlyOrders()
     {
         $user_id = input('user_id', '', 'int');
-     
         if (!$user_id) {
             throw new MyException(13001);
         }
@@ -124,7 +123,7 @@ class Eatery
         $dingcanStauts = SF::analyseSysConfig($sysConf);
 
         if($dingcanStauts['isDingcanDay'] == 0){
-            return ['list'=>[],'dingcanStauts'=>$dingcanStauts];
+            return ['list' => [],'dingcanStauts' => $dingcanStauts];
         }
 
         if($dingcanStauts['send_time_key'] == 1){
@@ -140,7 +139,7 @@ class Eatery
                 ->group('eatery_id,food_name,price')
                 ->select()->toArray();
 
-        if(!$OrderDetails) return ['list'=>[],'dingcanStauts'=>$dingcanStauts];
+        if(!$OrderDetails) return ['list' => [],'dingcanStauts' => $dingcanStauts];
  
         $list_key = $list = [];
 
@@ -150,22 +149,16 @@ class Eatery
             ->whereTime('create_time','today')
             ->column('staff_name');
             $v['eater_names'] = array_unique($eater_names);
-
             $list[$v['eatery_id']][] = $v;
-           
         }
 
         //获取餐馆id对应的餐馆名称
         foreach ($list as $k2 => $v2) {
            $list_key[] = ER::getEateryName($k2);
         }
-
         $list=array_combine($list_key,$list);
 
-         return ['list'=>$list,'dingcanStauts'=>$dingcanStauts];
-
-
+        return ['list'=>$list,'dingcanStauts'=>$dingcanStauts];
     }
-
 
 }

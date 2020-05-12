@@ -8,7 +8,7 @@ use think\facade\Env;
 
 return [
     // 默认缓存驱动
-    'default' => Env::get('cache.driver', 'file'),
+    'default' => Env::get('cache.driver', 'redis'),
 
     // 缓存连接方式配置
     'stores'  => [
@@ -32,7 +32,7 @@ return [
             'type'       => 'redis',
             'host'       => '127.0.0.1',
             'port'       => 6379,
-            'password'   => 'qinganweb',
+            'password'   => '',
             'select'     => 0,
             'timeout'    => 0,
             'expire'     => 0,

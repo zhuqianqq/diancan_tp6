@@ -5,9 +5,7 @@
  * Date: 2020/5/5
  * Time: 12:04
  */
-
 namespace app\model;
-
 
 use think\Model;
 use app\traits\ModelTrait;
@@ -28,7 +26,6 @@ class CompanyStaff extends Model
     protected $readonly = [];
     //数据输出隐藏的属性
     protected $hidden = [];
-
 
     use ModelTrait;
 }

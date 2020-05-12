@@ -29,6 +29,5 @@ class CompanyAdmin extends Model
     //数据输出隐藏的属性
     protected $hidden = [];
 
-
     use ModelTrait;
 }
