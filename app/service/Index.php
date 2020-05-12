@@ -7,6 +7,10 @@ use app\traits\ServiceTrait;
 use app\service\DingcanSysconfig;
 use app\model\CompanyRegister;
 use app\model\CompanyStaff;
+use app\model\Food;
+use app\model\EateryRegister;
+use app\model\Eatery;
+use app\model\DingcanSysconfig as DS;
 
 /**
  * 首页
@@ -32,12 +36,136 @@ class Index
     /**
      * 首页系统设置
      */
-    public static function setting()
+    public static function setting($data)
     {
-        //todo
+        if (!$data['user_id']) {
+            throw new MyException(10001);
+        }
+
         //获取今天星期几
+        $wek = date("w");
+        if ($wek == 0) {
+            $wek = 7;
+        }
+        if (isset($data['timeType']) && $data['timeType'] == 1) {//1：今天  2：工作日
+            $data['dc_date'] = $wek;
+        } else {
+            $data['dc_date'] = '1,2,3,4,5';
+        }
 
+        if (isset($data['food_info'])) {
+            try {
+                $foodInfo = json_decode($data['food_info'], true);
+            } catch (\Exception $e) {
+                throw new MyException(14005);
+            }
+        }
 
+        if (isset($data['news_time_type']) && !empty($data['news_time_type'])) {
+            $data['end_time_type'] = 0;//默认订餐截止时间为送餐前30分钟
+            $data['news_time_type'] = 1;//默认自动消息提醒时间为送餐前1小时
+        }
+
+        //组装送餐时间字段、消息提醒使时间字段
+        $nowTime = time();
+        $settedTime = date('Y-m-d');
+        $settedTime .= $data['mealTime'];
+        $settedTimeStr = strtotime($settedTime) + 3600;//增加一小时
+        $sendMessageTime = strtotime($settedTime) - 3600;
+        if ($nowTime > $settedTimeStr) {//晚餐
+            $mealType = 2;
+            $data['send_time_info'] = ['2'=>$data['mealTime']];
+            $data['news_time'] = ['2'=>$sendMessageTime];
+        } else {
+            $mealType = 1;
+            $data['send_time_info'] = ['1'=>$data['mealTime']];
+            $data['news_time'] = ['1'=>$sendMessageTime];
+        }
+
+        self::beginTrans();
+        //添加系统配置表
+        $userInfo = getCompAndDeptInfoByUserId($data['user_id']);
+        $dsM = new DS;
+        $dsM->company_id = $userInfo['company_id'];
+        $dsM->send_time_info = \GuzzleHttp\json_encode($data['send_time_info']);
+        $dsM->news_time = \GuzzleHttp\json_encode($data['news_time']);
+        $dsM->end_time_type = $data['end_time_type'];
+        $dsM->dc_date = $data['dc_date'];
+        try {
+            $dsM->save();
+        } catch (\Exception $e){
+            throw new MyException(10001,$e->getMessage());
+        }
+
+        if (isset($data['eatery_id']) && empty($data['eatery_id'])) {//新增了餐馆，不是默认餐馆
+            //添加新增餐馆对应的菜品
+            $foodM = new Food;
+            foreach ($foodInfo as $k => $v) {
+                if (!checkMoney($v)) {
+                    throw new MyException(14005);
+                }
+                $foodM->eatery_id = $data['eatery_id'];
+                $foodM->food_name = $k;
+                try {
+                    $foodM->save();
+                } catch (\Exception $e){
+                    throw new MyException(10001,$e->getMessage());
+                }
+            }
+        } else {//默认餐馆
+            //添加默认餐馆
+           $erM = new EateryRegister;
+           $eM = new Eatery;
+           try {
+               //添加餐馆注册表
+               $erM->eatery_name = '默认餐馆';
+               $erM->contacts = '';
+               $erM->mobile = '';
+               $erM->password = md5('123456');
+               $erM->proive = '';
+               $erM->city = '';
+               $erM->district = '';
+               $erM->address = '';
+               $erM->eat_type = '';
+
+               try {
+                   $erM->save();
+               } catch (\Exception $e){
+                   throw new MyException(10001,$e->getMessage());
+               }
+
+               //添加餐馆表
+               $eM->eatery_alias_name = '默认餐馆';
+               $eM->company_id = $userInfo['company_id'];
+               $eM->eatery_id = $erM->eatery_id;
+               $eM->eat_type = $mealType;
+               try {
+                   $eM->save();
+               } catch (\Exception $e){
+                   throw new MyException(10001,$e->getMessage());
+               }
+
+               //添加菜品表
+               foreach ($foodInfo as $k => $v) {
+                   if (!checkMoney($v)) {
+                       throw new MyException(14005);
+                   }
+                   $foodM = new Food;
+                   $foodM->eatery_id = $eM->eatery_id;
+                   $foodM->food_name = $k;
+                   $foodM->price = $v;
+                   try {
+                       $foodM->save();
+                   } catch (\Exception $e){
+                       throw new MyException(10001,$e->getMessage());
+                   }
+               }
+            } catch (\Exception $e){
+               self::rollbackTrans();
+               throw new MyException(10001,$e->getMessage());
+            }
+            self::commitTrans();
+        }
     }
 
     /**

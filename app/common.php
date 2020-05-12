@@ -498,3 +498,13 @@ function checkDingcanStauts($sysConf)
     ];
     
 }
+
+function checkMoney($value)
+{
+    $flag = true;
+    $money_reg = '/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/';
+    if (!preg_match($money_reg, $value)) {
+        $flag = false;
+    }
+    return $flag;
+}

@@ -29,12 +29,13 @@ class index extends Base
 {
     /**
      * 订餐设置
-     * @Route("setting", method="GET")
+     * @Route("orderSetting", method="POST")
      * @Validate(VI::class,scene="save",batch="true")
      */
     public function orderSetting()
     {
-        $result = I::setting();
+        $data = input('param.');
+        $result = I::setting($data);
         return json_ok($result);
     }
 
@@ -59,7 +60,7 @@ class index extends Base
         $data['contact'] = input('contact','');
         $data['mobile'] = input('mobile','');
         $data['province'] = input('province','');
-        $data['city'] = input('city','');
+        $data['city'] = input('city','', 'int');
         $data['address'] = input('address','');
         $result = I::companySetting($data);
         return json_ok($result);

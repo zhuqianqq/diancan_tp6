@@ -25,7 +25,7 @@ class EateryRegister extends Validate
         'district' => ['require'],
         'address' => ['require'],
         'eat_type' => ['require'],
-        'mobile'    => ['require','regex' => '/1[3458]{1}\d{9}$/'],
+        'mobile'    => ['require'],
     ];
 
     //提示信息
