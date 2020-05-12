@@ -176,7 +176,7 @@ class Index
         $companyStaffModel = new CompanyStaff;
         $companyInfo = $companyStaffModel->where('staffid',$data['user_id'])->find();
         $where = ['company_id'=>$companyInfo['company_id']];
-        $allowField = ['contact','mobile','province','city','address'];
+        $allowField = ['contact','mobile','province','city','district','address'];
 
         try{
             $company = CompanyRegister::where($where)->find();
