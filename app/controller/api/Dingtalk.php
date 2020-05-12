@@ -243,13 +243,14 @@ class Dingtalk extends Base
         $opt['agent_id'] = '759850263';
 
         $opt['msg']['msgtype'] = 'action_card';
-        $sub_data['btn_json_list'] = ['action_url'=>"http://www.baidu.com",'title'=>"kevin测试"];
         $sub_data['title'] = "天天点餐";
-        $sub_data['btn_orientation'] = "1";
+        $sub_data['markdown'] = "支持markdown格式的正文内容";
         $sub_data['single_title'] = "立即订餐";
+        $sub_data['single_url'] = "https://open.dingtalk.com";
         $opt['msg']['action_card'] = $sub_data;
 
-        $opt['dept_id_list'] = '1';
+        //$opt['dept_id_list'] = '1';
+        $opt['userid_list'] = '0102645241631104789';
     
        
         $res = $Message->corpConversation($isvCorpAccessToken,$opt);

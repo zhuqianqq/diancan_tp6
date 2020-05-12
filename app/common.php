@@ -412,7 +412,7 @@ function confEndTimeType($end_time_type = 1)
  *         DingcanDay： 0 非订餐日  1 订餐日
  *         baomingEndTimeStamp：报名截止时间戳
  *         send_time_key 1 上午  2 下午
- *
+ *         nextWorkDay 工作日是为''  假期是为下个工作日
  */
 function checkDingcanStauts($sysConf)
 {
@@ -481,7 +481,7 @@ function checkDingcanStauts($sysConf)
 
                 $send_time_key = $send_time_info_keys[0];
         }
-        
+
         if($send_time_key == 1){
             $send_time_text = '上午';
         }else{

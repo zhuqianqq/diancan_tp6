@@ -60,4 +60,18 @@ class Index
         return [];
     }
 
+    /**
+     * 获取公司设置
+     */
+    public static function getCompanySetting($user_id)
+    {
+        $companyStaffModel = new CompanyStaff;
+        $company_id = $companyStaffModel->where('staffid = :user_id',['user_id'=>$user_id])->value('company_id');
+        if(!$company_id){
+            throw new MyException(20050);
+        }
+        
+        return CompanyRegister::where('company_id',$company_id)->field('company_id,company_name,contact,mobile,province,city,district,address')->find();
+    }
+
 }
