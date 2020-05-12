@@ -44,6 +44,7 @@ class Food
         }catch (\Exception $e){
             throw new MyException(14005, $e->getMessage());
         }
+
         if ($food_id==0) {//新增
             try {
                 foreach ($eateryArr as $k => $v) {
@@ -66,7 +67,17 @@ class Food
                 throw new MyException(14002);
             }
             try {
-                $oneFood->save($data);
+                $update_data = [];
+                foreach ($eateryArr as $k => $v) {
+                    $money_reg = '/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/';
+                    if(!preg_match($money_reg, $v)){
+                        throw new MyException(14005);
+                    }
+                    $update_data['food_id'] = $food_id;
+                    $update_data['food_name'] = $k;
+                    $update_data['price'] = $v;
+                }
+                $oneFood->save($update_data);
             }catch (\Exception $e){
                 throw new MyException(14001, $e->getMessage());
             }

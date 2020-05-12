@@ -16,7 +16,7 @@ use think\annotation\route\Group;
 use think\annotation\Route;
 use app\validate\Index AS VI;
 use think\annotation\route\Validate;
-
+use app\service\Eatery as SE;
 
 /**
  * 订餐后台首页
@@ -71,7 +71,8 @@ class index extends Base
      */
     public function recentlyOrdering()
     {
-
+        $result = SE::getRecentlyOrders();
+        return json_ok($result);
     }
 
 }

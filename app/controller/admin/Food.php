@@ -45,8 +45,8 @@ class Food extends Base
     */
     public function addOrUpdata()
     {
-        $data = input('post.');
-        $result = F::addOrUpdata($data);
+        header("Access-Control-Allow-Origin: *");
+        $result = F::addOrUpdata(input('param.'));
         return json_ok($result);
     }
 

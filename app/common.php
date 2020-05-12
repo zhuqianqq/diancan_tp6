@@ -494,7 +494,8 @@ function checkDingcanStauts($sysConf)
         'DingcanStauts' => $DingcanStauts,
         'baomingEndTimeStamp'=>$baomingEndTimeStamp,
         'send_time_key' => $send_time_key,
-        'send_time_text' => $send_time_text
+        'send_time_text' => $send_time_text,
+        'nextWorkDay' => $nextWorkDay
     ];
     
 }
