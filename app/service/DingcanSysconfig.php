@@ -30,7 +30,8 @@ class DingcanSysconfig
         if (!$user_id) {
             return json_error(15001);
         }
-        $userInfo = getUserInfoById($user_id);
+        $userInfo = CompanyAdmin::where('userid = :user_id',['user_id'=>$user_id])->find();
+  
         if (!$userInfo) {
             throw new MyException(15002);
         }
