@@ -319,8 +319,10 @@ function isWorkDayJs()
     }
     $today = date('md');
     //echo '<pre>';var_dump($workdayArr);
-
-    if(!isset($workdayArr[$today])){
+     //判断星期几; 数字度0表示是星期天,数字123456表示星期一到六知
+    $no = date("w");
+    //不为节假日  不是周六与周日默认为工作日
+    if(!isset($workdayArr[$today]) && $no != 0 && $no != 6){
 
         return ['res'=> 1,'msg'=>'工作日','nextWorkDay'=>''];
 
@@ -403,7 +405,15 @@ function confEndTimeType($end_time_type = 1)
     return $minutes;
 }
 
-
+/**
+ * 分析订餐状态
+ * @param  `end_time_type` '订餐截止时间 0-送餐前30分钟  1-送餐前1小时  2-送餐前2小时',
+ * @return DingcanStauts： 0 订餐未开始(默认)  1 订餐报名中 2 报名结束送餐中 3 送餐完毕
+ *         DingcanDay： 0 非订餐日  1 订餐日
+ *         baomingEndTimeStamp：报名截止时间戳
+ *         send_time_key 1 上午  2 下午
+ *
+ */
 function checkDingcanStauts($sysConf)
 {
     //1.判断配置的订餐日信息
@@ -458,13 +468,27 @@ function checkDingcanStauts($sysConf)
         $no=date("H",time());
         if ($no<12){
             $send_time_key = 1;
-            $send_time_text = '上午';
         }else{
             $send_time_key = 2;
-            $send_time_text = '下午';
         }
         //获取具体的送餐时间
         $send_time_info = json_decode($sysConf['send_time_info'],true);
+
+        //判断是否报餐中餐与晚餐[1,2] 或只报中餐 1 或只报晚餐 2;
+        $send_time_info_keys = array_keys($send_time_info);
+        //只报中餐 1 或只报晚餐 2 ：则不按照上午还是下午的时间判断 
+        if(!in_array($send_time_key, $send_time_info_keys)){
+
+                $send_time_key = $send_time_info_keys[0];
+        }
+        
+        if($send_time_key == 1){
+            $send_time_text = '上午';
+        }else{
+            $send_time_text = '下午';
+        }
+
+
         $send_time = $send_time_info[$send_time_key];
         $send_time_str = date('Y-m-d',time()).$send_time.':00';
      
