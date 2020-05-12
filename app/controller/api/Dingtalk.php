@@ -13,7 +13,9 @@ use think\annotation\Route;
 use app\model\DTCompany;
 use app\model\DTUser;
 use app\model\DTDepartment;
+use app\model\CompanyStaff;
 use think\facade\Db;
+use think\facade\Log;
 
 
 /**
@@ -109,21 +111,7 @@ class Dingtalk extends Base
 
         $key = 'corpAuthInfo_'.$corpId;
 
-        $corpAuthInfo = json_decode($this->Auth->cache->getAuthInfo($key),true);
-
-        dd($corpAuthInfo);
-
-        foreach ($CorpInfo as $k => $v) {
-           $CorpId = $k;
-           $permanent_code = $v['permanent_code'];
-        }
-
-        $suiteAccessToken = $this->getSuiteAccessToken();
-        //获取企业授权凭证
-        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
-
-        return $isvCorpAccessToken;
-
+        return json_decode($this->Auth->cache->getAuthInfo($key),true);
     }
 
 
@@ -241,54 +229,51 @@ class Dingtalk extends Base
     //发送订餐消息（钉钉工作消息类型）
     public function sendMessage()
     {
-        $corpId = input('corpId','dingfecc037dae3b317624f2f5cc6abecb85');
+        $corpId = input('corpId','ding856732f3dcf58a39a1320dcb25e91351');
 
         if(!$corpId){
               return  json_error(20002);
         }
 
-        //$this->getIsvCorpAuthInfo($corpId);
-
+        $isvCorpAuthInfo = $this->getIsvCorpAuthInfo($corpId);
+        $agentid = $isvCorpAuthInfo['agent'][0]['agentid'] ?? '';
+        if(!$agentid){
+            return  json_error(20800);
+        }
+     
         require_once '../extend/dingtalk_isv_php_sdk/api/Message.php';
         $Message = new \Message();
         $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
 
         $opt = $sub_data = [];
-        $opt['agent_id'] = '759850263';
+        $opt['agent_id'] = $agentid;
 
         $opt['msg']['msgtype'] = 'action_card';
         $sub_data['title'] = "天天点餐";
-        $sub_data['markdown'] = "支持markdown格式的正文内容";
+        $sub_data['markdown'] = "订餐开始喽！请及时进入小程序订餐";
         $sub_data['single_title'] = "立即订餐";
-        $sub_data['single_url'] = "https://open.dingtalk.com";
+        $sub_data['single_url'] = "https://www.baidu.com";
         $opt['msg']['action_card'] = $sub_data;
 
-        //$opt['dept_id_list'] = '1';
-        $opt['userid_list'] = '0102645241631104789';
-    
-       
+        $userid_list_arr = CompanyStaff::getDingdingUserIds($corpId);
+        if(!$userid_list_arr){
+            return  json_error(20900);
+        } 
+        
+        $userid_list = implode(',', $userid_list_arr);
+
+        $opt['userid_list'] = $userid_list;
+
         $res = $Message->corpConversation($isvCorpAccessToken,$opt);
-            //return json_ok($opt); 
-        dd($res);
+      
+        if($res->errcode == 0 ){
+            $msg = "发送订餐消息成功：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
+            Log::info($msg);
+        }else{
 
-//         {
-//     "agent_id":"759850263",
-//     "msg":{
-//         "msgtype":"action_card",
-//         "action_card":{
-//             "btn_json_list":{
-//                 "action_url":"http://www.baidu.com",
-//                 "title":"kevin测试"
-//             },
-//             "title":"天天点餐",
-//             "btn_orientation":"1",
-//             "single_title":"立即订餐"
-//         }
-//     },
-//     "dept_id_list":"1"
-// }
-
-        echo 123;die;
+            $msg = "发送订餐消息失败：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
+            Log::error($msg);
+        }
     }
 
 
@@ -301,6 +286,8 @@ class Dingtalk extends Base
 
         //$list = Db::table("dc_company_staff")->where('staffid',1)->select();
         //echo Db::table("dc_company_staff")->getLastSql();die;
+        $token = setH5token(9,2);
+        echo $token;die;
        return json_ok(isWorkDayJs()); 
 
     }
