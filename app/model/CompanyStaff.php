@@ -31,4 +31,8 @@ class CompanyStaff extends Model
 
 
     use ModelTrait;
+
+    public static function getDingdingUserIds($corpId){
+    	return self::where('cropid = :corpId',['corpId'=>$corpId])->column('platform_staffid');
+    }
 }

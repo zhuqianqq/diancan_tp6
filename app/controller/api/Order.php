@@ -90,4 +90,28 @@ class Order extends Base
         $result = SF::isOrder($user_id);
         return json_ok($result);
     }
+
+
+    /**
+     * H5 餐馆订单详情
+     * @Route("eateryOrderDetail", method="GET")
+     */
+    public function eateryOrderDetail()
+    {
+        $token = input('token','');
+        if(!$token){
+            return json_error(10001);
+        }
+
+        $data = getH5token($token);
+        $eatery_id = $data['eatery_id'] ?? '';
+        $eat_type = $data['eat_type'] ?? '';
+        if(!$eatery_id || !$eat_type){
+            return json_error(10001);
+        }
+    
+        $result = SF::getH5OrderDetail($eatery_id,$eat_type);
+       
+        return json_ok($result);
+    }
 }

@@ -533,3 +533,19 @@ function checkMoney($value)
     }
     return $flag;
 }
+
+
+//H5页面的token值
+function setH5token($eatery_id,$eat_type)
+{
+    $param = ['eatery_id'=>$eatery_id,'eat_type'=>$eat_type];
+    return base64_encode(json_encode($param));
+}
+
+//获取H5页面的token值
+function getH5token($token)
+{
+    return json_decode(base64_decode($token),true);
+}
+
+

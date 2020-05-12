@@ -4,12 +4,17 @@ namespace app\servicestaff;
 
 use app\model\Order as MO;
 use app\model\OrderDetail as MD;
+use app\model\Eatery;
 use app\model\CompanyStaff;
+use app\model\CompanyRegister;
+use app\model\SysArea;
 use app\model\DingcanSysconfig as DS;
 use app\MyException;
 use app\traits\ServiceTrait;
 use app\service\Eatery as SE;
 use think\facade\Db;
+use app\model\OrderDetail as OrdD;
+
 
 /**
  * 员工订餐
@@ -198,6 +203,42 @@ class Order
 
         //订餐状态
         return checkDingcanStauts($sysConf);
+    }
+
+
+    //获取H5页面的餐馆订单数据 eatery_id：餐馆id  eat_type：中餐 1, 晚餐 2
+    public static function getH5OrderDetail($eatery_id,$eat_type)
+    {
+
+        try {
+               //获取当天相关餐馆订单详情中对应（中、晚餐的）菜名,单价,总点餐数,总价信息
+               $order_details = OrdD::where(['eatery_id'=>$eatery_id,'eat_type'=>$eat_type])
+                        ->field('food_name,price,SUM(report_num) AS total_num,SUM(price) AS total_price')
+                        ->whereTime('create_time','today')
+                        ->group('food_name,price')
+                        ->select()->toArray();
+               //获取对应公司信息
+               $company_id = Eatery::where('eatery_id',$eatery_id)->value('company_id');
+               $company_info = CompanyRegister::where('company_id',$company_id)->field('company_name,contact,mobile,province,city,district,address')->find();
+
+               $province = SysArea::getAreaName($company_info->province) ?? '';
+               $city = SysArea::getAreaName($company_info->city) ?? '';
+               $district = SysArea::getAreaName($company_info->district) ?? '';
+               $company_info->address_info = $province . $city . $district . $company_info->address;
+
+               //获取配置的送餐时间
+               $sysConf = DS::where('company_id', $company_id)->find();
+               $send_time_arr = json_decode($sysConf['send_time_info'],true);
+               $company_info->send_time = $send_time_arr[$eat_type];
+
+               return ['order_details' => $order_details,'company_info' => $company_info];
+
+           }catch (\Exception $e){
+
+                throw new MyException(10001, $e->getMessage());
+                  
+           }
+      
     }
     
 
