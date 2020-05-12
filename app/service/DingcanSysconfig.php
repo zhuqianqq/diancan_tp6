@@ -48,7 +48,6 @@ class DingcanSysconfig
                throw new MyException(15004, $e->getMessage());
             }
         } else {
-
             try {
                 $oneSys->save($data);
             }catch (\Exception $e){

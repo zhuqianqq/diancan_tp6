@@ -57,7 +57,7 @@ class EateryRegisterService
                 $oneEatery->save();
                 Db::commit();
                 return [];
-            }catch (\Exception $e){
+            } catch (\Exception $e){
                 Db::rollback();
                 throw new MyException(13100);
             }
@@ -107,7 +107,6 @@ class EateryRegisterService
 
         if ($eateryRecord->count()==0) {
             Db::startTrans();
-
             //物理删除
             try {
                 $oneEateryRegister->delete();

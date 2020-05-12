@@ -3,6 +3,7 @@ declare (strict_types=1);
 
 namespace app\traits;
 
+use think\facade\Db;
 use \think\facade\Snowflake;
 use \think\helper\Arr;
 use \think\helper\Str;
@@ -109,5 +110,29 @@ trait ServiceTrait
     public static function del($id)
     {
         return self::$repository::del($id);
+    }
+
+    /**
+     * 开启事务
+     */
+    public static function beginTrans()
+    {
+        Db::startTrans();
+    }
+
+    /**
+     * 提交事务
+     */
+    public static function commitTrans()
+    {
+        Db::commit();
+    }
+
+    /**
+     * 关闭事务
+     */
+    public static function rollbackTrans()
+    {
+        Db::rollback();
     }
 }

@@ -30,12 +30,13 @@ class index extends Base
 {
     /**
      * 订餐设置
-     * @Route("setting", method="GET")
+     * @Route("orderSetting", method="POST")
      * @Validate(VI::class,scene="save",batch="true")
      */
     public function orderSetting()
     {
-        $result = I::setting();
+        $data = input('param.');
+        $result = I::setting($data);
         return json_ok($result);
     }
 
@@ -56,12 +57,13 @@ class index extends Base
      */
     public function companySetting()
     {
-        $data['user_id'] = input('user_id','');
-        $data['contact'] = input('contact','');
-        $data['mobile'] = input('mobile','');
-        $data['province'] = input('province','');
-        $data['city'] = input('city','');
-        $data['address'] = input('address','');
+        $data['user_id'] = input('user_id','', 'int');
+        $data['contact'] = input('contact','', 'string');
+        $data['mobile'] = input('mobile','', 'string');
+        $data['province'] = input('province','', 'string');
+        $data['city'] = input('city','', 'string');
+        $data['district'] = input('district','', 'string');
+        $data['address'] = input('address','', 'string');
         $result = I::companySetting($data);
         return json_ok($result);
     }
