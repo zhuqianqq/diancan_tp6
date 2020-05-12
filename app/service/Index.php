@@ -97,15 +97,16 @@ class Index
             throw new MyException(10001,$e->getMessage());
         }
 
-        if (isset($data['eatery_id']) && empty($data['eatery_id'])) {//新增了餐馆，不是默认餐馆
+        if (isset($data['eatery_id']) && !empty($data['eatery_id'])) {//新增了餐馆，不是默认餐馆
             //添加新增餐馆对应的菜品
-            $foodM = new Food;
             foreach ($foodInfo as $k => $v) {
                 if (!checkMoney($v)) {
                     throw new MyException(14005);
                 }
+                $foodM = new Food;
                 $foodM->eatery_id = $data['eatery_id'];
                 $foodM->food_name = $k;
+                $foodM->price = $v;
                 try {
                     $foodM->save();
                 } catch (\Exception $e){
@@ -164,8 +165,9 @@ class Index
                self::rollbackTrans();
                throw new MyException(10001,$e->getMessage());
             }
-            self::commitTrans();
         }
+        self::commitTrans();
+        return [];
     }
 
     /**
