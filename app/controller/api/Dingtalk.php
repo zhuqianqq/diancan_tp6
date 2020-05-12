@@ -158,17 +158,11 @@ class Dingtalk extends Base
            
            $DTUserModel->registerStaff($user_info,$corpId);
 
-           if($user_info->isAdmin === true){
-                //管理员身份
-                $userInfo = $DTUserModel->isAdmin($corpId,$userid);
-
-           }else{
-                //员工身份 
-                $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
-                //统一userid字段
-                $userInfo->userid = $userInfo->staffid;
-           }
-
+           //员工信息
+           $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
+           //统一userid字段
+           $userInfo->userid = $userInfo->staffid;
+           
            //判断该用户数据库是否有部门信息
            $userInfo['hasDepartment'] = $DTDepartmentModel->where('company_id',$userInfo['company_id'])->count();
 
@@ -179,12 +173,11 @@ class Dingtalk extends Base
            $isAdmin = $DTUserModel->isAdmin($corpId,$userid);
            if($isAdmin){
                 $DTUserModel->updateAdminInfo($corpId,$userid);
-                $isReg = $isAdmin;
-           }else{
-             //员工身份 统一userid字段
-             $isReg->userid = $isReg->staffid;
            }
-      
+
+           //员工身份 统一userid字段
+           $isReg->userid = $isReg->staffid;
+
            //判断该用户数据库是否有部门信息
            $isReg['hasDepartment'] = $DTDepartmentModel->where('company_id',$isReg['company_id'])->count();
        }
