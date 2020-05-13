@@ -2,6 +2,7 @@
 declare (strict_types=1);
 namespace app\service;
 
+use app\model\CompanyAdmin;
 use app\MyException;
 use app\traits\ServiceTrait;
 use app\service\DingcanSysconfig;
@@ -84,7 +85,8 @@ class Index
 
         self::beginTrans();
         //添加系统配置表
-        $userInfo = getCompAndDeptInfoByUserId($data['user_id']);
+        //$userInfo = getCompAndDeptInfoByUserId($data['user_id']);
+        $userInfo = CompanyAdmin::getAdminInfoById($data['user_id']);
         $dsM = new DS;
         $dsM->company_id = $userInfo['company_id'];
         $dsM->send_time_info = \GuzzleHttp\json_encode($data['send_time_info']);

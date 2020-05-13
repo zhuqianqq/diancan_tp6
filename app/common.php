@@ -203,33 +203,7 @@ function transform($value, $type)
     return $value;
 }
 
-/**
- * 根据用户id获取管理员信息
- */
-function getAdminInfoById($user_id)
-{
-    $userInfo = \app\model\CompanyAdmin::where('userid', $user_id)->find();
-    return $userInfo;
-}
 
-
-/**
- * 根据平台id获取用户id
- */
-function getUserIdByPlatformId($platformId)
-{
-    $userInfo = \app\model\CompanyAdmin::where('platform_userid', $platformId)->find();
-    return $userInfo->userid;
-}
-
-/**
- * 根据用户id获取员工信息
- */
-function getUserInfoById($user_id)
-{
-    $userInfo = \app\model\CompanyStaff::where('staffid', $user_id)->find();
-    return $userInfo;
-}
 
 /**
  * 根据员工id获取公司和部门信息
@@ -277,33 +251,21 @@ function isWorkDay()
     $Http = new \app\util\Http();
     $res = $Http->get($api_url,['d'=>$today]);
 
-    if($res == 0){
-
+    if ($res == 0) {
         return ['res'=> 1,'msg'=>'工作日','nextWorkDay'=>''];
-
-    }else{
-
+    } else {
         $i = 1;
-
         do {
             $checkDay = date('Ymd',strtotime("+$i day"));
-
             //$checkDay = date("Ymd",strtotime("+$i day",strtotime("20200501"))); //测试用  指定日期增加天数
-
             if($Http->get($api_url,['d'=>$checkDay]) == 0){
-
                 break;
             }
-
             $i++;
-
         } while ( $i <= 8);
 
-
         return ['res'=> 0,'msg'=>'非工作日','nextWorkDay'=>$checkDay];
-
     }
-    
 }
 
 
@@ -323,20 +285,14 @@ function isWorkDayJs()
     $no = date("w");
     //不为节假日  不是周六与周日默认为工作日
     if(!isset($workdayArr[$today]) && $no != 0 && $no != 6){
-
         return ['res'=> 1,'msg'=>'工作日','nextWorkDay'=>''];
-
     }else{
-
         $i = 1;
-
         do {
-
             $checkDay = date('md',strtotime("+$i day"));
             //$checkDay = date("md",strtotime("+$i day",strtotime("20200501"))); //测试用  指定日期增加天数
             // echo $i .'<br>'; echo $checkDay . '<br>';
             if(!isset($workdayArr[$checkDay])){
-
                 break;
             }
 
@@ -351,7 +307,10 @@ function isWorkDayJs()
 }
 
 
-
+/**
+ * 获取
+ * @return array|false|string
+ */
 function GetIp()
 {
     $realip  = '';
@@ -422,37 +381,35 @@ function checkDingcanStauts($sysConf)
     $nextWorkDay = ''; //默认下个工作日为空
     //判断星期几; 数字度0表示是星期天,数字123456表示星期一到六知
     $no = date("w");
-    if($no==0){
+    if ($no == 0) {
         $no = 7;
     }
 
-    if(!$isMutiChoose !== false){
+    if (!$isMutiChoose !== false) {
         //判断工作日
-        if($sysConf['dc_date'] == 0){
+        if ($sysConf['dc_date'] == 0) {
              $isWorkDay = isWorkDayJs();
-             if($isWorkDay['res'] == 1){
+             if ($isWorkDay['res'] == 1) {
                 $DingcanDay = 1;
-             }else{
+             } else {
                 $nextWorkDay = $isWorkDay['nextWorkDay'];
              }
         //判断具体日期         
-        }else{
-            if($sysConf['dc_date'] == $no){
+        } else {
+            if ($sysConf['dc_date'] == $no) {
                 $DingcanDay = 1;
             }
         }
-        
-    }else{
-
-         if(strpos($sysConf['dc_date'], $no) !== false){
+    } else {
+         if (strpos($sysConf['dc_date'], $no) !== false) {
                 $DingcanDay = 1;
-         }else{
+         } else {
             //是否都选工作日
-            if(strpos($sysConf['dc_date'], '0') !== false){
+            if(strpos($sysConf['dc_date'], '0') !== false) {
                  $isWorkDay = isWorkDayJs();
-                 if($isWorkDay['res'] == 1){
+                 if ($isWorkDay['res'] == 1) {
                     $DingcanDay = 1;
-                 }else{
+                 } else {
                     $nextWorkDay = $isWorkDay['nextWorkDay'];
                  }
             }
@@ -461,56 +418,50 @@ function checkDingcanStauts($sysConf)
     
     $DingcanStauts = 0; //0 订餐未开始(默认)  1 订餐报名中 2 报名结束送餐中 3 送餐完毕
     $baomingEndTimeStamp = 0; //订餐报名截止时间  默认0
-    //送餐日
-    if($DingcanDay == 1){
+    $send_time_key = 0;
+    $send_time_text = '';
 
+    //送餐日
+    if ($DingcanDay == 1) {
         //判断上午还是下午
-        $no=date("H",time());
-        if ($no<12){
+        $no = date("H",time());
+        if ($no < 12){
             $send_time_key = 1;
-        }else{
+        } else {
             $send_time_key = 2;
         }
         //获取具体的送餐时间
         $send_time_info = json_decode($sysConf['send_time_info'],true);
-
         //判断是否报餐中餐与晚餐[1,2] 或只报中餐 1 或只报晚餐 2;
         $send_time_info_keys = array_keys($send_time_info);
         //只报中餐 1 或只报晚餐 2 ：则不按照上午还是下午的时间判断 
-        if(!in_array($send_time_key, $send_time_info_keys)){
-
-                $send_time_key = $send_time_info_keys[0];
+        if (!in_array($send_time_key, $send_time_info_keys)) {
+            $send_time_key = $send_time_info_keys[0];
         }
 
-        if($send_time_key == 1){
+        if ($send_time_key == 1) {
             $send_time_text = '上午';
-        }else{
+        } else {
             $send_time_text = '下午';
         }
 
-
         $send_time = $send_time_info[$send_time_key];
         $send_time_str = date('Y-m-d',time()).$send_time.':00';
-     
         //获取报餐提前多久的系统设置
         $confEndTime = confEndTimeType($sysConf['end_time_type'])*60;
         //送餐时间戳
         $sendTimeStamp = strtotime($send_time_str);
-
         //报名截止时间戳
         $baomingEndTimeStamp = $sendTimeStamp - $confEndTime;
-
         //现在的时间戳
         $nowTimeStamp = strtotime("now");
-        
-        if( $nowTimeStamp < $baomingEndTimeStamp){
+        if($nowTimeStamp < $baomingEndTimeStamp){
             $DingcanStauts = 1;//订餐日 报名中
-        }else if( ($nowTimeStamp >= $baomingEndTimeStamp) && ($nowTimeStamp < $sendTimeStamp) ){
+        }else if(($nowTimeStamp >= $baomingEndTimeStamp) && ($nowTimeStamp < $sendTimeStamp)){
             $DingcanStauts = 2;//订餐日 报名已截止 送餐中
-        }else{
+        } else {
             $DingcanStauts = 3;//订餐日 送餐完毕
         }
-
     }
 
     return [
@@ -524,6 +475,11 @@ function checkDingcanStauts($sysConf)
     
 }
 
+/**
+ * 验证金额
+ * @param $value
+ * @return bool
+ */
 function checkMoney($value)
 {
     $flag = true;

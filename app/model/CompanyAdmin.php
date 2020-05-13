@@ -30,4 +30,13 @@ class CompanyAdmin extends Model
     protected $hidden = [];
 
     use ModelTrait;
+
+    /**
+     * 根据用户id获取管理员信息
+     */
+    public static function getAdminInfoById($user_id)
+    {
+        $userInfo = self::where('userid=:userid', ['userid' => $user_id])->find();
+        return $userInfo;
+    }
 }

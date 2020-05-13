@@ -29,7 +29,19 @@ class CompanyStaff extends Model
 
     use ModelTrait;
 
+    /**
+     * 根据用户corpId获取员工信息
+     */
     public static function getDingdingUserIds($corpId){
-    	return self::where('cropid = :corpId',['corpId'=>$corpId])->column('platform_staffid');
+    	return self::where('cropid = :corpId',['corpId' => $corpId])->column('platform_staffid');
+    }
+
+    /**
+     * 根据用户id获取员工信息
+     */
+    public static function getUserInfoById($user_id)
+    {
+        $userInfo = self::where('staffid=:staffid', ['staffid' => $user_id])->find();
+        return $userInfo;
     }
 }

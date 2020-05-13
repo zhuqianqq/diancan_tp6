@@ -35,17 +35,17 @@ class Eatery
         if (!$user_id) {
             throw new MyException(13001);
         }
-        $userInfo = getAdminInfoById($user_id);
+        $userInfo = CompanyAdmin::getAdminInfoById($user_id);
         if (!$userInfo) {
             throw new MyException(13002);
         }
+
         $eateryArr = [];
         $eatery = E::where('is_delete=0 and company_id=:company_id', ['company_id' => $userInfo->company_id])->order('create_time','asc')->field('eatery_id')->select();
         foreach ($eatery as $v){
             $eateryArr[] = $v['eatery_id'];
         }
         $list = ER::with(['food'])->select($eateryArr);
-       
         if($list) {
             foreach ($list as $k => $v) {
                $list[$k]->province_name = SysArea::getAreaName($v->proive);
@@ -54,6 +54,7 @@ class Eatery
             }
             return $list->toArray();
         }
+
         return [];
     }
 
@@ -67,17 +68,14 @@ class Eatery
     {
         $user_id = input('user_id', '', 'int');
         $eatery_id = input('eatery_id', '', 'int');
-
         if (!$user_id || !$eatery_id) {
             throw new MyException(13001);
         }
-
         $eateryInfo = ER::find($eatery_id);
         if (!$eateryInfo) {
             throw new MyException(13002);
         }
-
-        $userInfo = getAdminInfoById($user_id);
+        $userInfo = CompanyAdmin::getAdminInfoById($user_id);
         if (!$userInfo) {
             throw new MyException(13002);
         }
@@ -87,6 +85,7 @@ class Eatery
         if ($list) {
             return $list->toArray();
         }
+
         return [];
     }
 
@@ -100,6 +99,7 @@ class Eatery
         }
         $eatryInfo = E::where('eatery_id=:eatery_id', ['eatery_id' => $eateryId])->find();
         if ($eatryInfo) return $eatryInfo->toArray();
+
         return [];
     }
 
@@ -112,8 +112,7 @@ class Eatery
         if (!$user_id) {
             throw new MyException(13001);
         }
-
-        $userInfo = getAdminInfoById($user_id);
+        $userInfo = CompanyAdmin::getAdminInfoById($user_id);
         if (!$userInfo) {
             throw new MyException(13002);
         }

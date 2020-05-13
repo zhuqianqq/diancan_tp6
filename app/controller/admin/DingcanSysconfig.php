@@ -31,7 +31,7 @@ class DingcanSysconfig extends Base
     use ControllerTrait;
 
     /**
-    * 更新或者创建餐馆
+    * 订餐设置
      * @Validate(VDS::class,scene="save",batch="true")
     * @Route("setting", method="POST")
     */

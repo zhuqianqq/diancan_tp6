@@ -65,9 +65,11 @@ class Order extends Base
         if (!$user_id || !$eatery_id) {
             return json_error(10002);
         }
+
         $result = SF::detail($user_id, $eatery_id);
         $sysConf = SF::getSysConfigById($user_id);
         $result['dingcanStauts'] = SF::analyseSysConfig($sysConf);
+
         return json_ok($result);
     }
 
