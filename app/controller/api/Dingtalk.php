@@ -271,10 +271,12 @@ class Dingtalk extends Base
         if($res->errcode == 0 ){
             $msg = "发送订餐消息成功：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
             Log::info($msg);
+            return $corpId;
         }else{
 
             $msg = "发送订餐消息失败：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
             Log::error($msg);
+            return false;
         }
     }
 
