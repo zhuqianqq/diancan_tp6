@@ -10,6 +10,7 @@ use app\model\CompanyRegister;
 use app\controller\api\Dingtalk;
 use app\model\DingcanSysconfig as DS;
 use think\facade\Cache;
+use app\MyException;
 
 /**
  * 非用户身份类接口
@@ -88,7 +89,7 @@ class CronJob extends Base
        	
        	}catch (\Exception $e){
 
-              throw new \app\MyException(10001, $e->getMessage());
+              throw new MyException(10001, $e->getMessage());
                
         }
 
