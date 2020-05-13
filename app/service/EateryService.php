@@ -46,6 +46,7 @@ class EateryService
         foreach ($eatery as $v){
             $eateryArr[] = $v['eatery_id'];
         }
+
         $list = ER::with(['food'])->select($eateryArr);
         if($list) {
             foreach ($list as $k => $v) {
@@ -81,9 +82,9 @@ class EateryService
             throw new MyException(13002);
         }
 
-        $list = [];
         $where = ['company_id'=>$userInfo->company_id, 'eatery_id'=>$eatery_id];
-        $eateryInfo = E::where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->find();
+       /*$list = [];
+       $eateryInfo = E::where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->find();
         if ($eateryInfo) {
             $eateryInfo = $eateryInfo->toArray();
             $foodInfo = Food::where('eatery_id=:eatery_id', ['eatery_id' => $eatery_id])->select();
@@ -92,12 +93,12 @@ class EateryService
                 $list['food'] = $foodInfo->toArray();
             }
             return $list;
-        }
+        }*/
 
-        /*$list = E::with('food')->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
+        $list = E::with('food')->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
         if ($list) {
             return $list->toArray();
-        }*/
+        }
 
         return [];
     }
@@ -179,6 +180,28 @@ class EateryService
         $list=array_combine($list_key,$list);
 
         return ['list'=>$list,'dingcanStauts'=>$dingcanStauts];
+    }
+
+    /**
+     * 餐馆结算
+     */
+    public static function settlement()
+    {
+        $user_id = input('user_id', '', 'int');
+        $eatery_id = input('eatery_id', '', 'int');
+        if (!$user_id || !$eatery_id) {
+            throw new MyException(13001);
+        }
+        $eateryInfo = ER::find($eatery_id);
+        if (!$eateryInfo) {
+            throw new MyException(13002);
+        }
+        $userInfo = CompanyAdmin::getAdminInfoById($user_id);
+        if (!$userInfo) {
+            throw new MyException(13002);
+        }
+
+        //获取订单
 
     }
 
