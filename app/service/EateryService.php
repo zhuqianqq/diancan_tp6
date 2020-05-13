@@ -120,20 +120,28 @@ class EateryService
 
         $dingcanStauts = SF::analyseSysConfig($sysConf);
 
-        if($dingcanStauts['isDingcanDay'] == 0){
-            return ['list' => [],'dingcanStauts' => $dingcanStauts];
-        }
-
         if($dingcanStauts['send_time_key'] == 1){
             $eat_type = 2;//中餐
         }else if($dingcanStauts['send_time_key'] == 2){
             $eat_type = 4;//晚餐
         }
+        $searchDay = 'today';//默认查询今天的数据
+        $dingcanStauts['recent_day'] = '';
+        //如果当天为非工作日 查询最近一次工作日的订餐数据
+        if($dingcanStauts['isDingcanDay'] == 0){
+             $recentOrder = OrdD::where(['company_id'=>$userInfo->company_id])
+             ->field('order_id,eat_type,create_time')
+             ->find();
+            $dingcanStauts['send_time_key'] = $eat_type = $recentOrder['eat_type'];
+            $_searchDay = explode(' ', $recentOrder['create_time']);
+            $searchDay = $_searchDay[0];
+            $dingcanStauts['recent_day'] = $searchDay;
+        }
 
         //获取当天订单详情中对应（中、晚餐的）餐馆id,菜名,单价,总点餐数,总价信息
         $OrderDetails = OrdD::where(['company_id'=>$userInfo->company_id,'eat_type'=>$eat_type])
                 ->field('eatery_id,food_name,price,SUM(report_num) AS total_num,SUM(price) AS total_price')
-                ->whereTime('create_time','today')
+                ->whereTime('create_time',$searchDay)
                 ->group('eatery_id,food_name,price')
                 ->select()->toArray();
 

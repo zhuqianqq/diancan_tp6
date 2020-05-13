@@ -74,7 +74,7 @@ class CronJob extends Base
 		        if(!$corpIds){
 		              return  json_error(20050);
 		        }
-
+		        
 		        $dingTalk = new Dingtalk();
 		        foreach ($corpIds as $k3 => $v3) {
 		        	$res = $dingTalk->sendMessage($v3);
