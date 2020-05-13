@@ -31,4 +31,16 @@ class CompanyAdmin extends Model
 
 
     use ModelTrait;
+
+    public static function updateAdminInfo($cropId,$userid){
+
+        self::where(['corpid'=>$cropId,'platform_userid'=>$userid])
+        ->update(['login_time'=> date('Y-m-d H:i:s',time()),'login_ip'=> GetIp()]);
+
+    }
+
+    public static function isAdmin($cropId,$userid){
+
+        return self::where(['corpid'=>$cropId,'platform_userid'=>$userid])->find();
+    }
 }

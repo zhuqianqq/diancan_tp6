@@ -11,6 +11,7 @@ namespace app\controller\admin;
 use app\controller\admin\Base;
 use app\model\CompanyAdmin;
 use app\model\CompanyRegister;
+use app\model\DTDepartment;
 use app\traits\ControllerTrait;
 use app\service\Index AS I;
 use think\annotation\route\Group;
@@ -94,4 +95,34 @@ class index extends Base
         return json_ok($result);
     }
 
+
+     /**
+     * 管理员信息接口
+     * @Route("adminInfo", method="GET")
+     */
+    public function adminInfo()
+    {
+        $user_id = input('user_id','');
+        if (!$user_id) {
+            return json_error(10002);
+        }
+        $admin_info = CompanyAdmin::where('platform_userid = :user_id',['user_id'=>$user_id])
+        ->field('userid,company_id,real_name,avatar,is_sys,corpid,platform_userid,department_id')
+        ->find();
+        if (!$admin_info) {
+            return json_error(11104);
+        }
+       
+        //判断该用户数据库是否有部门信息
+        $DTDepartmentModel = new DTDepartment;
+        $admin_info['hasDepartment'] = $DTDepartmentModel->where('company_id',$admin_info['company_id'])->count();
+
+        //更新管理员登录信息
+        CompanyAdmin::updateAdminInfo($admin_info['corpid'],$admin_info['platform_userid']);
+
+        return json_ok($admin_info); 
+
+    }
+
 }
+

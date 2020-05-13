@@ -150,7 +150,7 @@ class Eatery
             ->whereTime('create_time','today')
             ->column('staff_name');
             $v['eater_names'] = array_unique($eater_names);
-
+            $v['token'] = setH5token($v['eatery_id'],$eat_type);
             $list[$v['eatery_id']][] = $v;
            
         }
@@ -162,7 +162,7 @@ class Eatery
 
         $list=array_combine($list_key,$list);
 
-         return ['list'=>$list,'dingcanStauts'=>$dingcanStauts];
+        return ['list'=>$list,'dingcanStauts'=>$dingcanStauts];
 
 
     }
