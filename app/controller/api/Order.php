@@ -61,12 +61,11 @@ class Order extends Base
     public function myOrder()
     {
         $user_id = input('get.user_id','','int');
-        $eatery_id = input('get.eatery_id','','int');
-        if (!$user_id || !$eatery_id) {
+        if (!$user_id) {
             return json_error(10002);
         }
 
-        $result = SF::detail($user_id, $eatery_id);
+        $result = SF::detail($user_id);
         $sysConf = SF::getSysConfigById($user_id);
         $result['dingcanStauts'] = SF::analyseSysConfig($sysConf);
 

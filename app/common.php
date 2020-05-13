@@ -204,23 +204,6 @@ function transform($value, $type)
 }
 
 
-
-/**
- * 根据员工id获取公司和部门信息
- */
-function getCompAndDeptInfoByUserId($user_id)
-{
-    $where = ['userid' => $user_id, 'is_enabled' => 1];
-    $result = \think\facade\Db::table('dc_company_admin')
-        ->alias('s')
-        ->join('dc_company_register r', 'r.company_id = s.company_id')
-        ->join('dc_company_department d', 'd.company_id = s.company_id and d.platform_departid = s.department_id')
-        ->where($where)
-        ->field(['userid','s.company_id','real_name','department_id','company_name','platform_departid','dept_name'])
-        ->find();
-    return $result;
-}
-
 /**
  * 根据员工id获取公司和部门信息
  */

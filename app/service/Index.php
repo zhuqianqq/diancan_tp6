@@ -85,7 +85,6 @@ class Index
 
         self::beginTrans();
         //添加系统配置表
-        //$userInfo = getCompAndDeptInfoByUserId($data['user_id']);
         $userInfo = CompanyAdmin::getAdminInfoById($data['user_id']);
         $dsM = new DS;
         $dsM->company_id = $userInfo['company_id'];
