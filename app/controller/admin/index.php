@@ -11,12 +11,12 @@ use app\controller\admin\Base;
 use app\model\CompanyAdmin;
 use app\model\CompanyRegister;
 use app\traits\ControllerTrait;
-use app\service\Index AS I;
+use app\service\IndexService AS I;
 use think\annotation\route\Group;
 use think\annotation\Route;
 use app\validate\Index AS VI;
 use think\annotation\route\Validate;
-use app\service\Eatery as SE;
+use app\service\EateryService as SE;
 
 /**
  * 订餐后台首页

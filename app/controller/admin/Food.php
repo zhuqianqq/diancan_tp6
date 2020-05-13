@@ -9,7 +9,7 @@ namespace app\controller\admin;
 
 use app\controller\admin\Base;
 use app\traits\ControllerTrait;
-use app\service\Food as F;
+use app\service\FoodService as F;
 use think\annotation\route\Group;
 use think\annotation\Route;
 use app\validate\Food as VF;

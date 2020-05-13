@@ -10,7 +10,7 @@ namespace app\controller\admin;
 use app\controller\admin\Base;
 use app\model\CompanyAdmin;
 use app\traits\ControllerTrait;
-use app\service\Eatery as SE;
+use app\service\EateryService as SE;
 use think\annotation\route\Group;
 use think\annotation\Route;
 

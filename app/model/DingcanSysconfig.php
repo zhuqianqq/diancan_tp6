@@ -12,7 +12,7 @@ use app\traits\ModelTrait;
 
 /**
  * 订餐设置
- * Class Food
+ * Class DingcanSysconfig
  * @package app\model
  * @author  2066362155@qq.com
  */

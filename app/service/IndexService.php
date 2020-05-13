@@ -5,7 +5,7 @@ namespace app\service;
 use app\model\CompanyAdmin;
 use app\MyException;
 use app\traits\ServiceTrait;
-use app\service\DingcanSysconfig;
+use app\service\DingcanSysconfigService;
 use app\model\CompanyRegister;
 use app\model\CompanyStaff;
 use app\model\Food;
@@ -15,11 +15,11 @@ use app\model\DingcanSysconfig as DS;
 
 /**
  * 首页
- * Class Index
+ * Class IndexService
  * @package app\service
  * @author  2066362155@qq.com
  */
-class Index
+class IndexService
 {
 
     use ServiceTrait;
@@ -30,7 +30,7 @@ class Index
     public static function isSet($userId)
     {
         //获取系统设置
-        $sysConf = DingcanSysconfig::getSysConfigById($userId);
+        $sysConf = DingcanSysconfigService::getSysConfigById($userId);
         return $sysConf;
     }
 

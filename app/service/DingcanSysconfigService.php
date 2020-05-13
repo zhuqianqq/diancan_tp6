@@ -9,11 +9,13 @@ use app\model\CompanyAdmin;
 
 /**
  * 订餐设置
- * Class Food
+ * Class DingcanSysconfigService
+ *
+ *
  * @package app\service
  * @author  2066362155@qq.com
  */
-class DingcanSysconfig
+class DingcanSysconfigService
 {
     use ServiceTrait;
 

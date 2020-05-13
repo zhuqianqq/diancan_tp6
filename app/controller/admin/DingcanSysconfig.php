@@ -9,7 +9,7 @@ namespace app\controller\admin;
 
 use app\controller\admin\Base;
 use app\traits\ControllerTrait;
-use app\service\DingcanSysconfig as SD;
+use app\service\DingcanSysconfigService as SD;
 use think\annotation\route\Group;
 use think\annotation\Route;
 use app\validate\DingcanSysconfig as VDS;

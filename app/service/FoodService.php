@@ -5,15 +5,15 @@ namespace app\service;
 use app\model\Food as F;
 use app\MyException;
 use app\traits\ServiceTrait;
-use app\service\Eatery;
+use app\service\EateryService;
 
 /**
  * 菜品
- * Class Food
+ * Class FoodService
  * @package app\service
  * @author  2066362155@qq.com
  */
-class Food
+class FoodService
 {
 
     //仓库，带命名空间
@@ -26,7 +26,7 @@ class Food
      */
     public static function getInfo()
     {
-        $result = Eatery::getlist();
+        $result = EateryService::getlist();
         return $result;
     }
 

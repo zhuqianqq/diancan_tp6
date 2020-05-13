@@ -12,7 +12,7 @@ use think\Db;
 
 /**
  * 菜品
- * Class Eatery
+ * Class EateryService
  * @package app\service
  * @author  2066362155@qq.com
  */

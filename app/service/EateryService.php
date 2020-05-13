@@ -8,7 +8,7 @@ use app\MyException;
 use app\traits\ServiceTrait;
 use app\model\CompanyAdmin;
 use think\Db;
-use app\service\DingcanSysconfig as SD;
+use app\service\DingcanSysconfigService as SD;
 use app\model\Order as Ord;
 use app\model\OrderDetail as OrdD;
 use app\model\SysArea;
@@ -16,11 +16,11 @@ use app\servicestaff\Order as SF;
 
 /**
  * 菜品
- * Class Eatery
+ * Class EateryService
  * @package app\service
  * @author  2066362155@qq.com
  */
-class Eatery
+class EateryService
 {
 
     /**

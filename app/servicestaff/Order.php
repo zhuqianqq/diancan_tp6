@@ -11,7 +11,7 @@ use app\model\SysArea;
 use app\model\DingcanSysconfig as DS;
 use app\MyException;
 use app\traits\ServiceTrait;
-use app\service\Eatery as SE;
+use app\service\EateryService as SE;
 use think\Cache;
 use think\facade\Db;
 use app\model\OrderDetail as OrdD;
