@@ -4,24 +4,23 @@ namespace app\service;
 
 use app\model\Eatery as E;
 use app\model\EateryRegister as ER;
-use app\model\Food;
 use app\MyException;
 use app\traits\ServiceTrait;
 use app\model\CompanyAdmin;
 use think\Db;
-use app\service\DingcanSysconfigService as SD;
+use app\service\DingcanSysconfig as SD;
 use app\model\Order as Ord;
 use app\model\OrderDetail as OrdD;
 use app\model\SysArea;
-use app\servicestaff\OrderService as SF;
+use app\servicestaff\Order as SF;
 
 /**
  * 菜品
- * Class EateryService
+ * Class Eatery
  * @package app\service
  * @author  2066362155@qq.com
  */
-class EateryService
+class Eatery
 {
 
     /**
@@ -46,7 +45,6 @@ class EateryService
         foreach ($eatery as $v){
             $eateryArr[] = $v['eatery_id'];
         }
-
         $list = ER::with(['food'])->select($eateryArr);
         if($list) {
             foreach ($list as $k => $v) {
@@ -83,19 +81,7 @@ class EateryService
         }
 
         $where = ['company_id'=>$userInfo->company_id, 'eatery_id'=>$eatery_id];
-       /*$list = [];
-       $eateryInfo = E::where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->find();
-        if ($eateryInfo) {
-            $eateryInfo = $eateryInfo->toArray();
-            $foodInfo = Food::where('eatery_id=:eatery_id', ['eatery_id' => $eatery_id])->select();
-            $list = $eateryInfo;
-            if ($foodInfo) {
-                $list['food'] = $foodInfo->toArray();
-            }
-            return $list;
-        }*/
-
-        $list = E::with('food')->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
+        $list = E::with(['food'])->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
         if ($list) {
             return $list->toArray();
         }
@@ -134,28 +120,20 @@ class EateryService
 
         $dingcanStauts = SF::analyseSysConfig($sysConf);
 
+        if($dingcanStauts['isDingcanDay'] == 0){
+            return ['list' => [],'dingcanStauts' => $dingcanStauts];
+        }
+
         if($dingcanStauts['send_time_key'] == 1){
             $eat_type = 2;//中餐
         }else if($dingcanStauts['send_time_key'] == 2){
             $eat_type = 4;//晚餐
         }
-        $searchDay = 'today';//默认查询今天的数据
-        $dingcanStauts['recent_day'] = '';
-        //如果当天为非工作日 查询最近一次工作日的订餐数据
-        if($dingcanStauts['isDingcanDay'] == 0){
-             $recentOrder = OrdD::where(['company_id'=>$userInfo->company_id])
-             ->field('order_id,eat_type,create_time')
-             ->find();
-            $dingcanStauts['send_time_key'] = $eat_type = $recentOrder['eat_type'];
-            $_searchDay = explode(' ', $recentOrder['create_time']);
-            $searchDay = $_searchDay[0];
-            $dingcanStauts['recent_day'] = $searchDay;
-        }
 
         //获取当天订单详情中对应（中、晚餐的）餐馆id,菜名,单价,总点餐数,总价信息
         $OrderDetails = OrdD::where(['company_id'=>$userInfo->company_id,'eat_type'=>$eat_type])
                 ->field('eatery_id,food_name,price,SUM(report_num) AS total_num,SUM(price) AS total_price')
-                ->whereTime('create_time',$searchDay)
+                ->whereTime('create_time','today')
                 ->group('eatery_id,food_name,price')
                 ->select()->toArray();
 
@@ -180,28 +158,6 @@ class EateryService
         $list=array_combine($list_key,$list);
 
         return ['list'=>$list,'dingcanStauts'=>$dingcanStauts];
-    }
-
-    /**
-     * 餐馆结算
-     */
-    public static function settlement()
-    {
-        $user_id = input('user_id', '', 'int');
-        $eatery_id = input('eatery_id', '', 'int');
-        if (!$user_id || !$eatery_id) {
-            throw new MyException(13001);
-        }
-        $eateryInfo = ER::find($eatery_id);
-        if (!$eateryInfo) {
-            throw new MyException(13002);
-        }
-        $userInfo = CompanyAdmin::getAdminInfoById($user_id);
-        if (!$userInfo) {
-            throw new MyException(13002);
-        }
-
-        //获取订单
 
     }
 

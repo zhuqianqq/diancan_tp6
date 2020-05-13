@@ -19,11 +19,11 @@ use app\model\OrderDetail as OrdD;
 
 /**
  * 员工订餐
- * Class OrderService
+ * Class Order
  * @package app\service
  * @author  2066362155@qq.com
  */
-class OrderService
+class Order
 {
     use ServiceTrait;
 
@@ -250,7 +250,7 @@ class OrderService
                     $send_time_key = 2;//晚餐
                }
 
-               $company_info->send_time = date('Y-m-d') . ' ' . $send_time_arr[$send_time_key] . ':00';
+               $company_info->send_time = $send_time_arr[$send_time_key];
 
                return ['order_details' => $order_details,'company_info' => $company_info];
 
