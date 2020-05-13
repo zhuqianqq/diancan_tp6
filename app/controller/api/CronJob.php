@@ -88,7 +88,7 @@ class CronJob extends Base
        	
        	}catch (\Exception $e){
 
-              throw new MyException(10001, $e->getMessage());
+              throw new \app\MyException(10001, $e->getMessage());
                
         }
 
