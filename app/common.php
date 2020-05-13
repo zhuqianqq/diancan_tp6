@@ -338,6 +338,8 @@ function checkDingcanStauts($sysConf)
     $isMutiChoose = strpos($sysConf['dc_date'], ',');
     $DingcanDay = 0; //默认不是订餐日
     $nextWorkDay = ''; //默认下个工作日为空
+    //现在的时间戳
+    $nowTimeStamp = strtotime("now");
     //判断星期几; 数字度0表示是星期天,数字123456表示星期一到六知
     $no = date("w");
     if ($no == 0) {
@@ -412,8 +414,7 @@ function checkDingcanStauts($sysConf)
         $sendTimeStamp = strtotime($send_time_str);
         //报名截止时间戳
         $baomingEndTimeStamp = $sendTimeStamp - $confEndTime;
-        //现在的时间戳
-        $nowTimeStamp = strtotime("now");
+        
         if($nowTimeStamp < $baomingEndTimeStamp){
             $DingcanStauts = 1;//订餐日 报名中
         }else if(($nowTimeStamp >= $baomingEndTimeStamp) && ($nowTimeStamp < $sendTimeStamp)){
@@ -429,7 +430,8 @@ function checkDingcanStauts($sysConf)
         'baomingEndTimeStamp'=>$baomingEndTimeStamp,
         'send_time_key' => $send_time_key,
         'send_time_text' => $send_time_text,
-        'nextWorkDay' => $nextWorkDay
+        'nextWorkDay' => $nextWorkDay,
+        'nowTimeStamp' => $nowTimeStamp
     ];
     
 }

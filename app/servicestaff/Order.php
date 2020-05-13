@@ -243,7 +243,14 @@ class Order
                //获取配置的送餐时间
                $sysConf = DS::where('company_id', $company_id)->find();
                $send_time_arr = json_decode($sysConf['send_time_info'],true);
-               $company_info->send_time = $send_time_arr[$eat_type];
+
+               if($eat_type == 2){  
+                    $send_time_key = 1;//中餐
+               }else if($eat_type == 4){
+                    $send_time_key = 2;//晚餐
+               }
+
+               $company_info->send_time = $send_time_arr[$send_time_key];
 
                return ['order_details' => $order_details,'company_info' => $company_info];
 

@@ -16,6 +16,8 @@ use app\model\DTDepartment;
 use app\model\CompanyStaff;
 use think\facade\Db;
 use think\facade\Log;
+use app\model\CompanyAdmin;
+
 
 
 /**
@@ -158,9 +160,9 @@ class Dingtalk extends Base
 
        }else{
            //若为管理员 维护其登录时间login_time login_ip字段 同时把返回前端信息换成管理员数据库信息
-           $isAdmin = $DTUserModel->isAdmin($corpId,$userid);
+           $isAdmin = CompanyAdmin::isAdmin($corpId,$userid);
            if($isAdmin){
-                $DTUserModel->updateAdminInfo($corpId,$userid);
+                CompanyAdmin::updateAdminInfo($corpId,$userid);
            }
 
            //员工身份 统一userid字段
@@ -227,9 +229,9 @@ class Dingtalk extends Base
      * @Route("sendMessage")
      */
     //发送订餐消息（钉钉工作消息类型）
-    public function sendMessage()
+    public function sendMessage($corpId)
     {
-        $corpId = input('corpId','ding856732f3dcf58a39a1320dcb25e91351');
+        //$corpId = input('corpId','ding856732f3dcf58a39a1320dcb25e91351');
 
         if(!$corpId){
               return  json_error(20002);
@@ -286,7 +288,7 @@ class Dingtalk extends Base
 
         //$list = Db::table("dc_company_staff")->where('staffid',1)->select();
         //echo Db::table("dc_company_staff")->getLastSql();die;
-        $token = setH5token(9,2);
+        $token = setH5token(19,2);
         echo $token;die;
        return json_ok(isWorkDayJs()); 
 
@@ -300,7 +302,6 @@ class Dingtalk extends Base
     public function area_tree()
     {
 
-       ini_set('max_execution_time', '0');
        $TreeUtil = new \app\util\TreeUtil;
        //数据库中香港 澳门 台湾三区不返回
        $list = Db::table("dc_sys_area")->whereRaw('area_id Not IN (710000,810000,820000)')->select()->toArray();
