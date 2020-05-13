@@ -191,7 +191,7 @@ class EateryService {
 		}
 		$list = array_combine($list_key, $list);
 
-		return ['list' => $list, 'dingcanStauts' => $dingcanStauts, 'isSendMsg' => $isSendMsg];
+		return ['list' => $list, 'dingcanStauts' => $dingcanStauts, 'isSendMsg' => $isSendMsg]; 
 	}
 
 	/**
