@@ -31,6 +31,8 @@ class CronJob extends Base
         }
         
         $sysConfs = DS::where('company_id','in',$company_ids)->select();
+
+
         dd($sysConfs);
 
 
@@ -40,5 +42,14 @@ class CronJob extends Base
         // 	$dingTalk->sendMessage();
         // }
        
+    }
+
+    public function checkNewsTime($sysConfs){
+    	if(!$sysConfs){
+    		return false;
+    	}
+    	$news_time = $sysConfs->news_time;
+    	
+
     }
 }
