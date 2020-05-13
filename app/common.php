@@ -476,7 +476,52 @@ function getH5token($token)
  */
 function getDateInfo($type)
 {
-    $data = array(
+    if (is_null($type)) {
+        return;
+    }
+
+    switch ($type) {
+        case 'recent7days':
+            $res = array(
+                'start_time' => date('Y-m-d 00:00:00', strtotime("-6 day")),
+                'end_time' => date('Y-m-d H:i:s'),
+            );
+            break;
+        case 'thisWeek':
+            $res = array(
+                'start_time' => date("Y-m-d H:i:s",mktime(0, 0 , 0,date("m"),date("d")-date("w")+1,date("Y"))),
+                'end_time' => date("Y-m-d H:i:s",mktime(23,59,59,date("m"),date("d")-date("w")+7,date("Y"))),
+            );
+            break;
+        case 'preWeek':
+            $res = array(
+                'start_time' => date("Y-m-d H:i:s",mktime(0, 0 , 0,date("m"),date("d")-date("w")+1-7,date("Y"))),
+                'end_time' => date("Y-m-d H:i:s",mktime(23,59,59,date("m"),date("d")-date("w")+7-7,date("Y"))),
+            );
+            break;
+        case 'thisMonth':
+            $res = array(
+                'start_time' => date("Y-m-d H:i:s",mktime(0, 0 , 0,date("m"),1,date("Y"))),
+                'end_time' => date("Y-m-d H:i:s",mktime(23,59,59,date("m"),date("t"),date("Y"))),
+            );
+            break;
+        case 'recent30days':
+            $res = array(
+                'start_time' => date('Y-m-d 00:00:00', strtotime("-30 day")),
+                'end_time' => date('Y-m-d 23:59:59', strtotime('-1 day')),
+            );
+            break;
+        default:
+            break;
+    }
+
+    return  $res;
+
+    /*$data = array(
+        array(
+            'start_time' => date('Y-m-d 00:00:00', strtotime("-7 day")),
+            'end_time' => date('Y-m-d 23:59:59', strtotime('-1 day')),
+        ),
         array(
             'start_time' => date("Y-m-d H:i:s",mktime(0, 0 , 0,date("m"),date("d")-date("w")+1,date("Y"))),
             'end_time' => date("Y-m-d H:i:s",mktime(23,59,59,date("m"),date("d")-date("w")+7,date("Y"))),
@@ -494,7 +539,7 @@ function getDateInfo($type)
             'end_time' => date('Y-m-d 23:59:59', strtotime('-1 day')),
         )
     );
-    return is_null($type) ? $data : $data[$type-1];
+    return is_null($type) ? $data : $data[$type-1];*/
 }
 
 
