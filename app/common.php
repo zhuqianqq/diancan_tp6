@@ -386,7 +386,7 @@ function checkDingcanStauts($sysConf)
     if ($DingcanDay == 1) {
         //判断上午还是下午
         $no = date("H",time());
-        if ($no < 12){
+        if ($no < 14){
             $send_time_key = 1;
         } else {
             $send_time_key = 2;
