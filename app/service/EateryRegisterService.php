@@ -2,6 +2,7 @@
 declare (strict_types=1);
 namespace app\service;
 
+use app\model\CompanyStaff;
 use app\model\Eatery;
 use app\traits\ServiceTrait;
 use app\model\EateryRegister as ER;
@@ -99,7 +100,7 @@ class EateryRegisterService
         if (!$oneEateryRegister || !$oneEatery) {
             throw new MyException(13002);
         }
-        $compAndDeptInfo = getCompAndDeptInfoById($user_id);
+        $compAndDeptInfo = CompanyStaff::getCompAndDeptInfoById($user_id);
         //获取订餐记录
         $where = ['company_id'=>$compAndDeptInfo['company_id'], 'eatery_id'=>$eatery_id];
         $eateryRecord = Order::where('company_id=:company_id and eatery_id=:eatery_id', $where)->select();

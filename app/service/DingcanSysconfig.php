@@ -37,7 +37,6 @@ class DingcanSysconfig
 
         $data['company_id'] = $userInfo['company_id'];
         $oneSys = DF::where('company_id=:company_id', ['company_id' => $data['company_id']])->find();
-
         if (!$oneSys) {//新增
             try {
                 $sysConfig = new DF;

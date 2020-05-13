@@ -203,41 +203,6 @@ function transform($value, $type)
     return $value;
 }
 
-
-
-/**
- * 根据员工id获取公司和部门信息
- */
-function getCompAndDeptInfoByUserId($user_id)
-{
-    $where = ['userid' => $user_id, 'is_enabled' => 1];
-    $result = \think\facade\Db::table('dc_company_admin')
-        ->alias('s')
-        ->join('dc_company_register r', 'r.company_id = s.company_id')
-        ->join('dc_company_department d', 'd.company_id = s.company_id and d.platform_departid = s.department_id')
-        ->where($where)
-        ->field(['userid','s.company_id','real_name','department_id','company_name','platform_departid','dept_name'])
-        ->find();
-    return $result;
-}
-
-/**
- * 根据员工id获取公司和部门信息
- */
-function getCompAndDeptInfoById($user_id)
-{
-    $where = ['staffid' => $user_id, 'staff_status' => 1];
-    $result = \think\facade\Db::table('dc_company_staff')
-        ->alias('s')
-        ->join('dc_company_register r', 'r.company_id = s.company_id')
-        ->join('dc_company_department d', 'd.company_id = s.company_id and d.platform_departid = s.department_id')
-        ->where($where)
-        ->field(['staffid','s.company_id','staff_name','department_id','company_name','platform_departid','dept_name'])
-        ->find();
-
-    return $result;
-}
-
 /**
  * 判定今天是否为工作日的外网接口 文档 https://www.kancloud.cn/xiaoggvip/holiday_free
  * 请求地址 http://tool.bitefu.net/jiari/  请求方式 POST , GET
@@ -268,7 +233,6 @@ function isWorkDay()
     }
 }
 
-
 //判断工作日 直接读取本地已经生成的工作日的js文件
 function isWorkDayJs()
 {
@@ -295,17 +259,12 @@ function isWorkDayJs()
             if(!isset($workdayArr[$checkDay])){
                 break;
             }
-
             $i++;
-
         } while ( $i <= 8);
 
         return ['res'=> 0,'msg'=>'非工作日','nextWorkDay'=>$checkDay];
-
     }
-    
 }
-
 
 /**
  * 获取

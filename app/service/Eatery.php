@@ -97,10 +97,9 @@ class Eatery
         if (!$eateryId) {
             return json_error(13001);
         }
-        $eatryInfo = E::where('eatery_id=:eatery_id', ['eatery_id' => $eateryId])->find();
-        if ($eatryInfo) return $eatryInfo->toArray();
+        $eatryName = E::where('eatery_id=:eatery_id', ['eatery_id' => $eateryId])->value('eatery_alias_name');
 
-        return [];
+        return $eatryName;
     }
 
     /**

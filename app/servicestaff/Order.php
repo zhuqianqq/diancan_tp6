@@ -50,8 +50,7 @@ class Order
         //获取员工信息
         $staffid = $data['staffid'];
         $sysConf = self::getSysConfigById($staffid);
-        //$send_time_arr = \GuzzleHttp\json_decode($sysConf['send_time_info'], true);
-        $compAndDeptInfo = getCompAndDeptInfoById($staffid);
+        $compAndDeptInfo = CompanyStaff::getCompAndDeptInfoById($staffid);
 
         if(!$compAndDeptInfo){
             throw new MyException(20060);
@@ -68,8 +67,11 @@ class Order
         }
 
         //获取餐馆信息
-        $eateryInfo = SE::getNameById($data['eatery_id']);
-        $data['eatery_name'] = $eateryInfo['eatery_alias_name'];
+        $eateryName = SE::getNameById($data['eatery_id']);
+        if (empty($eateryName)) {
+            throw new MyException(13002);
+        }
+        $data['eatery_name'] = $eateryName;
         $data['department_name'] = $data['dept_name'];
 
         Db::startTrans();
@@ -145,18 +147,18 @@ class Order
      * @return array 对象数组
      * @throws \app\MyException
      */
-    public static function detail($userId, $eatery_id){
+    public static function detail($userId){
 
         //获取员工对应的公司id
         $company_id = CompanyStaff::where('staffid', $userId)->value('company_id');
         if (!$company_id) {
             throw new MyException(10001);
         }
-        //获取我的订单
-        $where = ['company_id' => $company_id, 'staffid' => $userId, 'eatery_id' => $eatery_id];
-        $todaytime=date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
-        $order = MO::where($where)->where('create_time','>',$todaytime)->order('create_time', 'desc')->find();
 
+        //获取我的订单
+        $where = ['company_id' => $company_id, 'staffid' => $userId];
+        $todaytime=date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
+        $order = MO::where('company_id=:company_id and staffid=:staffid', $where)->where('create_time','>',$todaytime)->order('create_time', 'desc')->find();
         if (!$order) {
             $code = 16002;
             throw new MyException($code);

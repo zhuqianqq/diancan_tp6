@@ -33,7 +33,6 @@ class Eatery
         }
 
         $userInfo = CompanyStaff::getUserInfoById($user_id);
-
         if (!$userInfo) {
             throw new MyException(13002);
         }
