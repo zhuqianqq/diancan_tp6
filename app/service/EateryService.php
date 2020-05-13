@@ -1,19 +1,16 @@
 <?php
-declare (strict_types=1);
+declare (strict_types = 1);
 namespace app\service;
 
+use app\model\CompanyAdmin;
 use app\model\Eatery as E;
 use app\model\EateryRegister as ER;
-use app\model\Food;
-use app\MyException;
-use app\traits\ServiceTrait;
-use app\model\CompanyAdmin;
-use think\Db;
-use app\service\DingcanSysconfigService as SD;
-use app\model\Order as Ord;
 use app\model\OrderDetail as OrdD;
 use app\model\SysArea;
+use app\MyException;
 use app\servicestaff\OrderService as SF;
+use app\service\DingcanSysconfigService as SD;
+use think\facade\Cache;
 
 /**
  * 菜品
@@ -21,188 +18,202 @@ use app\servicestaff\OrderService as SF;
  * @package app\service
  * @author  2066362155@qq.com
  */
-class EateryService
-{
+class EateryService {
 
-    /**
-     * 餐馆管理列表
-     * @param array $data
-     * @return array 对象数组
-     * @throws \app\MyException
-     */
-    public static function getlists()
-    {
-        $user_id = input('user_id', '', 'int');
-        if (!$user_id) {
-            throw new MyException(13001);
-        }
-        $userInfo = CompanyAdmin::getAdminInfoById($user_id);
-        if (!$userInfo) {
-            throw new MyException(13002);
-        }
+    const MES_KEY = 'MessageKey:';
 
-        $eateryArr = [];
-        $eatery = E::where('is_delete=0 and company_id=:company_id', ['company_id' => $userInfo->company_id])->order('create_time','asc')->field('eatery_id')->select();
-        foreach ($eatery as $v){
-            $eateryArr[] = $v['eatery_id'];
-        }
+	/**
+	 * 餐馆管理列表
+	 * @param array $data
+	 * @return array 对象数组
+	 * @throws \app\MyException
+	 */
+	public static function getlists() {
+		$user_id = input('user_id', '', 'int');
+		if (!$user_id) {
+			throw new MyException(13001);
+		}
+		$userInfo = CompanyAdmin::getAdminInfoById($user_id);
+		if (!$userInfo) {
+			throw new MyException(13002);
+		}
 
-        $list = ER::with(['food'])->select($eateryArr);
-        if($list) {
-            foreach ($list as $k => $v) {
-               $list[$k]->province_name = SysArea::getAreaName($v->proive);
-               $list[$k]->city_name = SysArea::getAreaName($v->city);
-               $list[$k]->district_name = SysArea::getAreaName($v->district);
+		$eateryArr = [];
+		$eatery = E::where('is_delete=0 and company_id=:company_id', ['company_id' => $userInfo->company_id])->order('create_time', 'asc')->field('eatery_id')->select();
+		foreach ($eatery as $v) {
+			$eateryArr[] = $v['eatery_id'];
+		}
+
+		$list = ER::with(['food'])->select($eateryArr);
+		if ($list) {
+			foreach ($list as $k => $v) {
+				$list[$k]->province_name = SysArea::getAreaName($v->proive);
+				$list[$k]->city_name = SysArea::getAreaName($v->city);
+				$list[$k]->district_name = SysArea::getAreaName($v->district);
+			}
+			return $list->toArray();
+		}
+
+		return [];
+	}
+
+	/**
+	 * 获取指定的餐馆和菜品信息
+	 * @param array $data
+	 * @return array 对象数组
+	 * @throws \app\MyException
+	 */
+	public static function getlist() {
+		$user_id = input('user_id', '', 'int');
+		$eatery_id = input('eatery_id', '', 'int');
+		if (!$user_id || !$eatery_id) {
+			throw new MyException(13001);
+		}
+		$eateryInfo = ER::find($eatery_id);
+		if (!$eateryInfo) {
+			throw new MyException(13002);
+		}
+		$userInfo = CompanyAdmin::getAdminInfoById($user_id);
+		if (!$userInfo) {
+			throw new MyException(13002);
+		}
+
+		$where = ['company_id' => $userInfo->company_id, 'eatery_id' => $eatery_id];
+		/*$list = [];
+			       $eateryInfo = E::where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->find();
+			        if ($eateryInfo) {
+			            $eateryInfo = $eateryInfo->toArray();
+			            $foodInfo = Food::where('eatery_id=:eatery_id', ['eatery_id' => $eatery_id])->select();
+			            $list = $eateryInfo;
+			            if ($foodInfo) {
+			                $list['food'] = $foodInfo->toArray();
+			            }
+			            return $list;
+		*/
+
+		$list = E::with('food')->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
+		if ($list) {
+			return $list->toArray();
+		}
+
+		return [];
+	}
+
+	/**
+	 * 根据餐馆id获取餐馆名称
+	 */
+	public static function getNameById($eateryId) {
+		if (!$eateryId) {
+			return json_error(13001);
+		}
+		$eatryName = E::where('eatery_id=:eatery_id', ['eatery_id' => $eateryId])->value('eatery_alias_name');
+
+		return $eatryName;
+	}
+
+	/**
+	 * 最近订餐
+	 */
+	public static function getRecentlyOrders() {
+		$user_id = input('user_id', '', 'int');
+		if (!$user_id) {
+			throw new MyException(13001);
+		}
+		$userInfo = CompanyAdmin::getAdminInfoById($user_id);
+		if (!$userInfo) {
+			throw new MyException(13002);
+		}
+
+		$sysConf = SD::getSysConfigById($user_id);
+
+		$dingcanStauts = SF::analyseSysConfig($sysConf);
+
+		if ($dingcanStauts['send_time_key'] == 1) {
+			$eat_type = 2; //中餐
+		} else if ($dingcanStauts['send_time_key'] == 2) {
+			$eat_type = 4; //晚餐
+		}
+		$searchDay = 'today'; //默认查询今天的数据
+		$dingcanStauts['recent_day'] = '';
+		//如果当天为非工作日 查询最近一次工作日的订餐数据
+		if ($dingcanStauts['isDingcanDay'] == 0) {
+			$recentOrder = OrdD::where(['company_id' => $userInfo->company_id])
+				->field('order_id,eat_type,create_time')
+				->find();
+			$dingcanStauts['send_time_key'] = $eat_type = $recentOrder['eat_type'];
+			$_searchDay = explode(' ', $recentOrder['create_time']);
+			$searchDay = $_searchDay[0];
+			$dingcanStauts['recent_day'] = $searchDay;
+		}
+
+        //报名中状态判断是否发送了订餐消息
+        if($dingcanStauts['DingcanStauts'] == 1){
+
+            $today = date('Ymd', time());
+            $key = self::MES_KEY . $today . ':' . $dingcanStauts['send_time_key'] . ':' . $userInfo->corpid;
+            if (Cache::has($key)) {
+                $isSendMsg = 1;
+            }else{
+                $isSendMsg = 0;
             }
-            return $list->toArray();
+        //非报名中订餐状态统一认为已经发送了订餐的工作消息提醒
+        }else{
+            $isSendMsg = 1;
         }
+        
 
-        return [];
-    }
+		//获取当天订单详情中对应（中、晚餐的）餐馆id,菜名,单价,总点餐数,总价信息
+		$OrderDetails = OrdD::where(['company_id' => $userInfo->company_id, 'eat_type' => $eat_type])
+			->field('eatery_id,food_name,price,SUM(report_num) AS total_num,SUM(price) AS total_price')
+			->whereTime('create_time', $searchDay)
+			->group('eatery_id,food_name,price')
+			->select()->toArray();
 
-    /**
-     * 获取指定的餐馆和菜品信息
-     * @param array $data
-     * @return array 对象数组
-     * @throws \app\MyException
-     */
-    public static function getlist()
-    {
-        $user_id = input('user_id', '', 'int');
-        $eatery_id = input('eatery_id', '', 'int');
-        if (!$user_id || !$eatery_id) {
-            throw new MyException(13001);
-        }
-        $eateryInfo = ER::find($eatery_id);
-        if (!$eateryInfo) {
-            throw new MyException(13002);
-        }
-        $userInfo = CompanyAdmin::getAdminInfoById($user_id);
-        if (!$userInfo) {
-            throw new MyException(13002);
-        }
+		if (!$OrderDetails) {
+			return ['list' => [], 'dingcanStauts' => $dingcanStauts];
+		}
 
-        $where = ['company_id'=>$userInfo->company_id, 'eatery_id'=>$eatery_id];
-       /*$list = [];
-       $eateryInfo = E::where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->find();
-        if ($eateryInfo) {
-            $eateryInfo = $eateryInfo->toArray();
-            $foodInfo = Food::where('eatery_id=:eatery_id', ['eatery_id' => $eatery_id])->select();
-            $list = $eateryInfo;
-            if ($foodInfo) {
-                $list['food'] = $foodInfo->toArray();
-            }
-            return $list;
-        }*/
+		$list_key = $list = [];
 
-        $list = E::with('food')->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
-        if ($list) {
-            return $list->toArray();
-        }
+		foreach ($OrderDetails as $k => $v) {
+			//获取相关菜品的点餐人员姓名
+			$eater_names = OrdD::where(['company_id' => $userInfo->company_id, 'eat_type' => $eat_type, 'eatery_id' => $v['eatery_id'], 'food_name' => $v['food_name']])
+				->whereTime('create_time', 'today')
+				->column('staff_name');
+			$v['eater_names'] = array_unique($eater_names);
+			$v['token'] = setH5token($v['eatery_id'], $eat_type);
+			$list[$v['eatery_id']][] = $v;
+		}
 
-        return [];
-    }
+		//获取餐馆id对应的餐馆名称
+		foreach ($list as $k2 => $v2) {
+			$list_key[] = ER::getEateryName($k2);
+		}
+		$list = array_combine($list_key, $list);
 
-    /**
-     * 根据餐馆id获取餐馆名称
-     */
-    public static function getNameById($eateryId)
-    {
-        if (!$eateryId) {
-            return json_error(13001);
-        }
-        $eatryName = E::where('eatery_id=:eatery_id', ['eatery_id' => $eateryId])->value('eatery_alias_name');
+		return ['list' => $list, 'dingcanStauts' => $dingcanStauts, 'isSendMsg' => $isSendMsg];
+	}
 
-        return $eatryName;
-    }
+	/**
+	 * 餐馆结算
+	 */
+	public static function settlement() {
+		$user_id = input('user_id', '', 'int');
+		$eatery_id = input('eatery_id', '', 'int');
+		if (!$user_id || !$eatery_id) {
+			throw new MyException(13001);
+		}
+		$eateryInfo = ER::find($eatery_id);
+		if (!$eateryInfo) {
+			throw new MyException(13002);
+		}
+		$userInfo = CompanyAdmin::getAdminInfoById($user_id);
+		if (!$userInfo) {
+			throw new MyException(13002);
+		}
 
-    /**
-     * 最近订餐
-     */
-    public static function getRecentlyOrders()
-    {
-        $user_id = input('user_id', '', 'int');
-        if (!$user_id) {
-            throw new MyException(13001);
-        }
-        $userInfo = CompanyAdmin::getAdminInfoById($user_id);
-        if (!$userInfo) {
-            throw new MyException(13002);
-        }
+		//获取订单
 
-        $sysConf = SD::getSysConfigById($user_id);
-
-        $dingcanStauts = SF::analyseSysConfig($sysConf);
-
-        if($dingcanStauts['send_time_key'] == 1){
-            $eat_type = 2;//中餐
-        }else if($dingcanStauts['send_time_key'] == 2){
-            $eat_type = 4;//晚餐
-        }
-        $searchDay = 'today';//默认查询今天的数据
-        $dingcanStauts['recent_day'] = '';
-        //如果当天为非工作日 查询最近一次工作日的订餐数据
-        if($dingcanStauts['isDingcanDay'] == 0){
-             $recentOrder = OrdD::where(['company_id'=>$userInfo->company_id])
-             ->field('order_id,eat_type,create_time')
-             ->find();
-            $dingcanStauts['send_time_key'] = $eat_type = $recentOrder['eat_type'];
-            $_searchDay = explode(' ', $recentOrder['create_time']);
-            $searchDay = $_searchDay[0];
-            $dingcanStauts['recent_day'] = $searchDay;
-        }
-
-        //获取当天订单详情中对应（中、晚餐的）餐馆id,菜名,单价,总点餐数,总价信息
-        $OrderDetails = OrdD::where(['company_id'=>$userInfo->company_id,'eat_type'=>$eat_type])
-                ->field('eatery_id,food_name,price,SUM(report_num) AS total_num,SUM(price) AS total_price')
-                ->whereTime('create_time',$searchDay)
-                ->group('eatery_id,food_name,price')
-                ->select()->toArray();
-
-        if(!$OrderDetails) return ['list' => [],'dingcanStauts' => $dingcanStauts];
- 
-        $list_key = $list = [];
-
-        foreach ($OrderDetails as $k => $v) {
-            //获取相关菜品的点餐人员姓名
-            $eater_names = OrdD::where(['company_id'=>$userInfo->company_id,'eat_type'=>$eat_type,'eatery_id'=>$v['eatery_id'],'food_name'=>$v['food_name']])
-            ->whereTime('create_time','today')
-            ->column('staff_name');
-            $v['eater_names'] = array_unique($eater_names);
-            $v['token'] = setH5token($v['eatery_id'],$eat_type);
-            $list[$v['eatery_id']][] = $v;
-        }
-
-        //获取餐馆id对应的餐馆名称
-        foreach ($list as $k2 => $v2) {
-           $list_key[] = ER::getEateryName($k2);
-        }
-        $list=array_combine($list_key,$list);
-
-        return ['list'=>$list,'dingcanStauts'=>$dingcanStauts];
-    }
-
-    /**
-     * 餐馆结算
-     */
-    public static function settlement()
-    {
-        $user_id = input('user_id', '', 'int');
-        $eatery_id = input('eatery_id', '', 'int');
-        if (!$user_id || !$eatery_id) {
-            throw new MyException(13001);
-        }
-        $eateryInfo = ER::find($eatery_id);
-        if (!$eateryInfo) {
-            throw new MyException(13002);
-        }
-        $userInfo = CompanyAdmin::getAdminInfoById($user_id);
-        if (!$userInfo) {
-            throw new MyException(13002);
-        }
-
-        //获取订单
-
-    }
+	}
 
 }
