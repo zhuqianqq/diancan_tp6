@@ -2,6 +2,7 @@
 declare (strict_types=1);
 namespace app\servicestaff;
 
+use app\model\CompanyStaff;
 use app\model\Eatery as E;
 use app\model\EateryRegister as ER;
 use app\MyException;
@@ -31,7 +32,7 @@ class Eatery
             throw new MyException(13001);
         }
 
-        $userInfo = getUserInfoById($user_id);
+        $userInfo = CompanyStaff::getUserInfoById($user_id);
 
         if (!$userInfo) {
             throw new MyException(13002);

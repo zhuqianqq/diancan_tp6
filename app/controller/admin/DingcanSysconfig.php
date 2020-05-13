@@ -5,7 +5,6 @@
  * Date: 2020/5/2
  * Time: 18:48
  */
-
 namespace app\controller\admin;
 
 use app\controller\admin\Base;
@@ -32,7 +31,7 @@ class DingcanSysconfig extends Base
     use ControllerTrait;
 
     /**
-    * 更新或者创建餐馆
+    * 订餐设置
      * @Validate(VDS::class,scene="save",batch="true")
     * @Route("setting", method="POST")
     */

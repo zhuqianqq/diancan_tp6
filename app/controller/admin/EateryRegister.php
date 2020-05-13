@@ -5,7 +5,6 @@
  * Date: 2020/5/2
  * Time: 18:48
  */
-
 namespace app\controller\admin;
 
 use app\controller\admin\Base;
@@ -18,7 +17,6 @@ use app\traits\ControllerTrait;
 use think\annotation\route\Validate;
 use think\exception\ValidateException;
 
-
 /**
  * 餐馆注册接口
  * Class EateryRegister
@@ -28,13 +26,8 @@ use think\exception\ValidateException;
  */
 class EateryRegister extends Base
 {
-   
     //服务，带命名空间
     public static $service = 'app\service\EateryRegisterService';
-    //验证器名称
-   /* public static $validateName = 'EateryRegister';
-    //保存验证场景
-    public static $validateScene = 'save';*/
 
     use ControllerTrait;
 
@@ -57,7 +50,6 @@ class EateryRegister extends Base
      */
     public function deleteEatery()
     {
-        header("Access-Control-Allow-Origin: *");
         $result = EateryRegisterService::eateryDelete();
         return json_ok($result);
     }

@@ -25,6 +25,7 @@ class Food extends Model
     protected $dateFormat = 'Y-m-d H:i:s';
     // 开启自动写入时间戳字段
     protected $autoWriteTimestamp = 'datetime';
+    //关闭自动写入update_time
     protected $updateTime = false;
 
     use ModelTrait;

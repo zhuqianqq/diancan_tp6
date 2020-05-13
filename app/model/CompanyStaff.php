@@ -5,9 +5,7 @@
  * Date: 2020/5/5
  * Time: 12:04
  */
-
 namespace app\model;
-
 
 use think\Model;
 use app\traits\ModelTrait;
@@ -29,10 +27,21 @@ class CompanyStaff extends Model
     //数据输出隐藏的属性
     protected $hidden = [];
 
-
     use ModelTrait;
 
+    /**
+     * 根据用户corpId获取员工信息
+     */
     public static function getDingdingUserIds($corpId){
-    	return self::where('cropid = :corpId',['corpId'=>$corpId])->column('platform_staffid');
+    	return self::where('cropid = :corpId',['corpId' => $corpId])->column('platform_staffid');
+    }
+
+    /**
+     * 根据用户id获取员工信息
+     */
+    public static function getUserInfoById($user_id)
+    {
+        $userInfo = self::where('staffid=:staffid', ['staffid' => $user_id])->find();
+        return $userInfo;
     }
 }

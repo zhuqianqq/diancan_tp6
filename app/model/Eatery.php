@@ -5,9 +5,7 @@
  * Date: 2020/5/5
  * Time: 12:04
  */
-
 namespace app\model;
-
 
 use think\Model;
 use app\traits\ModelTrait;

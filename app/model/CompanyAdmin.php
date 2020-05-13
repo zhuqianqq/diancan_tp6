@@ -29,8 +29,8 @@ class CompanyAdmin extends Model
     //数据输出隐藏的属性
     protected $hidden = [];
 
-
     use ModelTrait;
+
 
     public static function updateAdminInfo($cropId,$userid){
 
@@ -42,5 +42,14 @@ class CompanyAdmin extends Model
     public static function isAdmin($cropId,$userid){
 
         return self::where(['corpid'=>$cropId,'platform_userid'=>$userid])->find();
+    }
+
+    /**
+     * 根据用户id获取管理员信息
+     */
+    public static function getAdminInfoById($user_id)
+    {
+        $userInfo = self::where('userid=:userid', ['userid' => $user_id])->find();
+        return $userInfo;
     }
 }

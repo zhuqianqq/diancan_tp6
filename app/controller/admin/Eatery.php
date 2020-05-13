@@ -5,7 +5,6 @@
  * Date: 2020/5/2
  * Time: 18:48
  */
-
 namespace app\controller\admin;
 
 use app\controller\admin\Base;
@@ -14,7 +13,6 @@ use app\traits\ControllerTrait;
 use app\service\Eatery as SE;
 use think\annotation\route\Group;
 use think\annotation\Route;
-
 
 /**
  * 餐馆接口
@@ -44,6 +42,5 @@ class Eatery extends Base
         $result = SE::getRecentlyOrders();
         return json_ok($result);
     }
-
 
 }

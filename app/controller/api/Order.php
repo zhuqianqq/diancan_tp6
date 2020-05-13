@@ -43,8 +43,15 @@ class Order extends Base
      */
     public function submit()
     {
-        $result = SF::submit(input('post.'));
-        return json_ok($result);
+        $data = input('param.');
+        $sysConf = SF::getSysConfigById($data['staffid']);
+        $status = checkDingcanStauts($sysConf);
+        if ($status['isDingcanDay'] == 1 && $status['DingcanStauts'] == 1) {
+            $result = SF::submit($data);
+            return json_ok($result);
+        }
+
+        return json_error(16004);
     }
 
     /**
@@ -54,12 +61,15 @@ class Order extends Base
     public function myOrder()
     {
         $user_id = input('get.user_id','','int');
-        if (!$user_id) {
+        $eatery_id = input('get.eatery_id','','int');
+        if (!$user_id || !$eatery_id) {
             return json_error(10002);
         }
-        $result = SF::detail($user_id);
+
+        $result = SF::detail($user_id, $eatery_id);
         $sysConf = SF::getSysConfigById($user_id);
         $result['dingcanStauts'] = SF::analyseSysConfig($sysConf);
+
         return json_ok($result);
     }
 
