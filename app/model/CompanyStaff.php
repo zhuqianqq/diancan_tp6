@@ -29,6 +29,8 @@ class CompanyStaff extends Model
 
     use ModelTrait;
 
+    public  static $_table  = "dc_company_staff";
+
     /**
      * 根据用户corpId获取员工信息
      */
@@ -48,12 +50,13 @@ class CompanyStaff extends Model
     /**
      * 根据员工id获取公司和部门信息
      */
-    function getCompAndDeptInfoById($user_id)
+    public static function getCompAndDeptInfoById($user_id)
     {
-        $result = \think\facade\Db::table('dc_company_staff')
+        $staffTable =  static::$_table;
+        $result = \think\facade\Db::table($staffTable)
             ->alias('s')
-            ->join('dc_company_register r', 'r.company_id = s.company_id')
-            ->join('dc_company_department d', 'd.company_id = s.company_id and d.platform_departid = s.department_id')
+            ->join(CompanyRegister::$_table . ' r', 'r.company_id = s.company_id')
+            ->join(DTDepartment::$_table . ' d', 'd.company_id = s.company_id and d.platform_departid = s.department_id')
             ->where('staff_status = 1 and staffid=:staffid',['staffid' => $user_id])
             ->field(['staffid','s.company_id','staff_name','department_id','company_name','platform_departid','dept_name'])
             ->find();

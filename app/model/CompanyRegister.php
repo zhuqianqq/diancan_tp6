@@ -31,5 +31,7 @@ class CompanyRegister extends Model
     //关闭自动写入update_time
     protected $updateTime = false;
 
+    public  static $_table  = "dc_company_register";
+
     use ModelTrait;
 }

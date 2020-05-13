@@ -19,6 +19,8 @@ class DTDepartment extends Model
     use ModelTrait;
 
     protected $table = "dc_company_department";
+    public  static $_table  = "dc_company_department";
+
 
     //注册
     public function registerDepartment($_data,$company_id){

@@ -50,8 +50,7 @@ class Order
         //获取员工信息
         $staffid = $data['staffid'];
         $sysConf = self::getSysConfigById($staffid);
-        //$send_time_arr = \GuzzleHttp\json_decode($sysConf['send_time_info'], true);
-        $compAndDeptInfo = getCompAndDeptInfoById($staffid);
+        $compAndDeptInfo = CompanyStaff::getCompAndDeptInfoById($staffid);
 
         if(!$compAndDeptInfo){
             throw new MyException(20060);
