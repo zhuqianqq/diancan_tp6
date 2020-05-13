@@ -19,11 +19,11 @@ use app\model\OrderDetail as OrdD;
 
 /**
  * 员工订餐
- * Class Order
+ * Class OrderService
  * @package app\service
  * @author  2066362155@qq.com
  */
-class Order
+class OrderService
 {
     use ServiceTrait;
 

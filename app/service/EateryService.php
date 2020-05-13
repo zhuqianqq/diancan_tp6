@@ -4,6 +4,7 @@ namespace app\service;
 
 use app\model\Eatery as E;
 use app\model\EateryRegister as ER;
+use app\model\Food;
 use app\MyException;
 use app\traits\ServiceTrait;
 use app\model\CompanyAdmin;
@@ -12,7 +13,7 @@ use app\service\DingcanSysconfigService as SD;
 use app\model\Order as Ord;
 use app\model\OrderDetail as OrdD;
 use app\model\SysArea;
-use app\servicestaff\Order as SF;
+use app\servicestaff\OrderService as SF;
 
 /**
  * 菜品
@@ -80,11 +81,23 @@ class EateryService
             throw new MyException(13002);
         }
 
+        $list = [];
         $where = ['company_id'=>$userInfo->company_id, 'eatery_id'=>$eatery_id];
-        $list = E::with(['food'])->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
+        $eateryInfo = E::where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->find();
+        if ($eateryInfo) {
+            $eateryInfo = $eateryInfo->toArray();
+            $foodInfo = Food::where('eatery_id=:eatery_id', ['eatery_id' => $eatery_id])->select();
+            $list = $eateryInfo;
+            if ($foodInfo) {
+                $list['food'] = $foodInfo->toArray();
+            }
+            return $list;
+        }
+
+        /*$list = E::with('food')->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
         if ($list) {
             return $list->toArray();
-        }
+        }*/
 
         return [];
     }

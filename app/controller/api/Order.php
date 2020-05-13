@@ -9,8 +9,8 @@ use think\annotation\Route;
 use app\validate\Order as VO;
 use think\annotation\route\Validate;
 use think\exception\ValidateException;
-use app\servicestaff\Order as SF;
-use app\servicestaff\Eatery as SE;
+use app\servicestaff\OrderService as SF;
+use app\servicestaff\EateryService as SE;
 
 /**
  * 订餐接口
