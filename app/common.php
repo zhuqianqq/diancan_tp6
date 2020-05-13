@@ -92,9 +92,9 @@ function think_decrypt($data, $key = '')
  * @param array $data
  * @return json
  */
-function json_ok($data = [], $code = 10000, $msg = '')
+function json_ok($data = [], $code = 10000, $status = 1, $msg = '')
 {
-    $result['status'] = 1;
+    $result['status'] = $status;
     $result['data']   = $data;
     $result['msg']    = isset(config('error')[$code]) ? config('error')[$code] : '';
     $result['code']   = $code;
@@ -463,6 +463,38 @@ function setH5token($eatery_id,$eat_type)
 function getH5token($token)
 {
     return json_decode(base64_decode($token),true);
+}
+
+/**
+ * 获取统计时间
+ * @param $type
+ * 1 本周
+ * 2 上周
+ * 3 本月
+ * 4 近30天
+ * @return array
+ */
+function getDateInfo($type)
+{
+    $data = array(
+        array(
+            'start_time' => date("Y-m-d H:i:s",mktime(0, 0 , 0,date("m"),date("d")-date("w")+1,date("Y"))),
+            'end_time' => date("Y-m-d H:i:s",mktime(23,59,59,date("m"),date("d")-date("w")+7,date("Y"))),
+        ),
+        array(
+            'start_time' => date("Y-m-d H:i:s",mktime(0, 0 , 0,date("m"),date("d")-date("w")+1-7,date("Y"))),
+            'end_time' => date("Y-m-d H:i:s",mktime(23,59,59,date("m"),date("d")-date("w")+7-7,date("Y"))),
+        ),
+        array(
+            'start_time' => date("Y-m-d H:i:s",mktime(0, 0 , 0,date("m"),1,date("Y"))),
+            'end_time' => date("Y-m-d H:i:s",mktime(23,59,59,date("m"),date("t"),date("Y"))),
+        ),
+        array(
+            'start_time' => date('Y-m-d 00:00:00', strtotime("-30 day")),
+            'end_time' => date('Y-m-d 23:59:59', strtotime('-1 day')),
+        )
+    );
+    return is_null($type) ? $data : $data[$type-1];
 }
 
 
