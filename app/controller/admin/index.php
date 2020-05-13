@@ -49,7 +49,7 @@ class index extends Base
         $userId = input('get.user_id','','int');
         $result = I::isSet($userId);
         if ($result) return json_ok($result);
-        return json_ok($result, 10000, 2);
+        return json_ok($result, 100001, 2);
     }
 
     /**
