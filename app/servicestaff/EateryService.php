@@ -16,7 +16,7 @@ use think\Db;
  * @package app\service
  * @author  2066362155@qq.com
  */
-class Eatery
+class EateryService
 {
 
     /**

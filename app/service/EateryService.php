@@ -12,7 +12,7 @@ use app\service\DingcanSysconfigService as SD;
 use app\model\Order as Ord;
 use app\model\OrderDetail as OrdD;
 use app\model\SysArea;
-use app\servicestaff\Order as SF;
+use app\servicestaff\OrderService as SF;
 
 /**
  * 菜品
@@ -81,7 +81,7 @@ class EateryService
         }
 
         $where = ['company_id'=>$userInfo->company_id, 'eatery_id'=>$eatery_id];
-        $list = E::with(['food'])->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
+        $list = E::with('food')->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
         if ($list) {
             return $list->toArray();
         }
