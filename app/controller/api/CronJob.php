@@ -61,7 +61,7 @@ class CronJob extends Base
 		        foreach ($sysConfs as $k2 => $v2) {
 		     
 		        	if($this->checkNewsTime($v2)==true){
-		        		 $sendCompanyIds=$v2['company_id'];
+		        		 $sendCompanyIds[] = $v2['company_id'];
 		        	}
 		        }
 
@@ -109,11 +109,13 @@ class CronJob extends Base
     	}
 
     	$dingcanStatus = checkDingcanStauts($sysConfs);
-    	
+
     	//在订餐日且状态是订餐报名中的
     	if($dingcanStatus['isDingcanDay'] == 1 && $dingcanStatus['DingcanStauts'] == 1){
     		$news_time_arr = json_decode($sysConfs['news_time'],true);
+
 			$news_time = $news_time_arr[$dingcanStatus['send_time_key']];
+
 			$nowTimestamp = time();
 			//现在时间早于消息通知时间 返回ture
 			if($nowTimestamp<$news_time){
