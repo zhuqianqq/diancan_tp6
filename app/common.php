@@ -508,7 +508,7 @@ function getDateInfo($type)
         case 'recent30days':
             $res = array(
                 'start_time' => date('Y-m-d 00:00:00', strtotime("-29 day")),
-                'end_time' => date('Y-m-d 23:59:59', strtotime('-1 day')),
+                'end_time' => date('Y-m-d H:i:s'),
             );
             break;
         default:

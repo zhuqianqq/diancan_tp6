@@ -36,24 +36,27 @@ class OrderService
         $page_size= input('pagesize/d',10);
         $page= input('page/d',1);
 
-        if (!$user_id || !$eatery_id) {
+        $where = [];
+        if (!$user_id) {
             throw new MyException(13001);
-        }
-        $eateryInfo = ER::find($eatery_id);
-        if (!$eateryInfo) {
-            throw new MyException(13002);
         }
         $userInfo = CompanyAdmin::getAdminInfoById($user_id);
         if (!$userInfo) {
             throw new MyException(13002);
         }
-
+        $where['company_id'] = $userInfo->company_id;
+        if (isset($eatery_id) && !empty($eatery_id)) {
+            $eateryInfo = ER::find($eatery_id);
+            if (!$eateryInfo) {
+                throw new MyException(13002);
+            }
+            $where['eatery_id'] = $eatery_id;
+        }
         //获取餐馆名称
         $eateryName = SE::getNameById($eatery_id);
         if (empty($eateryName)) {
             throw new MyException(13002);
         }
-        $where = ['company_id' => $userInfo->company_id, 'eatery_id' => $eatery_id];
 
         if (isset($timeType)) {
             $timeInfo = getDateInfo($timeType);
@@ -61,28 +64,19 @@ class OrderService
             $where['end_time'] = $timeInfo['end_time'];
         }
 
-        $orderSql = "select date_format(create_time, '%Y-%m-%d') dat,eatery_id,eatery_name
-                from dc_order where company_id=:company_id and eatery_id=:eatery_id 
-                and create_time > :start_time and create_time <= :end_time 
-                group by date_format(create_time, '%Y-%m-%d') ";
+        $sql = "select date_format(create_time, '%Y-%m-%d') dat,eatery_id,eatery_name,
+                        sum(report_amount) report_amount,sum(report_num) report_num
+                     from dc_order where company_id=:company_id ";
 
-        $subSql = "(select is_settlement from dc_order where company_id=" . $userInfo->company_id ." and eatery_id= ". $eatery_id . " AND create_time > '" . $where['start_time'] . "' and create_time <= '".$where['end_time']. "' limit 1) as is_settlement";
-        //获取订单
-        $sql = 'select date_format(create_time, \'%Y-%m-%d\') dat, 
-                    count(*) report_num,
-                    sum(price) report_amount,
-                    '.$subSql.'
-                from dc_order_detail
-                where company_id=:company_id and eatery_id=:eatery_id 
-                and create_time > :start_time and create_time <= :end_time 
-                group by date_format(create_time, \'%Y-%m-%d\') 
-                limit ' .($page-1)*$page_size. ','.$page_size;
-
-        $res = \think\facade\Db::query($sql, $where);
-        foreach ($res as $k => $v) {
-            $res[$k]['eatery_name'] = $eateryName;
+        if ($eatery_id) {
+            $sql .=  ' and eatery_id=:eatery_id ';
         }
 
+        $sql .= " and create_time > :start_time and create_time <= :end_time 
+                     group by date_format(create_time, '%Y-%m-%d'),eatery_id limit "
+                     .($page-1)*$page_size. ','.$page_size;
+
+        $res = \think\facade\Db::query($sql, $where);
         $last_page = intval(count($res)/$page_size) + 1;
         $page = [
             'total' => count($res),
