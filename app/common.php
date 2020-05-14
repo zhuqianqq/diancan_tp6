@@ -323,6 +323,22 @@ function confEndTimeType($end_time_type = 1)
     return $minutes;
 }
 
+
+/**
+ * 自动消息提醒时间
+ * @param  `end_time_type` '订餐截止时间 1-送餐前1小时  2-送餐前2小时  3-送餐前3小时',
+ * @return int 分钟
+ */
+function sendMessageTimeType($message_time_type = 1)
+{
+    switch ($message_time_type){
+        case 1:$seconds = 60*60;break;
+        case 2:$seconds = 60*60*2;break;
+        case 3:$seconds = 60*60*3;break;
+    }
+    return $seconds;
+}
+
 /**
  * 分析订餐状态
  * @param  `end_time_type` '订餐截止时间 0-送餐前30分钟  1-送餐前1小时  2-送餐前2小时',

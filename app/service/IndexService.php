@@ -43,17 +43,7 @@ class IndexService
             throw new MyException(10001);
         }
 
-        //获取今天星期几
-        $wek = date("w");
-        if ($wek == 0) {
-            $wek = 7;
-        }
-        if (isset($data['timeType']) && $data['timeType'] == 1) {//1：今天  2：工作日
-            $data['dc_date'] = $wek;
-        } else {
-            $data['dc_date'] = '1,2,3,4,5';
-        }
-
+        $data['dc_date'] = 0;//默认选择工作日
         if (isset($data['food_info'])) {
             try {
                 $foodInfo = json_decode($data['food_info'], true);
