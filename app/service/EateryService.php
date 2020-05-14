@@ -136,6 +136,7 @@ class EateryService {
 		if ($dingcanStauts['isDingcanDay'] == 0) {
 			$recentOrder = OrdD::where(['company_id' => $userInfo->company_id])
 				->field('order_id,eat_type,create_time')
+				->order('id','desc')
 				->find();
 			$dingcanStauts['send_time_key'] = $eat_type = $recentOrder['eat_type'];
 			$_searchDay = explode(' ', $recentOrder['create_time']);
@@ -191,4 +192,63 @@ class EateryService {
 		return ['list' => $list, 'dingcanStauts' => $dingcanStauts, 'isSendMsg' => $isSendMsg]; 
 	}
 
+	/**
+	 * 最近订餐  获取对应餐馆的所有点餐人信息
+	 */
+	public static function getEatersList() {
+
+		$user_id = input('user_id', '', 'int');
+		$eatery_id = input('eatery_id', '', 'int');
+		$food_name = input('food_name', '', 'string');
+
+		if (!$user_id || !$eatery_id || !$food_name) {
+			throw new MyException(13001);
+		}
+
+		$userInfo = CompanyAdmin::getAdminInfoById($user_id);
+		if (!$userInfo) {
+			throw new MyException(13002);
+		}
+
+		$sysConf = SD::getSysConfigById($user_id);
+
+		$dingcanStauts = SF::analyseSysConfig($sysConf);
+
+		$eat_type = $dingcanStauts['send_time_key']; 
+		
+		$searchDay = 'today'; //默认查询今天的数据
+		$dingcanStauts['recent_day'] = '';
+		//如果当天为非工作日 查询最近一次工作日的订餐数据
+		if ($dingcanStauts['isDingcanDay'] == 0) {
+			$recentOrder = OrdD::where(['company_id' => $userInfo->company_id])
+				->field('order_id,eat_type,create_time')
+				->order('id','desc')
+				->find();
+			$dingcanStauts['send_time_key'] = $eat_type = $recentOrder['eat_type'];
+			$_searchDay = explode(' ', $recentOrder['create_time']);
+			$searchDay = $_searchDay[0];
+			$dingcanStauts['recent_day'] = $searchDay;
+		}
+
+
+		$where = ['company_id' => $userInfo->company_id, 'eatery_id' => $eatery_id, 'eat_type' => $eat_type, 'food_name' => $food_name];
+		//获取当天订单详情中对应（中、晚餐的）餐馆id,菜名,单价,总点餐数,总价信息
+		$OrderDetails = OrdD::where($where)
+			->field('order_id,staff_name,food_name,report_num')
+			->whereTime('create_time',$searchDay)
+			->select()->toArray();
+
+		return ['orderDetails' => $OrderDetails];
+
+	}
+
+
+	 /**
+     * 最近订餐 删除餐馆的相关点餐人信息
+     */
+	
+	 public static function delEaterOrder() {
+
+
+	 }
 }

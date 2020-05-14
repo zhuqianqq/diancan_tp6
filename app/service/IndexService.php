@@ -13,7 +13,7 @@ use app\model\EateryRegister;
 use app\model\Eatery;
 use app\model\DingcanSysconfig as DS;
 use app\model\DTDepartment;
-
+use app\util\AccessKeyHelper;
 
 /**
  * 首页
@@ -211,7 +211,7 @@ class IndexService
         $admin_info = CompanyAdmin::where('platform_userid = :user_id',['user_id'=>$user_id])
         ->field('userid,company_id,real_name,avatar,is_sys,corpid,platform_userid,department_id')
         ->find();
-   
+
         if (!$admin_info) {
             throw new MyException(11104);
         }
@@ -222,6 +222,9 @@ class IndexService
 
         //更新管理员登录信息
         CompanyAdmin::updateAdminInfo($admin_info['corpid'],$admin_info['platform_userid']);
+
+        //生成access_key
+        AccessKeyHelper::generateAccessKey($admin_info['user_id']); 
 
         return $admin_info;
 

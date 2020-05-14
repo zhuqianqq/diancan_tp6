@@ -95,6 +95,25 @@ class index extends Base
         return json_ok($result);
     }
 
+    /**
+     * 最近订餐 获取对应餐馆的所有点餐人信息
+     * @Route("getEatersList", method="GET")
+     */
+    public function getEatersList()
+    {
+        $result = SE::getEatersList();
+        return json_ok($result);
+    }
+
+    /**
+     * 最近订餐 删除餐馆的相关点餐人信息
+     * @Route("delEaterOrder", method="GET")
+     */
+    public function delEaterOrder()
+    {
+        $result = SE::delEaterOrder();
+        return json_ok($result);
+    }
 
      /**
      * 管理员信息接口
@@ -102,7 +121,8 @@ class index extends Base
      */
     public function adminInfo()
     {
-        $user_id = input('user_id','');
+        $user_id = input('user_id','','int');
+     
         if (!$user_id) {
             return json_error(10002);
         }
