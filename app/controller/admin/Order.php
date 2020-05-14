@@ -38,6 +38,48 @@ class Order extends Base
         return json_ok($result);
     }
 
+
+    /**
+     * 餐馆结算订单详情
+     * @Route("orderDetails")
+     */
+    public function orderDetails()
+    {
+        $result = O::orderDetails();
+        return json_ok($result);
+    }
+
+    /**
+     * 订单详情 —— 删除订单
+     * @Route("delOrder")
+     */
+    public function delOrder()
+    {
+        $result = O::delOrder();
+        if($result === true){
+            return json_ok();
+        }else{
+            return  json_error();
+        }
+        
+    }
+
+    /**
+     * 订单详情 —— 修改订单金额
+     * @Route("editOrder")
+     */
+    public function editOrder()
+    {
+        $result = O::editOrder();
+        if($result === true){
+            return json_ok();
+        }else{
+            return  json_error();
+        }
+        
+    }
+
+
     /**
      * 餐馆结算
      * @Route("settlement")
