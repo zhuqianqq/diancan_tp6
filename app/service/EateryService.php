@@ -238,7 +238,7 @@ class EateryService {
 			->field('order_id,staff_name,food_name,report_num')
 			->whereTime('create_time',$searchDay)
 			->select()->toArray();
-
+		//echo OrdD::getLastSql();die;	
 		return ['orderDetails' => $OrderDetails];
 
 	}
