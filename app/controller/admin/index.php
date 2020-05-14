@@ -102,7 +102,7 @@ class index extends Base
     public function getEatersList()
     {
         $result = SE::getEatersList();
-        return json_ok($result);
+        return json_ok();
     }
 
     /**
