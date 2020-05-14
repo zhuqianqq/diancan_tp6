@@ -32,8 +32,9 @@ class Order extends Base
         $eateryList = SE::getEaterylists();
         $sysConf = SF::getSysConfigById($staffid);
         $dingcanStauts = SF::analyseSysConfig($sysConf);
+        $eateryListFilter = SE::filerEatertList($eateryList, $sysConf);
 
-        return json_ok(['list' => $eateryList, 'dingcanStauts' => $dingcanStauts]);
+        return json_ok(['list' => $eateryListFilter, 'dingcanStauts' => $dingcanStauts]);
     }
 
     /**

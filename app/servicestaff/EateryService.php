@@ -5,6 +5,7 @@ namespace app\servicestaff;
 use app\model\CompanyStaff;
 use app\model\Eatery as E;
 use app\model\EateryRegister as ER;
+use app\model\EateryRegister;
 use app\MyException;
 use app\traits\ServiceTrait;
 use app\model\CompanyAdmin;
@@ -53,11 +54,47 @@ class EateryService
      */
     public static function getNameById($eateryId)
     {
-        if (!$eateryId) {
-            return json_error(13001);
-        }
+        if (!$eateryId) return json_error(13001);
         $eatryInfo = E::where('eatery_id',$eateryId)->find();
         if ($eatryInfo) return $eatryInfo->toArray();
         return [];
+    }
+
+    /**
+     * 根据公司设置和餐馆设置过滤餐馆列表
+     */
+    public static function filerEatertList($eateryList, $sysConf)
+    {
+        $sendTimeArr = \GuzzleHttp\json_decode($sysConf['send_time_info'], true);
+        $sysConfEatTypeArr = array_keys($sendTimeArr);//公司设置的eat_type
+        $sysConfEatType = implode(',',$sysConfEatTypeArr);
+
+        if (!$eateryList || !$sysConf) return json_error(13001);
+        foreach ($eateryList as $k => $v) {
+            if (count($sysConfEatTypeArr) == 1) {//公司只订一种餐  中餐或者晚餐
+                if ($sysConfEatType == EateryRegister::EAT_TYPE_LUNCH || $sysConfEatType == EateryRegister::EAT_TYPE_DINNER) {
+                    if (strpos($v['eat_type'], $sysConfEatType) === false) {
+                        unset($eateryList[$k]);
+                        continue;
+                    }
+                }
+            } else { //
+                $twoOclock = strtotime(date('Y-m-d 14:00:00',time()));//下午两点时间戳
+                $nowTime = time();
+                if ($nowTime < $twoOclock) {//上午
+                    if (strpos($v['eat_type'], (string)EateryRegister::EAT_TYPE_LUNCH ) === false) {
+                        unset($eateryList[$k]);
+                        continue;
+                    }
+                } else {//下午
+                    if (strpos($v['eat_type'], (string)EateryRegister::EAT_TYPE_DINNER) === false) {
+                        unset($eateryList[$k]);
+                        continue;
+                    }
+                }
+            }
+        }
+
+        return $eateryList;
     }
 }
