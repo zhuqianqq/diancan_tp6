@@ -39,21 +39,30 @@ class DingcanSysconfigService
 
         $data['company_id'] = $userInfo['company_id'];
         $oneSys = DF::where('company_id=:company_id', ['company_id' => $data['company_id']])->find();
-        if (!$oneSys) {//新增
-            try {
-                $sysConfig = new DF;
-                $sysConfig->save($data);
-            } catch (\Exception $e){
-               throw new MyException(15004, $e->getMessage());
-            }
-        } else {
-            try {
-                $oneSys->save($data);
-            } catch (\Exception $e){
-                throw new MyException(15004, $e->getMessage());
-            }
+        if (!$oneSys) {
+            throw new MyException(15002);
         }
 
+        $newsTime = [];
+        try {
+            $sendTimeArr = json_decode($data['send_time_info']);
+            if ($data['news_time_type']) {
+                foreach ($sendTimeArr as $k => $v) {
+                    $settedTime = date('Y-m-d ');
+                    $settedTime .= $v;
+                    $sendMessageTime = strtotime($settedTime) - sendMessageTimeType($data['news_time_type']);
+                    $newsTime[$k] = $sendMessageTime;
+                }
+            }
+        } catch (\Exception $e) {
+            throw new MyException(15002);
+        }
+        $data['news_time'] = json_encode($newsTime);
+        try {
+            $oneSys->save($data);
+        } catch (\Exception $e){
+            throw new MyException(15004, $e->getMessage());
+        }
         return [];
     }
 
