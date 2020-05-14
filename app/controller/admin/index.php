@@ -112,7 +112,7 @@ class index extends Base
     public function delEaterOrder()
     {
         $result = SE::delEaterOrder();
-        return json_ok($result);
+        return json_ok();
     }
 
      /**

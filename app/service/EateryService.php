@@ -9,6 +9,7 @@ use app\model\OrderDetail as OrdD;
 use app\model\SysArea;
 use app\MyException;
 use app\servicestaff\OrderService as SF;
+use app\service\OrderService as OrdS;
 use app\service\DingcanSysconfigService as SD;
 use think\facade\Cache;
 
@@ -237,7 +238,7 @@ class EateryService {
 			->field('order_id,staff_name,food_name,report_num')
 			->whereTime('create_time',$searchDay)
 			->select()->toArray();
-
+		//echo OrdD::getLastSql();die;	
 		return ['orderDetails' => $OrderDetails];
 
 	}
@@ -249,6 +250,29 @@ class EateryService {
 	
 	 public static function delEaterOrder() {
 
+		$user_id = input('user_id', '', 'int');
+	 	$order_id = input('order_id', '', 'int');
+
+		if (!$user_id || !$order_id) {
+			throw new MyException(13001);
+		}
+
+		$userInfo = CompanyAdmin::getAdminInfoById($user_id);
+		if (!$userInfo) {
+			throw new MyException(13002);
+		}
+
+		$sysConf = SD::getSysConfigById($user_id);
+
+		$dingcanStauts = SF::analyseSysConfig($sysConf);
+
+		if ($dingcanStauts['DingcanStauts'] != 1) {
+				
+				throw new MyException(16111);
+
+		}
+
+		return OrdS::delOrder();
 
 	 }
 }

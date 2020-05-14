@@ -243,11 +243,7 @@ class OrderService
                $sysConf = DS::where('company_id', $company_id)->find();
                $send_time_arr = json_decode($sysConf['send_time_info'],true);
 
-               if($eat_type == 2){  
-                    $send_time_key = 1;//中餐
-               }else if($eat_type == 4){
-                    $send_time_key = 2;//晚餐
-               }
+               $send_time_key =  $eat_type;
 
                $company_info->send_time = date('Y-m-d') . ' ' . $send_time_arr[$send_time_key] . ':00';
 
