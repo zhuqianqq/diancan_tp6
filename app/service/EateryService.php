@@ -170,7 +170,7 @@ class EateryService {
 			->select()->toArray();
 
 		if (!$OrderDetails) {
-			return ['list' => [], 'dingcanStauts' => $dingcanStauts];
+			return ['list' => [], 'dingcanStauts' => $dingcanStauts,'isSendMsg' => $isSendMsg];
 		}
 
 		$list_key = $list = [];
