@@ -191,26 +191,4 @@ class EateryService {
 		return ['list' => $list, 'dingcanStauts' => $dingcanStauts, 'isSendMsg' => $isSendMsg]; 
 	}
 
-	/**
-	 * 餐馆结算
-	 */
-	public static function settlement() {
-		$user_id = input('user_id', '', 'int');
-		$eatery_id = input('eatery_id', '', 'int');
-		if (!$user_id || !$eatery_id) {
-			throw new MyException(13001);
-		}
-		$eateryInfo = ER::find($eatery_id);
-		if (!$eateryInfo) {
-			throw new MyException(13002);
-		}
-		$userInfo = CompanyAdmin::getAdminInfoById($user_id);
-		if (!$userInfo) {
-			throw new MyException(13002);
-		}
-
-		//获取订单
-
-	}
-
 }

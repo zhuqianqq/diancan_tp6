@@ -17,6 +17,7 @@ use think\annotation\route\Validate;
 use think\exception\ValidateException;
 use app\service\OrderService as O;
 
+
 /**
  * 菜品接口
  * Class Food
@@ -87,6 +88,6 @@ class Order extends Base
     public function settlement()
     {
         $result = O::settlement();
-        return json_ok($result);
+        return json_ok();
     }
 }
