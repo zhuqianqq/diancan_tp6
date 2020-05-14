@@ -45,7 +45,7 @@ class DingcanSysconfigService
 
         try {
             $newsTime = [];
-            $sendTimeArr = json_decode($data['send_time_info']);
+            $sendTimeArr = json_decode($data['send_time_info'], true);
             if ($data['news_time_type']) {
                 foreach ($sendTimeArr as $k => $v) {
                     $settedTime = date('Y-m-d ');
@@ -62,7 +62,7 @@ class DingcanSysconfigService
         try {
             $oneSys->save($data);
         } catch (\Exception $e){
-            throw new MyException(15004, $e->getMessage());
+            throw new MyException(10001, $e->getMessage());
         }
         return [];
     }

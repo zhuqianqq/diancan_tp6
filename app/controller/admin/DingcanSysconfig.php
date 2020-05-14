@@ -37,7 +37,12 @@ class DingcanSysconfig extends Base
     */
     public function setting()
     {
-        $result = SD::setting(input('param.'));
+        $data['user_id'] = input('param.user_id', '', 'int');
+        $data['send_time_info'] = input('param.send_time_info', '');
+        $data['end_time_type'] = input('param.end_time_type', '', 'int');
+        $data['dc_date'] = input('param.dc_date', '', 'string');
+        $data['news_time_type'] = input('param.news_time_type', '', 'int');
+        $result = SD::setting($data);
         return json_ok($result);
     }
 
@@ -47,7 +52,7 @@ class DingcanSysconfig extends Base
      */
     public function info()
     {
-        $user_id = input('get.user_id','');
+        $user_id = input('get.user_id','', 'int');
         if (!$user_id) {
             return json_error(10002);
         }

@@ -63,7 +63,7 @@ class Order
         try {
             $data['orderArr'] = \GuzzleHttp\json_decode($data['orderInfo'], true);
         }catch (\Exception $e){
-            throw new MyException(13005, $e->getMessage());
+            throw new MyException(10001, $e->getMessage());
         }
 
         //获取餐馆信息

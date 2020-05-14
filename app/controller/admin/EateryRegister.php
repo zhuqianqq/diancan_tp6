@@ -38,7 +38,16 @@ class EateryRegister extends Base
      */
     public function addOrUpdata()
     {
-        $data = input('post.');
+        $data['user_id'] = input('param.user_id','', 'int');
+        $data['eatery_id'] = input('param.eatery_id','', 'int');
+        $data['eatery_name'] = input('param.eatery_name','', 'string');
+        $data['contacts'] = input('param.contacts','', 'string');
+        $data['mobile'] = input('param.mobile','', 'string');
+        $data['proive'] = input('param.proive','', 'int');
+        $data['city'] = input('param.city','', 'int');
+        $data['district'] = input('param.district','', 'int');
+        $data['address'] = input('param.address','', 'string');
+        $data['eat_type'] = input('param.eat_type','', 'string');
         $result = EateryRegisterService::registerEatery($data);
         return json_ok($result);
     }
