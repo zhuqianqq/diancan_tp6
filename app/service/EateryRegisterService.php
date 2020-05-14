@@ -79,7 +79,7 @@ class EateryRegisterService
                 Db::commit();
                 return [];
             }catch (\Exception $e){
-                throw new MyException(13001, $e->getMessage());
+                throw new MyException(10001, $e->getMessage());
                 Db::rollback();
             }
         }
@@ -92,8 +92,8 @@ class EateryRegisterService
      * @throws \app\MyException
      */
     public static function eateryDelete(){
-        $eatery_id = input('eatery_id');
-        $user_id = input('user_id');
+        $eatery_id = input('eatery_id', '', 'int');
+        $user_id = input('user_id', '', 'int');
         
         $oneEateryRegister = self::$repository::getInfoById($eatery_id);
         $oneEatery = Eatery::where('eatery_id=:eatery_id', ['eatery_id' => $eatery_id])->find();
@@ -114,7 +114,7 @@ class EateryRegisterService
                 Db::commit();
             }catch (\Exception $e){
                 Db::rollback();
-                throw new MyException(13001, $e->getMessage());
+                throw new MyException(10001, $e->getMessage());
             }
         } else {
             //软删除
@@ -122,7 +122,7 @@ class EateryRegisterService
                 $oneEatery->is_delete = 1;
                 $oneEatery->save();
             }catch (\Exception $e){
-                throw new MyException(13001, $e->getMessage());
+                throw new MyException(10001, $e->getMessage());
             }
         }
 

@@ -135,7 +135,6 @@ class index extends Base
     {
         $result = ProposalService::feedBack();
         return json_ok($result);
-
     }
 
 }

@@ -48,7 +48,7 @@ class ProposalService
             $proM->content = $content;
             $proM->save();
         } catch (\Exception $e){
-            throw new MyException(15004, $e->getMessage());
+            throw new MyException(10001, $e->getMessage());
         }
         return [];
     }

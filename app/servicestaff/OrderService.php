@@ -16,7 +16,6 @@ use think\Cache;
 use think\facade\Db;
 use app\model\OrderDetail as OrdD;
 
-
 /**
  * 员工订餐
  * Class OrderService
@@ -63,7 +62,7 @@ class OrderService
         try {
             $data['orderArr'] = \GuzzleHttp\json_decode($data['orderInfo'], true);
         }catch (\Exception $e){
-            throw new MyException(13005, $e->getMessage());
+            throw new MyException(10001, $e->getMessage());
         }
 
         //获取餐馆信息

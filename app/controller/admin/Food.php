@@ -44,8 +44,10 @@ class Food extends Base
     */
     public function addOrUpdata()
     {
-        header("Access-Control-Allow-Origin: *");
-        $result = F::addOrUpdata(input('param.'));
+        $data['food_id'] = input('param.food_id', '', 'int');
+        $data['eatrey_food_info'] = input('param.eatrey_food_info', '');
+        $data['eatery_id'] = input('param.eatery_id', '', 'int');
+        $result = F::addOrUpdata($data);
         return json_ok($result);
     }
 
@@ -56,7 +58,7 @@ class Food extends Base
      */
     public function delete()
     {
-        $food_id = input('get.food_id');
+        $food_id = input('param.food_id', '', 'int');
         if (!$food_id) {
            return json_error('14001');
         }

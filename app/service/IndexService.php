@@ -179,7 +179,7 @@ class IndexService
             $company = CompanyRegister::where($where)->find();
             $company->allowField($allowField)->save($data);
         }catch (\Exception $e){
-            throw new MyException(14005, $e->getMessage());
+            throw new MyException(10001, $e->getMessage());
         }
 
         return [];

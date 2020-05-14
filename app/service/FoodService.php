@@ -42,7 +42,7 @@ class FoodService
         try {
             $eateryArr = \GuzzleHttp\json_decode($data['eatrey_food_info'], true);
         }catch (\Exception $e){
-            throw new MyException(14005, $e->getMessage());
+            throw new MyException(10001, $e->getMessage());
         }
 
         if ($food_id==0) {//新增
@@ -59,7 +59,7 @@ class FoodService
                     $foodM->save();
                 }
             }catch (\Exception $e){
-                throw new MyException(14001, $e->getMessage());
+                throw new MyException(10001, $e->getMessage());
             }
         } else { //编辑
             $oneFood = F::find($food_id);
@@ -79,7 +79,7 @@ class FoodService
                 }
                 $oneFood->save($update_data);
             }catch (\Exception $e){
-                throw new MyException(14001, $e->getMessage());
+                throw new MyException(10001, $e->getMessage());
             }
         }
         return [];
