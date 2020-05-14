@@ -12,6 +12,8 @@ use app\model\Food;
 use app\model\EateryRegister;
 use app\model\Eatery;
 use app\model\DingcanSysconfig as DS;
+use app\model\DTDepartment;
+
 
 /**
  * 首页
@@ -198,5 +200,32 @@ class IndexService
         
         return CompanyRegister::where('company_id',$company_id)->field('company_id,company_name,contact,mobile,province,city,district,address')->find();
     }
+
+
+    /**
+     * 获取管理员信息
+     */
+    public static function adminInfo($user_id)
+    {
+
+        $admin_info = CompanyAdmin::where('platform_userid = :user_id',['user_id'=>$user_id])
+        ->field('userid,company_id,real_name,avatar,is_sys,corpid,platform_userid,department_id')
+        ->find();
+   
+        if (!$admin_info) {
+            throw new MyException(11104);
+        }
+       
+        //判断该用户数据库是否有部门信息
+        $DTDepartmentModel = new DTDepartment;
+        $admin_info['hasDepartment'] = $DTDepartmentModel->where('company_id',$admin_info['company_id'])->count();
+
+        //更新管理员登录信息
+        CompanyAdmin::updateAdminInfo($admin_info['corpid'],$admin_info['platform_userid']);
+
+        return $admin_info;
+
+    }
+    
 
 }
