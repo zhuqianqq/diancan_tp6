@@ -8,11 +8,9 @@
 namespace app\controller\admin;
 
 use app\controller\admin\Base;
-use app\model\CompanyAdmin;
-use app\traits\ControllerTrait;
 use app\service\EateryService as SE;
-use think\annotation\route\Group;
 use think\annotation\Route;
+use think\annotation\route\Group;
 
 /**
  * 餐馆接口
@@ -21,26 +19,23 @@ use think\annotation\Route;
  * @author  2066362155@qq.com
  * @Group("admin/Eatery")
  */
-class Eatery extends Base
-{
-    /**
-     * 餐馆管理列表
-     * @Route("lists", method="GET")
-     */
-    public function lists()
-    {
-        $result = SE::getlists();
-        return json_ok($result);
-    }
+class Eatery extends Base {
+	/**
+	 * 餐馆管理列表
+	 * @Route("lists", method="GET")
+	 */
+	public function lists() {
+		$result = SE::getlists();
+		return json_ok($result);
+	}
 
-    /**
-     * 最近订餐
-     * @Route("recentlyOrder")
-     */
-    public function recentlyOrdering()
-    {
-        $result = SE::getRecentlyOrders();
-        return json_ok($result);
-    }
+	/**
+	 * 最近订餐
+	 * @Route("recentlyOrder")
+	 */
+	public function recentlyOrdering() {
+		$result = SE::getRecentlyOrders();
+		return json_ok($result);
+	}
 
 }
