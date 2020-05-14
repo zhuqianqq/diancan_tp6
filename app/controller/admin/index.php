@@ -18,6 +18,8 @@ use think\annotation\Route;
 use app\validate\Index AS VI;
 use think\annotation\route\Validate;
 use app\service\EateryService as SE;
+use app\service\ProposalService;
+use app\validate\Proposal;
 
 /**
  * 订餐后台首页
@@ -121,6 +123,18 @@ class index extends Base
         CompanyAdmin::updateAdminInfo($admin_info['corpid'],$admin_info['platform_userid']);
 
         return json_ok($admin_info); 
+
+    }
+
+    /**
+     * 意见反馈
+     * @Route("feedBack", method="POST")
+     *  @Validate(Proposal::class,scene="save",batch="true")
+     */
+    public function feedBack()
+    {
+        $result = ProposalService::feedBack();
+        return json_ok($result);
 
     }
 
