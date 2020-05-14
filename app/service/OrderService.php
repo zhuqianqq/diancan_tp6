@@ -95,4 +95,93 @@ class OrderService
         return $page;
     }
 
+
+
+    public static function orderDetails()
+    {
+
+        $user_id = input('user_id', '', 'int');
+        $eatery_id = input('eatery_id', '', 'int');
+        $date = input('date', '');
+        $eat_type = input('eat_type', '');
+  
+        if (!$user_id || !$eatery_id || !$date) {
+            throw new MyException(13001);
+        }
+        $eateryInfo = ER::find($eatery_id);
+        if (!$eateryInfo) {
+            throw new MyException(13002);
+        }
+        $userInfo = CompanyAdmin::getAdminInfoById($user_id);
+        if (!$userInfo) {
+            throw new MyException(13002);
+        }
+
+        $where = ['company_id' => $userInfo->company_id, 'eatery_id' => $eatery_id];
+
+        if($eat_type){
+            $where['eat_type'] = $eat_type;
+        }
+
+        //获取餐馆名称
+        $eateryName = SE::getNameById($eatery_id);
+        if (empty($eateryName)) {
+            throw new MyException(13002);
+        }
+
+        $orderDetails = OrdD::where($where)
+                        ->field('id,order_id,staff_name,food_name,price,eat_type,report_amount,report_num')
+                        ->whereTime('create_time',$date)
+                        ->select();
+
+        return ['orderDetails'=>$orderDetails,'eateryName'=>$eateryName];
+    }
+
+
+    public static function delOrder()
+    {
+         $order_id = input('order_id', '', 'int');
+         if (!$order_id) {
+            throw new MyException(13001);
+         }
+
+         try {
+                 Db::startTrans();
+                 Db::name("order")::where('order_id = :order_id',['order_id'=>$order_id])->delete();
+                 Db::name("order_detail")::where('order_id = :order_id',['order_id'=>$order_id])->delete();
+                 Db::commit();
+         }catch (\Exception $e){
+                 Db::rollback();
+                 return false; 
+         }
+        
+        return true;
+
+    }
+
+
+    public static function editOrder()
+    {
+         $order_id = input('order_id', '', 'int');
+         $order_id = input('order_id', '', 'int');
+         if (!$order_id) {
+            throw new MyException(13001);
+         }
+
+         try {
+                 Db::startTrans();
+                 Db::name("order")::where('order_id = :order_id',['order_id'=>$order_id])->delete();
+                 Db::name("order_detail")::where('order_id = :order_id',['order_id'=>$order_id])->delete();
+                 Db::commit();
+         }catch (\Exception $e){
+                 Db::rollback();
+                 return false; 
+         }
+        
+        return true;
+
+    }
+    
+    
+
 }

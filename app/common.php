@@ -387,9 +387,9 @@ function checkDingcanStauts($sysConf)
         //判断上午还是下午
         $no = date("H",time());
         if ($no < 14){
-            $send_time_key = 1;
-        } else {
             $send_time_key = 2;
+        } else {
+            $send_time_key = 4;
         }
         //获取具体的送餐时间
         $send_time_info = json_decode($sysConf['send_time_info'],true);
@@ -400,7 +400,7 @@ function checkDingcanStauts($sysConf)
             $send_time_key = $send_time_info_keys[0];
         }
 
-        if ($send_time_key == 1) {
+        if ($send_time_key == 2) {
             $send_time_text = '上午';
         } else {
             $send_time_text = '下午';

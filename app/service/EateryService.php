@@ -128,11 +128,8 @@ class EateryService {
 
 		$dingcanStauts = SF::analyseSysConfig($sysConf);
 
-		if ($dingcanStauts['send_time_key'] == 1) {
-			$eat_type = 2; //中餐
-		} else if ($dingcanStauts['send_time_key'] == 2) {
-			$eat_type = 4; //晚餐
-		}
+		$eat_type = $dingcanStauts['send_time_key']; 
+		
 		$searchDay = 'today'; //默认查询今天的数据
 		$dingcanStauts['recent_day'] = '';
 		//如果当天为非工作日 查询最近一次工作日的订餐数据
