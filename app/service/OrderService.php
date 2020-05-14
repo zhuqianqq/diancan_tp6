@@ -33,6 +33,9 @@ class OrderService
         $user_id = input('user_id', '', 'int');
         $eatery_id = input('eatery_id', '', 'int');
         $timeType = input('timeType', '', 'string');
+        $page_size= input('pagesize/d',10);
+        $page= input('page/d',1);
+
         if (!$user_id || !$eatery_id) {
             throw new MyException(13001);
         }
@@ -51,26 +54,45 @@ class OrderService
             throw new MyException(13002);
         }
         $where = ['company_id' => $userInfo->company_id, 'eatery_id' => $eatery_id];
-        //获取订单
-        $sql = 'select date_format(create_time, \'%Y-%m-%d\') dat, count(*) report_num,
-              sum(price) report_amount 
-                  from dc_order_detail
-                   where company_id=:company_id and eatery_id=:eatery_id 
-                   and create_time > :start_time and create_time <= :end_time group by date_format(create_time, \'%Y-%m-%d\');';
 
         if (isset($timeType)) {
             $timeInfo = getDateInfo($timeType);
-            print_r($timeInfo);die;
             $where['start_time'] = $timeInfo['start_time'];
             $where['end_time'] = $timeInfo['end_time'];
         }
+
+        $orderSql = "select date_format(create_time, '%Y-%m-%d') dat,eatery_id,eatery_name
+                from dc_order where company_id=:company_id and eatery_id=:eatery_id 
+                and create_time > :start_time and create_time <= :end_time 
+                group by date_format(create_time, '%Y-%m-%d') ";
+
+        $subSql = "(select is_settlement from dc_order where company_id=" . $userInfo->company_id ." and eatery_id= ". $eatery_id . " AND create_time > '" . $where['start_time'] . "' and create_time <= '".$where['end_time']. "' limit 1) as is_settlement";
+        //获取订单
+        $sql = 'select date_format(create_time, \'%Y-%m-%d\') dat, 
+                    count(*) report_num,
+                    sum(price) report_amount,
+                    '.$subSql.'
+                from dc_order_detail
+                where company_id=:company_id and eatery_id=:eatery_id 
+                and create_time > :start_time and create_time <= :end_time 
+                group by date_format(create_time, \'%Y-%m-%d\') 
+                limit ' .($page-1)*$page_size. ','.$page_size;
+
         $res = \think\facade\Db::query($sql, $where);
-        echo \think\facade\Db::getlastsql();die;
         foreach ($res as $k => $v) {
             $res[$k]['eatery_name'] = $eateryName;
         }
 
-        return $res;
+        $last_page = intval(count($res)/$page_size) + 1;
+        $page = [
+            'total' => count($res),
+            'per_page' => $page_size,
+            'current_page' => $page,
+            'last_page' => $last_page,
+            'data' => $res,
+        ];
+
+        return $page;
     }
 
 }

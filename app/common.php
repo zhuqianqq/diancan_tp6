@@ -507,7 +507,7 @@ function getDateInfo($type)
             break;
         case 'recent30days':
             $res = array(
-                'start_time' => date('Y-m-d 00:00:00', strtotime("-30 day")),
+                'start_time' => date('Y-m-d 00:00:00', strtotime("-29 day")),
                 'end_time' => date('Y-m-d 23:59:59', strtotime('-1 day')),
             );
             break;
@@ -516,30 +516,6 @@ function getDateInfo($type)
     }
 
     return  $res;
-
-    /*$data = array(
-        array(
-            'start_time' => date('Y-m-d 00:00:00', strtotime("-7 day")),
-            'end_time' => date('Y-m-d 23:59:59', strtotime('-1 day')),
-        ),
-        array(
-            'start_time' => date("Y-m-d H:i:s",mktime(0, 0 , 0,date("m"),date("d")-date("w")+1,date("Y"))),
-            'end_time' => date("Y-m-d H:i:s",mktime(23,59,59,date("m"),date("d")-date("w")+7,date("Y"))),
-        ),
-        array(
-            'start_time' => date("Y-m-d H:i:s",mktime(0, 0 , 0,date("m"),date("d")-date("w")+1-7,date("Y"))),
-            'end_time' => date("Y-m-d H:i:s",mktime(23,59,59,date("m"),date("d")-date("w")+7-7,date("Y"))),
-        ),
-        array(
-            'start_time' => date("Y-m-d H:i:s",mktime(0, 0 , 0,date("m"),1,date("Y"))),
-            'end_time' => date("Y-m-d H:i:s",mktime(23,59,59,date("m"),date("t"),date("Y"))),
-        ),
-        array(
-            'start_time' => date('Y-m-d 00:00:00', strtotime("-30 day")),
-            'end_time' => date('Y-m-d 23:59:59', strtotime('-1 day')),
-        )
-    );
-    return is_null($type) ? $data : $data[$type-1];*/
 }
 
 

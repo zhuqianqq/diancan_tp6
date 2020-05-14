@@ -68,17 +68,17 @@ class IndexService
         }
 
         //组装送餐时间字段、消息提醒使时间字段
-        $nowTime = time();
-        $settedTime = date('Y-m-d');
+        $twoOclock = strtotime(date('Y-m-d 14:00:00',time()));
+        $settedTime = date('Y-m-d ');
         $settedTime .= $data['mealTime'];
-        $settedTimeStr = strtotime($settedTime) + 3600;//增加一小时
-        $sendMessageTime = strtotime($settedTime) - 3600;
-        if ($nowTime > $settedTimeStr) {//晚餐
-            $mealType = 2;
+        $settedTime = strtotime($settedTime);
+        $sendMessageTime = $settedTime - 3600;
+        if ($settedTime > $twoOclock) {//当前时间大于2点即为晚餐
+            $mealType = EateryRegister::EAT_TYPE_DINNER;
             $data['send_time_info'] = ['2'=>$data['mealTime']];
             $data['news_time'] = ['2'=>$sendMessageTime];
-        } else {
-            $mealType = 1;
+        } else {//中餐
+            $mealType = EateryRegister::EAT_TYPE_LUNCH;
             $data['send_time_info'] = ['1'=>$data['mealTime']];
             $data['news_time'] = ['1'=>$sendMessageTime];
         }
@@ -86,6 +86,10 @@ class IndexService
         self::beginTrans();
         //添加系统配置表
         $userInfo = CompanyAdmin::getAdminInfoById($data['user_id']);
+        if (!$userInfo) {
+            throw new MyException(14002);
+        }
+
         $dsM = new DS;
         $dsM->company_id = $userInfo['company_id'];
         $dsM->send_time_info = \GuzzleHttp\json_encode($data['send_time_info']);

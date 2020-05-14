@@ -18,6 +18,11 @@ use app\traits\ModelTrait;
  */
 class EateryRegister extends Model
 {
+    CONST EAT_TYPE_BREAKFAST = 1;//早餐
+    CONST EAT_TYPE_LUNCH = 2;//中餐
+    CONST EAT_TYPE_AFTERNOON_TEE = 3;//下午茶
+    CONST EAT_TYPE_DINNER = 4;//晚餐
+
     protected $pk = 'eatery_id';
     //时间字段显示格式
     protected $dateFormat = 'Y-m-d H:i:s';
