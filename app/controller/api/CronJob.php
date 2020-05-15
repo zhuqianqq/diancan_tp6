@@ -108,6 +108,9 @@ class CronJob extends Base {
 			$news_time = $news_time_arr[$dingcanStatus['send_time_key']];
 
 			$nowTimestamp = time();
+
+			$news_time = strtotime(date('Y-m-d',$nowTimestamp) . ' ' . $news_time . ':00');
+
 			//现在时间早于消息通知时间 返回ture
 			if ($nowTimestamp < $news_time) {
 		

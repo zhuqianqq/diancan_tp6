@@ -88,6 +88,7 @@ class IndexService
         $dsM = new DS;
         $dsM->company_id = $userInfo['company_id'];
         $dsM->send_time_info = \GuzzleHttp\json_encode($data['send_time_info']);
+        $dsM->news_time_type = $data['news_time_type'];
         $dsM->news_time = \GuzzleHttp\json_encode($data['news_time']);
         $dsM->end_time_type = $data['end_time_type'];
         $dsM->dc_date = $data['dc_date'];
