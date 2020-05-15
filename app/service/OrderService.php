@@ -80,7 +80,8 @@ class OrderService
             $totalNum += $v['report_num'];
             $totalMoney += $v['report_amount'];
         }
-
+        
+        $page['timeInfo'] = $timeInfo;
         $page['totalNum'] = $totalNum;
         $page['totalMoney'] = $totalMoney;
 
