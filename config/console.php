@@ -7,6 +7,7 @@ return [
     // 指令定义
     'commands' => [
         \app\command\TestCommand::class,
+        \app\command\SendMessageCommand::class,
     ],
 
 ];
