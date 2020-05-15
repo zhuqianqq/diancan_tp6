@@ -73,8 +73,8 @@ class OrderService
         }
 
         $page = Order::whereRaw($where, $condition)->whereBetween('create_time',[$timeInfo['start_time'], $timeInfo['end_time']])
-            ->field('date_format(create_time, \'%Y-%m-%d\') dat,eatery_id,eatery_name,is_settlement,
-                        sum(report_amount) report_amount,sum(report_num) report_num')
+            ->field('date_format(create_time, \'%Y-%m-%d\') dat,eatery_id,eatery_name,is_settlement,settle_time,
+                sum(report_amount) report_amount,sum(report_num) report_num')
             ->group('date_format(create_time, \'%Y-%m-%d\'),eatery_id')
             ->paginate($page_size)->toArray();
 
