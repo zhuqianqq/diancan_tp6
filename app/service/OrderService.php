@@ -122,7 +122,7 @@ class OrderService
 
         if($eat_type){
 
-            if (strpos($eat_type,',') === true) {
+            if (strpos($eat_type,',') !== false) {
                  
                $eat_type = explode(',', $eat_type);
             }
@@ -201,7 +201,7 @@ class OrderService
      * 餐馆结算
      */
     public static function settlement() {
-        
+
         $user_id = input('user_id', '', 'int');
         $eatery_id = input('eatery_id', '');
         $date = input('date', '');
