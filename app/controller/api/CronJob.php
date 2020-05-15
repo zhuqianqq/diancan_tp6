@@ -23,10 +23,7 @@ class CronJob extends Base {
 
 	const MES_KEY = 'MessageKey:';
 
-	/**
-	 * @Route("sendMessage", method="GET")
-	 */
-	public function sendMessage() {
+	public static function sendMessage() {
 		try {
 			//判断上午还是下午 14点之前为上午
 			$no = date("H", time());
@@ -56,7 +53,7 @@ class CronJob extends Base {
 
 			foreach ($sysConfs as $k2 => $v2) {
 
-				if ($this->checkNewsTime($v2) === true) {
+				if (self::checkNewsTime($v2) === true) {
 					$sendCompanyIds[] = $v2['company_id'];
 				}
 			}
@@ -91,7 +88,7 @@ class CronJob extends Base {
 	}
 
 	//检测是否是发送工作消息的时间
-	public function checkNewsTime($sysConfs) {
+	public static function checkNewsTime($sysConfs) {
 		if (!$sysConfs) {
 			return false;
 		}

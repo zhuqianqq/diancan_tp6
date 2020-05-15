@@ -36,17 +36,17 @@ abstract class BaseCommand extends Command
      */
     protected function _init()
     {
-        if(strtoupper(substr(PHP_OS,0,3)) !== 'WIN'){
-            $think_path = $this->app->getRootPath().'think'; //think脚本的路径
-            $cmd = "ps -ef | grep '{$think_path}' | grep '{$this->scriptName}' | grep -v grep";
-            @exec($cmd, $output, $retval);
-            $num = count($output);
+        // if(strtoupper(substr(PHP_OS,0,3)) !== 'WIN'){
+        //     $think_path = $this->app->getRootPath().'think'; //think脚本的路径
+        //     $cmd = "ps -ef | grep '{$think_path}' | grep '{$this->scriptName}' | grep -v grep";
+        //     @exec($cmd, $output, $retval);
+        //     $num = count($output);
 
-            if ($num > $this->maxProcessNum) {
-                $this->log("process_num:{$num} > max_num:{$this->maxProcessNum}|exit");
-                exit();
-            }
-        }
+        //     if ($num > $this->maxProcessNum) {
+        //         $this->log("process_num:{$num} > max_num:{$this->maxProcessNum}|exit");
+        //         exit();
+        //     }
+        // }
     }
 
     /**
@@ -76,19 +76,19 @@ abstract class BaseCommand extends Command
      */
     public function getProcessNum($script_name, $arg = '')
     {
-        if (empty($script_name)) {
-            return 0;
-        }
+        // if (empty($script_name)) {
+        //     return 0;
+        // }
 
-        $script_name = escapeshellcmd($script_name);
-        if ($arg !== '') {
-            $sh = "ps -ef | grep -E '{$script_name} {$arg}$'"; //如果带参数，这里要用扩展表达式判断
-        } else {
-            $sh = "ps -ef | grep '{$script_name}' | grep -v grep";
-        }
-        @exec($sh, $output, $retval);
+        // $script_name = escapeshellcmd($script_name);
+        // if ($arg !== '') {
+        //     $sh = "ps -ef | grep -E '{$script_name} {$arg}$'"; //如果带参数，这里要用扩展表达式判断
+        // } else {
+        //     $sh = "ps -ef | grep '{$script_name}' | grep -v grep";
+        // }
+        // @exec($sh, $output, $retval);
 
-        return count($output);
+        // return count($output);
     }
 
     /**
