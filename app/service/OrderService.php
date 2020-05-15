@@ -67,13 +67,13 @@ class OrderService
         if (!empty($end_time)) {
             $timeInfo['end_time'] = $end_time . ' '. date('H:i:s');
         }
-        if (!empty($is_settlement)) {
+        if (isset($is_settlement)) {
             $where .= ' AND is_settlement = :is_settlement';
             $condition['is_settlement'] = $is_settlement;
         }
 
         $page = Order::whereRaw($where, $condition)->whereBetween('create_time',[$timeInfo['start_time'], $timeInfo['end_time']])
-            ->field('date_format(create_time, \'%Y-%m-%d\') dat,eatery_id,eatery_name,
+            ->field('date_format(create_time, \'%Y-%m-%d\') dat,eatery_id,eatery_name,is_settlement,
                         sum(report_amount) report_amount,sum(report_num) report_num')
             ->group('date_format(create_time, \'%Y-%m-%d\'),eatery_id')
             ->paginate($page_size)->toArray();
