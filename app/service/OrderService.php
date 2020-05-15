@@ -35,6 +35,8 @@ class OrderService
         $user_id = input('user_id', '', 'int');
         $eatery_id = input('eatery_id', '', 'int');
         $timeType = input('timeType', '', 'string');
+        $start_time = input('start_time', '', 'string');
+        $end_time = input('end_time', '', 'string');
         $page_size= input('pagesize/d',10);
 
         if (!$user_id) {
@@ -55,14 +57,14 @@ class OrderService
             $condition['eatery_id'] = $eatery_id;
         }
 
-        if (isset($timeType)) {
+        if (!empty($timeType)) {
             $timeInfo = getDateInfo($timeType);
         }
-
-        if (isset($start_time)) {
+        if (!empty($start_time)) {
             $timeInfo['start_time'] = $start_time;
         }
-        if (isset($end_time)) {
+
+        if (!empty($end_time)) {
             $timeInfo['end_time'] = $end_time;
         }
 
