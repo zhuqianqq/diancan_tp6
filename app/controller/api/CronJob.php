@@ -32,9 +32,9 @@ class CronJob extends Base {
 			$no = date("H", time());
 			$today = date('Ymd', time());
 			if ($no < 14) {
-				$send_time_key = 1;
-			} else {
 				$send_time_key = 2;
+			} else {
+				$send_time_key = 4;
 			}
 			//检查相应公司是否已经发送过工作消息 （是否已经在redis中有相应缓存key）
 			$checkKeys = CompanyRegister::column('company_id,corpid');
