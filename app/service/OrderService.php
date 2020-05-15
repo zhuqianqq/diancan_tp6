@@ -263,13 +263,21 @@ class OrderService
                         ->update($update_date);
                     }
 
-                //处理全选餐馆的结算传参(若全选 需要传timeType参数（最近七天 上周 本月 最近30天的结算)
+                //处理全选餐馆的结算传参 若全选 需要传timeType参数（最近七天 上周 本月 最近30天的结算)
                 }else if($date === 'ALL'){
 
                     $timeInfo = getDateInfo($timeType);
                     $orderModel::where($where)
                     ->whereTime('create_time', 'between', [$timeInfo['start_time'], $timeInfo['end_time']])
                     ->update($update_date);
+
+                //处理全选餐馆的结算传参 若全选 且传的timeType为Search 结算该查询时间段的订单数据  参数为 2020-05-01,2020-05-15
+                }else if($date === 'Search'){
+
+                    $date = explode(',', $date);
+                    $orderModel::where($where)
+                        ->whereTime('create_time', 'between', $date)
+                        ->update($update_date);
 
                 //处理具体某天如'2020-05-14'的传参
                 }else{
