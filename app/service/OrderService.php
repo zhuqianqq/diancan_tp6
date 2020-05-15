@@ -197,10 +197,94 @@ class OrderService
 
 
 
-    /**
+     /**
      * 餐馆结算
      */
     public static function settlement() {
+        
+        $user_id = input('user_id', '', 'int');
+        $eatery_id = input('eatery_id', '');
+        $date = input('date', '');
+
+        if (!$user_id || !$date) {
+            throw new MyException(13001);
+        }
+
+        $userInfo = CompanyAdmin::getAdminInfoById($user_id);
+        if (!$userInfo) {
+            throw new MyException(13002);
+        }
+
+        $where = [];
+        $where[] = ['company_id','=',$userInfo->company_id];
+        $where[] = ['is_settlement','<>',1];
+
+        $eatery_id = str_replace('，',',',$eatery_id);
+        $date = str_replace('，',',',$date);
+
+        if (strpos($eatery_id,',') !== false) {
+
+            $eatery_id = array_unique(explode(',', $eatery_id));
+
+            $where[] = ['eatery_id','in',$eatery_id];
+
+        }else if($eatery_id){
+
+            $where[] = ['eatery_id','=',$eatery_id];
+
+        }
+
+
+        $update_date = ['is_settlement' => 1,'settle_time' => date('Y-m-d H:i:s',time())];
+
+        try {
+
+                $orderModel = new Ord();
+                $orderModel->startTrans(); // 开启订单模型的事务
+
+                //处理'2020-05-10,2020-05-12,2020-05-13,2020-05-14'这样的传参
+                if (strpos($date,',') !== false) {
+
+                    $settlement_dates = [];
+                    $_date = array_unique(explode(',', $date));
+                    foreach ($_date as $k => $v) {
+
+                        $settlement_dates[$k]['start_time'] = $v . ' 00:00:00';
+                        $settlement_dates[$k]['end_time'] = $v . ' 23:59:59';
+                    }
+            
+                    foreach ($settlement_dates as $k2 => $v2) {
+                        $orderModel::where($where)
+                        ->whereTime('create_time', 'between', [$v2['start_time'], $v2['end_time']])
+                        ->update($update_date);
+                    }
+
+                //处理具体某天如'2020-05-14'的传参
+                }else{
+
+                    $orderModel::where($where)
+                    ->whereTime('create_time', $date)
+                    ->update($update_date);
+                    
+                }
+
+                $orderModel->commit();
+
+        }catch (\Exception $e){
+        
+                 $orderModel->rollBack();
+                 throw new MyException(10001, $e->getMessage());
+        }
+
+        return true;
+
+    }
+
+
+    /**
+     * 餐馆结算
+     */
+    public static function settlement_old() {
         $user_id = input('user_id', '', 'int');
         $eatery_id = input('eatery_id', '');
         $date = input('date', '');
