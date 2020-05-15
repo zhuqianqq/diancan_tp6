@@ -202,7 +202,7 @@ class OrderService
      */
     public static function settlement() {
         $user_id = input('user_id', '', 'int');
-        $eatery_id = input('eatery_id', '', 'int');
+        $eatery_id = input('eatery_id', '');
         $date = input('date', '');
         $timeType = input('timeType', '', 'string');
 
@@ -210,10 +210,10 @@ class OrderService
             throw new MyException(13001);
         }
 
-        $eateryInfo = ER::find($eatery_id);
-        if (!$eateryInfo) {
-            throw new MyException(13002);
-        }
+        // $eateryInfo = ER::find($eatery_id);
+        // if (!$eateryInfo) {
+        //     throw new MyException(13002);
+        // }
         $userInfo = CompanyAdmin::getAdminInfoById($user_id);
         if (!$userInfo) {
             throw new MyException(13002);
@@ -221,13 +221,27 @@ class OrderService
 
         $where = [];
         $where[] = ['company_id','=',$userInfo->company_id];
-        $where[] = ['eatery_id','=',$eatery_id];
         $where[] = ['is_settlement','<>',1];
+
+        $eatery_id = str_replace('，',',',$eatery_id);
+        $date = str_replace('，',',',$date);
+ 
+        if (strpos($eatery_id,',') !== false) {
+
+            $eatery_id = explode(',', $eatery_id);
+
+            $where[] = ['eatery_id','in',$eatery_id];
+
+        }else{
+
+            $where[] = ['eatery_id','=',$eatery_id];
+
+        }
+
 
         $update_date = ['is_settlement' => 1,'settle_time' => date('Y-m-d H:i:s',time())];
 
         try {
-                $date = str_replace('，',',',$date);
 
                 $orderModel = new Ord();
                 $orderModel->startTrans(); // 开启订单模型的事务

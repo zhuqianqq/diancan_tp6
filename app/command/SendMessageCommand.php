@@ -14,8 +14,8 @@ class SendMessageCommand extends BaseCommand
      */
     protected function _execute()
     {
-       //CronJob::sendMessage();
-       $this->output->writeln('send_message');
+       CronJob::sendMessage();
+       //$this->output->writeln('send_message');
     }
 }
 
