@@ -147,10 +147,7 @@ class OrderService
             $totalMoney += $v->report_amount;
         }
 
-        $orderDetails->totalNum = $totalNum;
-        $orderDetails->totalMoney = $totalMoney;
-
-        return ['orderDetails'=>$orderDetails,'eateryName'=>$eateryName];
+        return ['orderDetails'=>$orderDetails,'eateryName'=>$eateryName,'totalNum'=>$totalNum,'totalMoney'=>$totalMoney];
     }
 
 
