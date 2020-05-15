@@ -26,8 +26,9 @@ use think\annotation\route\Middleware;
  * @package app\controller\admin
  * @author  2066362155@qq.com
  * @Group("admin/index")
- * @Middleware({\app\middleware\AccessCheck::class})
+ * 
  */
+// //@Middleware({\app\middleware\AccessCheck::class})
 class index extends Base
 {
  

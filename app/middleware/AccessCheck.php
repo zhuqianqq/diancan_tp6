@@ -16,6 +16,7 @@ class AccessCheck
      */
     public function handle($request, \Closure $next)
     {
+
         $user_id = intval($request->header('user-id') ?? $request->param('user_id'));
         $access_key = $request->header('access-key','');
 
