@@ -18,6 +18,7 @@ use think\annotation\route\Validate;
 use app\service\EateryService as SE;
 use app\service\ProposalService;
 use app\validate\Proposal;
+use think\annotation\route\Middleware;
 
 /**
  * 订餐后台首页
@@ -25,9 +26,11 @@ use app\validate\Proposal;
  * @package app\controller\admin
  * @author  2066362155@qq.com
  * @Group("admin/index")
+ * @Middleware({\app\middleware\AccessCheck::class})
  */
 class index extends Base
 {
+ 
     /**
      * 订餐设置
      * @Route("orderSetting", method="POST")
@@ -97,7 +100,7 @@ class index extends Base
      * @Route("getEatersList", method="GET")
      */
     public function getEatersList()
-    {
+    {   
         $result = SE::getEatersList();
         return json_ok($result);
     }
@@ -118,10 +121,12 @@ class index extends Base
      */
     public function adminInfo()
     {
-        $user_id = input('user_id','','int');
-        if (!$user_id) return json_error(10002);
-        $result = I::adminInfo($user_id);
+        $user_id = input('user_id','','string');
+        if (!$user_id) {
+            return json_error(10002);
+        }
 
+        $result = I::adminInfo($user_id);
         return json_ok($result);
     }
 
