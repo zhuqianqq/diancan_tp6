@@ -141,6 +141,15 @@ class OrderService
                         ->whereTime('create_time',$date)
                         ->select();
 
+        $totalNum = $totalMoney = 0;
+        foreach ($orderDetails as $k => $v) {
+            $totalNum += $v->report_num;
+            $totalMoney += $v->report_amount;
+        }
+
+        $orderDetails->totalNum = $totalNum;
+        $orderDetails->totalMoney = $totalMoney;
+
         return ['orderDetails'=>$orderDetails,'eateryName'=>$eateryName];
     }
 
