@@ -65,7 +65,7 @@ class OrderService
         }
 
         if (!empty($end_time)) {
-            $timeInfo['end_time'] = $end_time;
+            $timeInfo['end_time'] = $end_time . ' '. date('H:i:s');
         }
 
         $page = Order::whereRaw($where, $condition)->whereBetween('create_time',[$timeInfo['start_time'], $timeInfo['end_time']])
@@ -80,8 +80,11 @@ class OrderService
             $totalNum += $v['report_num'];
             $totalMoney += $v['report_amount'];
         }
-        
-        $page['timeInfo'] = $timeInfo;
+
+        $page['timeInfo'] = [
+            'start_time' => date('Y-m-d', strtotime($timeInfo['start_time'])),
+            'end_time' => date('Y-m-d', strtotime($timeInfo['end_time']))
+        ];
         $page['totalNum'] = $totalNum;
         $page['totalMoney'] = $totalMoney;
 

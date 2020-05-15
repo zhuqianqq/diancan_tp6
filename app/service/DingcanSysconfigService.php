@@ -51,6 +51,7 @@ class DingcanSysconfigService
                     $settedTime = date('Y-m-d ');
                     $settedTime .= $v;
                     $sendMessageTime = strtotime($settedTime) - sendMessageTimeType($data['news_time_type']);
+                    $sendMessageTime = date('H:i',$sendMessageTime);
                     $newsTime[$k] = $sendMessageTime;
                 }
                 $data['news_time'] = json_encode($newsTime);

@@ -64,7 +64,7 @@ class IndexService
         $settedTime = date('Y-m-d ');
         $settedTime .= $data['mealTime'];
         $settedTime = strtotime($settedTime);
-        $sendMessageTime = $settedTime - 3600;
+        $sendMessageTime = date($settedTime - 3600, 'H:i');//默认消息发送时间为送餐前一小时
         if ($settedTime > $twoOclock) {//当前时间大于2点即为晚餐
             $mealType = EateryRegister::EAT_TYPE_DINNER;
             $data['send_time_info'] = ['4'=>$data['mealTime']];
@@ -174,6 +174,7 @@ class IndexService
     {
         $companyAdminModel = new CompanyAdmin;
         $companyInfo = $companyAdminModel->where('userid',$data['user_id'])->find();
+
         $where = ['company_id'=>$companyInfo['company_id']];
         $allowField = ['contact','mobile','province','city','district','address'];
 
@@ -194,6 +195,7 @@ class IndexService
     {
         $companyAdminModel = new CompanyAdmin;
         $company_id = $companyAdminModel->where('userid = :user_id',['user_id'=>$user_id])->value('company_id');
+
         if(!$company_id){
             throw new MyException(20050);
         }
