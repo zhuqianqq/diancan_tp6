@@ -23,7 +23,8 @@ class DTDepartment extends Model
 
 
     //注册
-    public function registerDepartment($_data,$company_id){
+    public function registerDepartment($_data, $company_id)
+    {
         $data = [];
 
         foreach ($_data->department as $k => $v) {
@@ -38,6 +39,18 @@ class DTDepartment extends Model
             $data[$k]['create_time'] = date('Y-m-d H:i:s',time());
         }
         //批量更新
-        return self::saveAll($data);
+        self::saveAll($data);
+
+        //将dc_company_department 的 parent_id关联在id上
+        $companys = self::where('company_id',$company_id)->select();
+
+        foreach ($companys as $k2 => $v2) {
+            if($v2->parentid == 0){
+                continue;
+            }
+            $_parentid = self::where('platform_departid',$v2->parentid)->value('id');
+            self::where('id',$v2->id)->update(['parentid'=>$_parentid]);
+        }
+
     }
 }
