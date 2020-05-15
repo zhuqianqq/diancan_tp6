@@ -67,7 +67,7 @@ class IndexService
         $settedTime = date('Y-m-d ');
         $settedTime .= $data['mealTime'];
         $settedTime = strtotime($settedTime);
-        $sendMessageTime = date($settedTime - 3600, 'H:i');//默认消息发送时间为送餐前一小时
+        $sendMessageTime = date('H:i' , $settedTime - 3600);//默认消息发送时间为送餐前一小时
         if ($settedTime > $twoOclock) {//当前时间大于2点即为晚餐
             $mealType = EateryRegister::EAT_TYPE_DINNER;
             $data['send_time_info'] = ['4'=>$data['mealTime']];
