@@ -108,7 +108,7 @@ class Order extends Base
      */
     public function eateryOrderDetail()
     {
-        $token = input('token','');
+        $token = urldecode(input('token',''));
         if(!$token){
             return json_error(10001);
         }
