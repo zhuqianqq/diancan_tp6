@@ -24,7 +24,8 @@ class Eatery extends Base {
 	 * 餐馆管理列表
 	 * @Route("lists", method="GET")
 	 */
-	public function lists() {
+	public function lists()
+    {
 		$result = SE::getlists();
 		return json_ok($result);
 	}
@@ -33,7 +34,8 @@ class Eatery extends Base {
 	 * 最近订餐
 	 * @Route("recentlyOrder")
 	 */
-	public function recentlyOrdering() {
+	public function recentlyOrdering()
+    {
 		$result = SE::getRecentlyOrders();
 		return json_ok($result);
 	}

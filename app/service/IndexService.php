@@ -67,12 +67,12 @@ class IndexService
         $sendMessageTime = $settedTime - 3600;
         if ($settedTime > $twoOclock) {//当前时间大于2点即为晚餐
             $mealType = EateryRegister::EAT_TYPE_DINNER;
-            $data['send_time_info'] = ['2'=>$data['mealTime']];
-            $data['news_time'] = ['2'=>$sendMessageTime];
+            $data['send_time_info'] = ['4'=>$data['mealTime']];
+            $data['news_time'] = ['4'=>$sendMessageTime];
         } else {//中餐
             $mealType = EateryRegister::EAT_TYPE_LUNCH;
-            $data['send_time_info'] = ['1'=>$data['mealTime']];
-            $data['news_time'] = ['1'=>$sendMessageTime];
+            $data['send_time_info'] = ['2'=>$data['mealTime']];
+            $data['news_time'] = ['2'=>$sendMessageTime];
         }
 
         self::beginTrans();

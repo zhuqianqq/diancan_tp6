@@ -59,11 +59,9 @@ class Food extends Base
     public function delete()
     {
         $food_id = input('param.food_id', '', 'int');
-        if (!$food_id) {
-           return json_error('14001');
-        }
-
+        if (!$food_id) return json_error('14001');
         $result = F::deleteFood($food_id);
+
         return json_ok($result);
     }
 

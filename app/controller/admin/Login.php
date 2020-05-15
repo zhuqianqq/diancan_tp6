@@ -39,5 +39,4 @@ class Login extends BaseController
         return json_ok($result, 11108);
     }
 
-
 }

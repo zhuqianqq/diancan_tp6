@@ -52,7 +52,7 @@ class index extends Base
         $userId = input('get.user_id','','int');
         $result = I::isSet($userId);
         if ($result) return json_ok($result);
-        return json_ok($result, '10000', 2);
+        return json_ok($result, 10000, 2);
     }
 
     /**
@@ -72,7 +72,6 @@ class index extends Base
         return json_ok($result);
     }
 
-
     /**
      * 公司设置
      * @Route("getCompanySetting")
@@ -80,13 +79,11 @@ class index extends Base
     public function getCompanySetting()
     {
         $user_id = input('user_id','','int');
-        if (!$user_id) {
-            return json_error(10002);
-        }
+        if (!$user_id) return json_error(10002);
         $result = I::getCompanySetting($user_id);
+
         return json_ok($result);
     }
-
 
     /**
      * 最近订餐
@@ -125,14 +122,12 @@ class index extends Base
     public function adminInfo()
     {
         $user_id = input('user_id','','string');
-     
         if (!$user_id) {
             return json_error(10002);
         }
-        
-        $result = I::adminInfo($user_id);
-        return json_ok($result); 
 
+        $result = I::adminInfo($user_id);
+        return json_ok($result);
     }
 
     /**
