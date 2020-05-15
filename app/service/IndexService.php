@@ -172,8 +172,8 @@ class IndexService
      */
     public static function companySetting($data)
     {
-        $companyStaffModel = new CompanyStaff;
-        $companyInfo = $companyStaffModel->where('staffid',$data['user_id'])->find();
+        $companyAdminModel = new CompanyAdmin;
+        $companyInfo = $companyAdminModel->where('userid',$data['user_id'])->find();
         $where = ['company_id'=>$companyInfo['company_id']];
         $allowField = ['contact','mobile','province','city','district','address'];
 
@@ -192,8 +192,8 @@ class IndexService
      */
     public static function getCompanySetting($user_id)
     {
-        $companyStaffModel = new CompanyStaff;
-        $company_id = $companyStaffModel->where('staffid = :user_id',['user_id'=>$user_id])->value('company_id');
+        $companyAdminModel = new CompanyAdmin;
+        $company_id = $companyAdminModel->where('userid = :user_id',['user_id'=>$user_id])->value('company_id');
         if(!$company_id){
             throw new MyException(20050);
         }
