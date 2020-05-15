@@ -60,7 +60,7 @@ class EateryRegister extends Base
     public function deleteEatery()
     {
         $result = EateryRegisterService::eateryDelete();
-        if (!$result) json_ok($result, 13005);
+        if (!$result) return json_ok($result, 13005);
         return json_ok();
     }
 
