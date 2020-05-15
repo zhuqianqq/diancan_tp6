@@ -54,13 +54,33 @@ class OrderService
             $where .= ' AND eatery_id = :eatery_id';
             $condition['eatery_id'] = $eatery_id;
         }
-        $timeInfo = getDateInfo($timeType);
+
+        if (isset($timeType)) {
+            $timeInfo = getDateInfo($timeType);
+        }
+
+        if (isset($start_time)) {
+            $timeInfo['start_time'] = $start_time;
+        }
+        if (isset($end_time)) {
+            $timeInfo['end_time'] = $end_time;
+        }
 
         $page = Order::whereRaw($where, $condition)->whereBetween('create_time',[$timeInfo['start_time'], $timeInfo['end_time']])
             ->field('date_format(create_time, \'%Y-%m-%d\') dat,eatery_id,eatery_name,
                         sum(report_amount) report_amount,sum(report_num) report_num')
             ->group('date_format(create_time, \'%Y-%m-%d\'),eatery_id')
             ->paginate($page_size)->toArray();
+
+        $totalNum = 0;
+        $totalMoney = 0;
+        foreach ($page['data'] as $k => $v) {
+            $totalNum += $v['report_num'];
+            $totalMoney += $v['report_amount'];
+        }
+
+        $page['totalNum'] = $totalNum;
+        $page['totalMoney'] = $totalMoney;
 
         return $page;
     }
