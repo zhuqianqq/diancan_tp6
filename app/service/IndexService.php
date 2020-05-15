@@ -122,7 +122,7 @@ class IndexService
                //添加餐馆注册表
                $erM->eatery_name = '默认餐馆';
                $erM->contacts = '';
-               $erM->mobile = '';
+               //$erM->mobile = '';
                $erM->password = md5('123456');
                $erM->proive = '';
                $erM->city = '';
