@@ -100,7 +100,7 @@ class EateryService
 
         //没有餐馆则取第一个
         if (count($eateryList) == 0) {
-            return ['first'=>$firstEatery];
+            return ['1'=>$firstEatery];
         }
 
         return $eateryList;
