@@ -32,9 +32,9 @@ class CronJob extends Base {
 			$no = date("H", time());
 			$today = date('Ymd', time());
 			if ($no < 14) {
-				$send_time_key = 1;
-			} else {
 				$send_time_key = 2;
+			} else {
+				$send_time_key = 4;
 			}
 			//检查相应公司是否已经发送过工作消息 （是否已经在redis中有相应缓存key）
 			$checkKeys = CompanyRegister::column('company_id,corpid');
@@ -56,7 +56,7 @@ class CronJob extends Base {
 
 			foreach ($sysConfs as $k2 => $v2) {
 
-				if ($this->checkNewsTime($v2) == true) {
+				if ($this->checkNewsTime($v2) === true) {
 					$sendCompanyIds[] = $v2['company_id'];
 				}
 			}
@@ -113,8 +113,10 @@ class CronJob extends Base {
 			$nowTimestamp = time();
 			//现在时间早于消息通知时间 返回ture
 			if ($nowTimestamp < $news_time) {
+		
 				return true;
 			} else {
+	
 				return false;
 			}
 		} else {
