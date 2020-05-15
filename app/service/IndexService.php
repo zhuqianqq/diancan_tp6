@@ -54,9 +54,12 @@ class IndexService
             }
         }
 
+        $data['end_time_type'] = 0;//默认订餐截止时间为送餐前30分钟
+
         if (isset($data['news_time_type']) && !empty($data['news_time_type'])) {
-            $data['end_time_type'] = 0;//默认订餐截止时间为送餐前30分钟
             $data['news_time_type'] = 1;//默认自动消息提醒时间为送餐前1小时
+        }else{
+            $data['news_time_type'] = 0;
         }
 
         //组装送餐时间字段、消息提醒使时间字段
