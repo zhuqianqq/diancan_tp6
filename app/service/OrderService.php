@@ -206,7 +206,7 @@ class OrderService
         $date = input('date', '');
         $timeType = input('timeType', '', 'string');
 
-        if (!$user_id || !$eatery_id || !$date) {
+        if (!$user_id || !$date) {
             throw new MyException(13001);
         }
 
@@ -225,14 +225,14 @@ class OrderService
 
         $eatery_id = str_replace('，',',',$eatery_id);
         $date = str_replace('，',',',$date);
- 
+
         if (strpos($eatery_id,',') !== false) {
 
             $eatery_id = explode(',', $eatery_id);
 
             $where[] = ['eatery_id','in',$eatery_id];
 
-        }else{
+        }else if($eatery_id){
 
             $where[] = ['eatery_id','=',$eatery_id];
 
@@ -271,10 +271,10 @@ class OrderService
                     ->whereTime('create_time', 'between', [$timeInfo['start_time'], $timeInfo['end_time']])
                     ->update($update_date);
 
-                //处理全选餐馆的结算传参 若全选 且传的timeType为Search 结算该查询时间段的订单数据  参数为 2020-05-01,2020-05-15
-                }else if($date === 'Search'){
+                //处理全选餐馆的结算传参 若全选 且传的timeType为Search 结算该查询时间段的订单数据  参数为 2020-05-01|2020-05-15
+                }else if($timeType === 'Search'){
 
-                    $date = explode(',', $date);
+                    $date = explode('|', $date);
                     $orderModel::where($where)
                         ->whereTime('create_time', 'between', $date)
                         ->update($update_date);
