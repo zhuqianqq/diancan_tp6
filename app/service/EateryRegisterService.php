@@ -100,11 +100,14 @@ class EateryRegisterService
         if (!$oneEateryRegister || !$oneEatery) {
             throw new MyException(13002);
         }
-        $compAndDeptInfo = CompanyStaff::getCompAndDeptInfoById($user_id);
+        $compAndDeptInfo = CompanyAdmin::getAdminInfoById($user_id);
+
         //获取订餐记录
         $where = ['company_id'=>$compAndDeptInfo['company_id'], 'eatery_id'=>$eatery_id];
         $eateryRecord = Order::where('company_id=:company_id and eatery_id=:eatery_id', $where)->select();
+        $isSettlementCount = Order::where('company_id=:company_id and eatery_id=:eatery_id and is_settlement = 0', $where)->find();
 
+        $deleteFlag = false;
         if ($eateryRecord->count()==0) {
             Db::startTrans();
             //物理删除
@@ -116,17 +119,21 @@ class EateryRegisterService
                 Db::rollback();
                 throw new MyException(10001, $e->getMessage());
             }
+            $deleteFlag = true;
         } else {
             //软删除
-            try{
-                $oneEatery->is_delete = 1;
-                $oneEatery->save();
-            }catch (\Exception $e){
-                throw new MyException(10001, $e->getMessage());
+            if (!$isSettlementCount) {
+                try{
+                    $oneEatery->is_delete = 1;
+                    $oneEatery->save();
+                }catch (\Exception $e){
+                    throw new MyException(10001, $e->getMessage());
+                }
+                $deleteFlag = true;
             }
         }
 
-        return [];
+        return $deleteFlag;
     }
 
 }

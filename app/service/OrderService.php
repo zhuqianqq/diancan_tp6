@@ -35,6 +35,7 @@ class OrderService
         $user_id = input('user_id', '', 'int');
         $eatery_id = input('eatery_id', '', 'int');
         $timeType = input('timeType', '', 'string');
+        $is_settlement = input('is_settlement', '', 'int');
         $start_time = input('start_time', '', 'string');
         $end_time = input('end_time', '', 'string');
         $page_size= input('pagesize/d',10);
@@ -63,13 +64,16 @@ class OrderService
         if (!empty($start_time)) {
             $timeInfo['start_time'] = $start_time;
         }
-
         if (!empty($end_time)) {
             $timeInfo['end_time'] = $end_time . ' '. date('H:i:s');
         }
+        if (isset($is_settlement)) {
+            $where .= ' AND is_settlement = :is_settlement';
+            $condition['is_settlement'] = $is_settlement;
+        }
 
         $page = Order::whereRaw($where, $condition)->whereBetween('create_time',[$timeInfo['start_time'], $timeInfo['end_time']])
-            ->field('date_format(create_time, \'%Y-%m-%d\') dat,eatery_id,eatery_name,
+            ->field('date_format(create_time, \'%Y-%m-%d\') dat,eatery_id,eatery_name,is_settlement,
                         sum(report_amount) report_amount,sum(report_num) report_num')
             ->group('date_format(create_time, \'%Y-%m-%d\'),eatery_id')
             ->paginate($page_size)->toArray();
