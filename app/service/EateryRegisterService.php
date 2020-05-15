@@ -105,7 +105,7 @@ class EateryRegisterService
         //获取订餐记录
         $where = ['company_id'=>$compAndDeptInfo['company_id'], 'eatery_id'=>$eatery_id];
         $eateryRecord = Order::where('company_id=:company_id and eatery_id=:eatery_id', $where)->select();
-        $isSettlementCount = Order::where('company_id=:company_id and eatery_id=:eatery_id and is_settlement = 0', $where)->find();
+        $unSettlementCount = Order::where('company_id=:company_id and eatery_id=:eatery_id and is_settlement = 0', $where)->find();
 
         $deleteFlag = false;
         if ($eateryRecord->count()==0) {
@@ -122,7 +122,7 @@ class EateryRegisterService
             $deleteFlag = true;
         } else {
             //软删除
-            if (!$isSettlementCount) {
+            if (!$unSettlementCount) {
                 try{
                     $oneEatery->is_delete = 1;
                     $oneEatery->save();
