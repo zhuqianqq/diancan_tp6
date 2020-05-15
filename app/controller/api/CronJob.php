@@ -27,9 +27,7 @@ class CronJob extends Base {
 	 * @Route("sendMessage", method="GET")
 	 */
 	public function sendMessage() {
-
 		try {
-
 			//判断上午还是下午 14点之前为上午
 			$no = date("H", time());
 			$today = date('Ymd', time());

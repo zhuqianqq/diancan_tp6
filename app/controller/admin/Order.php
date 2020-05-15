@@ -17,7 +17,6 @@ use think\annotation\route\Validate;
 use think\exception\ValidateException;
 use app\service\OrderService as O;
 
-
 /**
  * 菜品接口
  * Class Food
@@ -39,7 +38,6 @@ class Order extends Base
         return json_ok($result);
     }
 
-
     /**
      * 餐馆结算订单详情
      * @Route("orderDetails")
@@ -57,12 +55,10 @@ class Order extends Base
     public function delOrder()
     {
         $result = O::delOrder();
-        if($result === true){
+        if ($result === true) {
             return json_ok();
-        }else{
+        } else
             return  json_error();
-        }
-        
     }
 
     /**
@@ -72,14 +68,11 @@ class Order extends Base
     public function editOrder()
     {
         $result = O::editOrder();
-        if($result === true){
+        if ($result === true) {
             return json_ok();
-        }else{
+        } else
             return  json_error();
-        }
-        
     }
-
 
     /**
      * 餐馆结算
