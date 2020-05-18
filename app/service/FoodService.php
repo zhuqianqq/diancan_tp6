@@ -82,7 +82,7 @@ class FoodService
                 $update_data = [];
                 foreach ($eateryArr as $k => $v) {
                     //同一餐馆下不允许添加重复菜品
-                    $food = F::where('eatery_id=:eatery_id and food_name=:food_name', ['eatery_id' => $data['eatery_id'], 'food_name' => $k])->find();
+                    $food = F::where('food_id != :food_id and eatery_id=:eatery_id and food_name=:food_name', ['food_id' =>$oneFood->food_id, 'eatery_id' => $data['eatery_id'], 'food_name' => $k])->find();
                     if ($food) {
                         return ['flag' => '0', 'code' => 14006, 'msg' => $k . '已存在，请勿重复添加'];
                         break;
