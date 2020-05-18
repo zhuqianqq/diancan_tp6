@@ -54,7 +54,7 @@ class FoodService
                     //同一餐馆下不允许添加重复菜品
                     $food = F::where('eatery_id=:eatery_id and food_name=:food_name', ['eatery_id' => $data['eatery_id'], 'food_name' => $k])->find();
                     if ($food) {
-                        return ['flag' => '0', 'code' => 14005, 'msg' => $k . '已存在，请勿重复添加'];
+                        return ['flag' => '0', 'code' => 14006, 'msg' => $k . '已存在，请勿重复添加'];
                         break;
                     }
 
@@ -81,9 +81,15 @@ class FoodService
             try {
                 $update_data = [];
                 foreach ($eateryArr as $k => $v) {
+                    //同一餐馆下不允许添加重复菜品
+                    $food = F::where('eatery_id=:eatery_id and food_name=:food_name', ['eatery_id' => $data['eatery_id'], 'food_name' => $k])->find();
+                    if ($food) {
+                        return ['flag' => '0', 'code' => 14006, 'msg' => $k . '已存在，请勿重复添加'];
+                        break;
+                    }
                     $money_reg = '/(^[0-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/';
                     if(!preg_match($money_reg, $v)){
-                        return ['flag' => '0', 'code' => 14005, 'msg' => $k . '已存在，请勿重复添加'];
+                        return ['flag' => '0', 'code' => 14005];
                         break;
                     }
                     $update_data['food_id'] = $data['food_id'];
