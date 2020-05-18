@@ -73,7 +73,7 @@ class OrderService
         $data['department_name'] = $data['dept_name'];
 
         Db::startTrans();
-        if (!empty($data['order_id'])) {//新增
+        if (empty($data['order_id'])) {//新增
             try {
                 //新增订单表
                 $orderM = new MO;
