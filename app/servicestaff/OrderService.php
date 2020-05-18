@@ -180,8 +180,7 @@ class OrderService
         $where = ['company_id' => $sysConf['company_id'], 'staffid' => $user_id];
         $todaytime=date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
         $order = MO::where($where)->where('create_time','>',$todaytime)->find();
-        if ($order) return $order->toArray();
-        return [];
+        return $order;
     }
 
     /**

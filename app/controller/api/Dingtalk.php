@@ -2,10 +2,6 @@
 declare (strict_types=1);
 
 namespace app\controller\api;
-// require_once '../extend/dingtalk_isv_php_sdk/api/Auth.php';
-// require_once '../extend/dingtalk_isv_php_sdk/api/ISVService.php';
-// require_once '../extend/dingtalk_isv_php_sdk/api/User.php';
-// require_once '../extend/dingtalk_isv_php_sdk/api/Department.php';
 
 use app\controller\api\Base;
 use think\annotation\route\Group;
@@ -265,7 +261,7 @@ class Dingtalk extends Base
 
         //文本方式
         $opt['msg']['msgtype'] = 'text';
-        $opt['msg']['text'] = ['content'=>"天天点餐提示您：订餐开始喽！请及时进入小程序订餐"];
+        $opt['msg']['text'] = ['content'=>"订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐"];
 
         $userid_list_arr = CompanyStaff::getDingdingUserIds($corpId);
         if(!$userid_list_arr){
