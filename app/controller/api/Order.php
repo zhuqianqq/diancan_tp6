@@ -48,7 +48,7 @@ class Order extends Base
         $data['eatery_id'] = input('param.eatery_id', '', 'int');
         $data['report_amount'] = input('param.report_amount', '0', 'string');
         $data['staffid'] = input('param.staffid', '', 'int');
-        $data['orderInfo'] = input('param.orderInfo', '', 'string');
+        $data['orderInfo'] = input('param.orderInfo');
         $data['eat_type'] = input('param.eat_type', '', 'int');
         $data['order_id'] = input('param.order_id', '', 'int');
         $sysConf = SF::getSysConfigById($data['staffid']);
