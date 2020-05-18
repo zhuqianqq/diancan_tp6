@@ -149,9 +149,9 @@ class OrderService
             $totalNum += $v->report_num;
             $totalMoney += $v->report_amount;
         }
-        
-        $totalMoney =  bcdiv($totalMoney,1,2); //保留小数点两位 不四舍五入
 
+        $totalMoney = sprintf('%.2f', (float)$totalMoney);
+        
         return ['orderDetails'=>$orderDetails,'eateryName'=>$eateryName,'totalNum'=>$totalNum,'totalMoney'=>$totalMoney];
     }
 
