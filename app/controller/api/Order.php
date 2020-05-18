@@ -44,7 +44,13 @@ class Order extends Base
      */
     public function submit()
     {
-        $data = input('param.');
+        $data['report_num'] = input('param.report_num', '0', 'int');
+        $data['eatery_id'] = input('param.eatery_id', '', 'int');
+        $data['report_amount'] = input('param.report_amount', '0', 'string');
+        $data['staffid'] = input('param.staffid', '', 'int');
+        $data['orderInfo'] = input('param.orderInfo', '', 'string');
+        $data['eat_type'] = input('param.eat_type', '', 'int');
+        $data['order_id'] = input('param.order_id', '', 'int');
         $sysConf = SF::getSysConfigById($data['staffid']);
         $status = checkDingcanStauts($sysConf);
         if ($status['isDingcanDay'] == 1 && $status['DingcanStauts'] == 1) {
