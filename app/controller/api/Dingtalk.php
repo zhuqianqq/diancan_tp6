@@ -255,26 +255,23 @@ class Dingtalk extends Base
         $opt = $sub_data = [];
         $opt['agent_id'] = $agentid;
 
-        $opt['msg']['msgtype'] = 'action_card';
-        $sub_data['title'] = "天天点餐";
-        $sub_data['markdown'] = "订餐开始喽！请及时进入小程序订餐";
-        $sub_data['single_title'] = "立即订餐";
-        $sub_data['single_url'] = "http://www.baidu.com";
-        $opt['msg']['action_card'] = $sub_data;
+        //动作卡方式
+        // $opt['msg']['msgtype'] = 'action_card';
+        // $sub_data['title'] = "天天点餐";
+        // $sub_data['markdown'] = "订餐开始喽！请及时进入小程序订餐";
+        // $sub_data['single_title'] = "立即订餐";
+        // $sub_data['single_url'] = "http://www.baidu.com";
+        // $opt['msg']['action_card'] = $sub_data;
+
+        //文本方式
+        $opt['msg']['msgtype'] = 'text';
+        $opt['msg']['text'] = ['content'=>"天天点餐提示您：订餐开始喽！请及时进入小程序订餐"];
 
         $userid_list_arr = CompanyStaff::getDingdingUserIds($corpId);
         if(!$userid_list_arr){
             return  json_error(20900);
         } 
 
-//         {
-
-//     "msgtype": "text",
-//     "text": {
-//         "content": "张三的请假申请"
-//     }
-// }
-        
         $userid_list = implode(',', $userid_list_arr);
 
         $opt['userid_list'] = $userid_list;
