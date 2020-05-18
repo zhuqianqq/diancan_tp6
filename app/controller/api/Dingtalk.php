@@ -2,6 +2,10 @@
 declare (strict_types=1);
 
 namespace app\controller\api;
+require_once '../extend/dingtalk_isv_php_sdk/api/Auth.php';
+require_once '../extend/dingtalk_isv_php_sdk/api/ISVService.php';
+require_once '../extend/dingtalk_isv_php_sdk/api/User.php';
+require_once '../extend/dingtalk_isv_php_sdk/api/Department.php';
 
 use app\controller\api\Base;
 use think\annotation\route\Group;
@@ -14,13 +18,6 @@ use think\facade\Db;
 use think\facade\Log;
 use app\model\CompanyAdmin;
 
-//public文件夹路径
-$root_dir = $_SERVER['DOCUMENT_ROOT'] . '/';
-
-require_once $root_dir . '../extend/dingtalk_isv_php_sdk/api/Auth.php';
-require_once $root_dir . '../extend/dingtalk_isv_php_sdk/api/ISVService.php';
-require_once $root_dir . '../extend/dingtalk_isv_php_sdk/api/User.php';
-require_once $root_dir . '../extend/dingtalk_isv_php_sdk/api/Department.php';
 
 
 /**

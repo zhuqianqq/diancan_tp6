@@ -105,6 +105,7 @@ class OrderService
         $eatery_id = input('eatery_id', '', 'int');
         $date = input('date', '');
         $eat_type = input('eat_type', '');
+        $is_settlement = input('is_settlement', 0, 'int');//默认查询未结算的
   
         if (!$user_id || !$eatery_id || !$date) {
             throw new MyException(13001);
@@ -118,7 +119,7 @@ class OrderService
             throw new MyException(13002);
         }
 
-        $where = ['company_id' => $userInfo->company_id, 'eatery_id' => $eatery_id];
+        $where = ['od.company_id' => $userInfo->company_id, 'od.eatery_id' => $eatery_id, 'o.is_settlement' => $is_settlement];
 
         if($eat_type){
 
@@ -136,9 +137,11 @@ class OrderService
             throw new MyException(13002);
         }
 
-        $orderDetails = OrdD::where($where)
-                        ->field('id,order_id,staff_name,food_name,price,eat_type,report_amount,report_num')
-                        ->whereTime('create_time',$date)
+        $orderDetails = OrdD::alias('od')
+                        ->join('order o','od.order_id = o.order_id')
+                        ->where($where)
+                        ->field('od.id,od.order_id,od.staff_name,od.food_name,od.price,od.eat_type,od.report_amount,od.report_num,o.is_settlement')
+                        ->whereTime('od.create_time',$date)
                         ->select();
 
         $totalNum = $totalMoney = 0;
