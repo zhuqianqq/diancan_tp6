@@ -40,7 +40,7 @@ class FoodService
     public static function addOrUpdata($data)
     {
         $res = ['flag' => 1];
-        $food_id = isset($data['food_id']) && preg_match("/^[1-9][0-9]*$/" ,$data['food_id']) ? $data['food_id'] : 0;
+        //$food_id = isset($data['food_id']) && preg_match("/^[1-9][0-9]*$/" ,$data['food_id']) ? $data['food_id'] : 0;
         try {
             $eateryArr = \GuzzleHttp\json_decode($data['eatrey_food_info'], true);
         }catch (\Exception $e){
@@ -48,7 +48,7 @@ class FoodService
         }
 
         Db::startTrans();
-        if ($food_id==0) {//新增
+        if ($data['food_id']) {//新增
             try {
                 foreach ($eateryArr as $k => $v) {
                     //同一餐馆下不允许添加重复菜品
@@ -74,7 +74,7 @@ class FoodService
                 throw new MyException(10001, $e->getMessage());
             }
         } else { //编辑
-            $oneFood = F::find($food_id);
+            $oneFood = F::find($data['food_id']);
             if (!$oneFood) {
                 throw new MyException(14002);
             }
@@ -86,7 +86,7 @@ class FoodService
                         return ['flag' => '0', 'code' => 14005, 'msg' => $k . '已存在，请勿重复添加'];
                         break;
                     }
-                    $update_data['food_id'] = $food_id;
+                    $update_data['food_id'] = $data['food_id'];
                     $update_data['food_name'] = $k;
                     $update_data['price'] = $v;
                 }
