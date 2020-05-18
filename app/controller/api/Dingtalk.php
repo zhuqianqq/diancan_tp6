@@ -281,7 +281,7 @@ class Dingtalk extends Base
 
             $msg = "发送订餐消息失败：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
             Log::error($msg);
-            Log::error('sub_data:' . json_encode($sub_data,JSON_UNESCAPED_UNICODE));
+            Log::error('opt:' . json_encode($opt,JSON_UNESCAPED_UNICODE));
             return false;
         }
     }
