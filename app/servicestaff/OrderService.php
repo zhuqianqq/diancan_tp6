@@ -45,7 +45,7 @@ class OrderService
             return WSTReturn("请不要重复提交");
         }
 
-        //$data['order_id'] = isset($data['order_id'])  && preg_match("/^[1-9][0-9]*$/" ,$data['order_id']) ? $data['order_id'] : 0;
+        $data['order_id'] = isset($data['order_id'])  && preg_match("/^[1-9][0-9]*$/" ,$data['order_id']) ? $data['order_id'] : 0;
         //获取员工信息
         $staffid = $data['staffid'];
         $sysConf = self::getSysConfigById($staffid);
@@ -74,7 +74,7 @@ class OrderService
         $data['department_name'] = $data['dept_name'];
 
         Db::startTrans();
-        if (empty($data['order_id'])) {//新增
+        if ($data['order_id']==0) {//新增
             try {
                 //新增订单表
                 $orderM = new MO;
@@ -180,7 +180,8 @@ class OrderService
         $where = ['company_id' => $sysConf['company_id'], 'staffid' => $user_id];
         $todaytime=date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
         $order = MO::where($where)->where('create_time','>',$todaytime)->find();
-        return $order;
+        if ($order) return $order->toArray();
+        return [];
     }
 
     /**
