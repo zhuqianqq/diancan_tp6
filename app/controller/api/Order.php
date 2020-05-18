@@ -53,6 +53,7 @@ class Order extends Base
         $data['order_id'] = input('param.order_id', '', 'int');
         $sysConf = SF::getSysConfigById($data['staffid']);
         $status = checkDingcanStauts($sysConf);
+
         if ($status['isDingcanDay'] == 1 && $status['DingcanStauts'] == 1) {
             $result = SF::submit($data);
             return json_ok($result);

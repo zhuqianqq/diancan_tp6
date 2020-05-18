@@ -194,14 +194,14 @@ class OrderService
         //获取员工信息
         $staffInfo = CompanyStaff::where('staffid', $userId)->find();
         if (!$staffInfo) {
-            throw new MyException(10001);
+            throw new MyException(16002);
         }
         $company_id = $staffInfo->company_id;
 
         //获取订餐设置
         $sysConf = DS::where('company_id', $company_id)->find();
         if (!$sysConf) {
-            throw new MyException(10001);
+            throw new MyException(16002);
         }
 
         return $sysConf->toArray();

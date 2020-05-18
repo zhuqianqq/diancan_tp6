@@ -48,6 +48,7 @@ class Food extends Base
         $data['eatrey_food_info'] = input('param.eatrey_food_info', '');
         $data['eatery_id'] = input('param.eatery_id', '', 'int');
         $result = F::addOrUpdata($data);
+        if (!$result['flag'])  return json_error($result['code'], $result['msg']);
         return json_ok($result);
     }
 
