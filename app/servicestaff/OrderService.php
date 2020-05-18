@@ -72,9 +72,11 @@ class OrderService
         }
         $data['eatery_name'] = $eateryName;
         $data['department_name'] = $data['dept_name'];
+        var_dump($data['order_id']);
 
         Db::startTrans();
         if ($data['order_id']==0) {//新增
+            echo 111;die;
             try {
                 //新增订单表
                 $orderM = new MO;
@@ -102,6 +104,7 @@ class OrderService
                 throw new MyException(10001, $e->getMessage());
             }
         } else { //编辑
+            echo 222;die;
             try {
                 if (!$data['order_id']) {
                     throw new MyException(16001);
