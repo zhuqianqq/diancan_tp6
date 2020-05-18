@@ -48,7 +48,7 @@ class DTDepartment extends Model
             if($v2->parentid == 0){
                 continue;
             }
-            $_parentid = self::where('platform_departid',$v2->parentid)->value('id');
+            $_parentid = self::where('platform_departid',$v2->parentid)->where('company_id',$company_id)->value('id');
             self::where('id',$v2->id)->update(['parentid'=>$_parentid]);
         }
 
