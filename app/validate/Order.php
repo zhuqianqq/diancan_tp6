@@ -41,7 +41,7 @@ class Order extends Validate
 
     public function checkMoney($value, $rule, array $data = [])
     {
-        $money_reg = '/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/';
+        $money_reg = '/(^[0-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/';
         if(!preg_match($money_reg, $value)){
             return '价格格式错误';
         }else
