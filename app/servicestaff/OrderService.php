@@ -42,10 +42,9 @@ class OrderService
             $isLock = true;
         }
         if (!$isLock) {
-            return WSTReturn("请不要重复提交");
+            throw new MyException(10014);
         }
 
-        $data['order_id'] = isset($data['order_id'])  && preg_match("/^[1-9][0-9]*$/" ,$data['order_id']) ? $data['order_id'] : 0;
         //获取员工信息
         $staffid = $data['staffid'];
         $sysConf = self::getSysConfigById($staffid);
@@ -74,7 +73,7 @@ class OrderService
         $data['department_name'] = $data['dept_name'];
 
         Db::startTrans();
-        if ($data['order_id']==0) {//新增
+        if (!empty($data['order_id'])) {//新增
             try {
                 //新增订单表
                 $orderM = new MO;
