@@ -48,7 +48,7 @@ class FoodService
         }
 
         Db::startTrans();
-        if ($data['food_id']) {//新增
+        if (empty($data['food_id'])) {//新增
             try {
                 foreach ($eateryArr as $k => $v) {
                     //同一餐馆下不允许添加重复菜品
