@@ -248,7 +248,7 @@ class Dingtalk extends Base
             return  json_error(20800);
         }
      
-        require_once '../extend/dingtalk_isv_php_sdk/api/Message.php';
+        require_once $root_path . 'extend/dingtalk_isv_php_sdk/api/Message.php';
         $Message = new \Message();
         $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
 
