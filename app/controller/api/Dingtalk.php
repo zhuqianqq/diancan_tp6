@@ -2,10 +2,10 @@
 declare (strict_types=1);
 
 namespace app\controller\api;
-require_once __DIR__ . '../extend/dingtalk_isv_php_sdk/api/Auth.php';
-require_once __DIR__ . '../extend/dingtalk_isv_php_sdk/api/ISVService.php';
-require_once __DIR__ . '../extend/dingtalk_isv_php_sdk/api/User.php';
-require_once __DIR__ . '../extend/dingtalk_isv_php_sdk/api/Department.php';
+require_once '../extend/dingtalk_isv_php_sdk/api/Auth.php';
+require_once '../extend/dingtalk_isv_php_sdk/api/ISVService.php';
+require_once '../extend/dingtalk_isv_php_sdk/api/User.php';
+require_once '../extend/dingtalk_isv_php_sdk/api/Department.php';
 
 use app\controller\api\Base;
 use think\annotation\route\Group;
