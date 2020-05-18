@@ -243,7 +243,7 @@ class Dingtalk extends Base
             return  json_error(20800);
         }
      
-        require_once '../extend/dingtalk_isv_php_sdk/api/Message.php';
+        require_once './extend/dingtalk_isv_php_sdk/api/Message.php';
         $Message = new \Message();
         $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
 
@@ -254,7 +254,7 @@ class Dingtalk extends Base
         $sub_data['title'] = "天天点餐";
         $sub_data['markdown'] = "订餐开始喽！请及时进入小程序订餐";
         $sub_data['single_title'] = "立即订餐";
-        $sub_data['single_url'] = "https://www.baidu.com";
+        $sub_data['single_url'] = "";
         $opt['msg']['action_card'] = $sub_data;
 
         $userid_list_arr = CompanyStaff::getDingdingUserIds($corpId);
