@@ -2,10 +2,10 @@
 declare (strict_types=1);
 
 namespace app\controller\api;
-require_once '../extend/dingtalk_isv_php_sdk/api/Auth.php';
-require_once '../extend/dingtalk_isv_php_sdk/api/ISVService.php';
-require_once '../extend/dingtalk_isv_php_sdk/api/User.php';
-require_once '../extend/dingtalk_isv_php_sdk/api/Department.php';
+// require_once '../extend/dingtalk_isv_php_sdk/api/Auth.php';
+// require_once '../extend/dingtalk_isv_php_sdk/api/ISVService.php';
+// require_once '../extend/dingtalk_isv_php_sdk/api/User.php';
+// require_once '../extend/dingtalk_isv_php_sdk/api/Department.php';
 
 use app\controller\api\Base;
 use think\annotation\route\Group;
@@ -18,7 +18,12 @@ use think\facade\Db;
 use think\facade\Log;
 use app\model\CompanyAdmin;
 
+$root_path = app()->getRootPath();
 
+require_once $root_path . 'extend/dingtalk_isv_php_sdk/api/Auth.php';
+require_once $root_path . 'extend/dingtalk_isv_php_sdk/api/ISVService.php';
+require_once $root_path . 'extend/dingtalk_isv_php_sdk/api/User.php';
+require_once $root_path . 'extend/dingtalk_isv_php_sdk/api/Department.php';
 
 /**
  * 钉钉接口
@@ -290,7 +295,7 @@ class Dingtalk extends Base
 
         //$list = Db::table("dc_company_staff")->where('staffid',1)->select();
         //echo Db::table("dc_company_staff")->getLastSql();die;
-      echo app()->getRootPath();die;
+        //echo app()->getRootPath();die;
         $token = setH5token(19,4);
         echo $token;die;
        return json_ok(isWorkDayJs()); 
