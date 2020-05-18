@@ -259,13 +259,21 @@ class Dingtalk extends Base
         $sub_data['title'] = "天天点餐";
         $sub_data['markdown'] = "订餐开始喽！请及时进入小程序订餐";
         $sub_data['single_title'] = "立即订餐";
-        $sub_data['single_url'] = "";
+        $sub_data['single_url'] = "http://www.baidu.com";
         $opt['msg']['action_card'] = $sub_data;
 
         $userid_list_arr = CompanyStaff::getDingdingUserIds($corpId);
         if(!$userid_list_arr){
             return  json_error(20900);
         } 
+
+//         {
+
+//     "msgtype": "text",
+//     "text": {
+//         "content": "张三的请假申请"
+//     }
+// }
         
         $userid_list = implode(',', $userid_list_arr);
 
