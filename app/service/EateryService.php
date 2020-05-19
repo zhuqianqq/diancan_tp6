@@ -66,7 +66,7 @@ class EateryService {
 	 */
 	public static function getlist() {
 		$user_id = input('user_id', '', 'int');
-		$eatery_id = input('eatery_id', '', 'int');
+		$eatery_id = input('eatery_id');
 		if (!$user_id || !$eatery_id) {
 			throw new MyException(13001);
 		}
