@@ -173,8 +173,13 @@ class Dingtalk extends Base
            //员工身份 统一userid字段
            $isReg->userid = $isReg->staffid;
 
-           //返回生成的access_key
-           $isReg['access_key'] = AccessKeyHelper::generateAccessKey($isReg->userid); 
+           //判断redis缓存是否有access_key 并且 未过期
+           $isReg['access_key'] = AccessKeyHelper::getAccessKey($isReg->userid);
+           if(!$isReg['access_key']){
+              //生成的access_key
+              $isReg['access_key'] = AccessKeyHelper::generateAccessKey($isReg->userid); 
+           }
+           
 
            //判断该用户数据库是否有部门信息
            $isReg['hasDepartment'] = $DTDepartmentModel->where('company_id',$isReg['company_id'])->count();
