@@ -103,6 +103,6 @@ class EateryService
             return [$firstEatery];
         }
 
-        return $eateryList;
+        return array_values($eateryList);
     }
 }
