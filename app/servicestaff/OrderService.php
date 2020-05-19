@@ -76,12 +76,12 @@ class OrderService
         if (empty($data['order_id'])) {//新增
             try {
                 //判断当前有无新增订单
-                $orderCount = MD::where('eat_type=:eat_type and company_id=:company_id ',['eat_type'=>$status,'company_id'=>$compAndDeptInfo['company_id']])
+               /* $orderCount = MD::where('eat_type=:eat_type and company_id=:company_id ',['eat_type'=>$status,'company_id'=>$compAndDeptInfo['company_id']])
                 ->whereTime('create_time','today')
                 ->count();
                 if ($orderCount) {
                     throw new MyException(16005);
-                }
+                }*/
 
                 //新增订单表
                 $orderM = new MO;
