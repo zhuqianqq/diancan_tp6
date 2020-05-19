@@ -26,7 +26,8 @@ class AccessCheck
             return $next($request);
         }
 
-        $user_id = intval($request->header('user-id') ?? $request->param('user_id'));
+        //$user_id = intval($request->header('user-id') ?? $request->param('user_id'));
+        $user_id = $request->header('user-id') ?? $request->param('user_id');
         $access_key = $request->header('access-key','');
 
         if($user_id <= 0 || empty($access_key)){
