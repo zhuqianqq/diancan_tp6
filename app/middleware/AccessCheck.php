@@ -5,6 +5,7 @@ namespace app\middleware;
 
 use app\util\AccessKeyHelper;
 use app\model\CompanyAdmin;
+use app\model\CompanyStaff;
 
 class AccessCheck
 {
@@ -42,12 +43,19 @@ class AccessCheck
         }
 
         //判断是否为管理员身份
-        // CompanyAdmin::where('',)->find();
-        // if($user_id != $request->param('user_id')){
-
-        // }
-
-        $request->user_id = $user_id;
+        $userInfo = CompanyStaff::where('staffid = :user_id',['user_id' => $user_id])->field('platform_staffid')->find();
+        $isAdmin = CompanyAdmin::where('platform_userid = user_id',['user_id' => $userInfo['platform_staffid']])->find();
+        if(!$isAdmin){
+            if($user_id != $request->param('user_id')){
+                throw new \app\MyException(10015);
+            }
+        }else{
+            if($user_id != $isAdmin['userid']){
+                throw new \app\MyException(10015);
+            }
+        }
+        
+        //$request->user_id = $user_id;
         $request->access_key = $access_key;
 
         return $next($request);
