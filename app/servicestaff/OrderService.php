@@ -107,7 +107,7 @@ class OrderService
                     throw new MyException(16002);
                 }
 
-                $oneOrder::where('order_id',$data['order_id'])->allowField(['order_id','company_id','company_name','eatery_id','eatery_name','staffid','staff_name','department_id','department_name','report_num','report_amount','create_time'])->save($data);
+                $oneOrder->allowField(['order_id','company_id','company_name','eatery_id','eatery_name','staffid','staff_name','department_id','department_name','report_num','report_amount','create_time'])->save($data);
 
                 //获取订单详情 先删除后新增
                 $oneOrder->orderDetail->delete();
