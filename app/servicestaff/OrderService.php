@@ -72,6 +72,7 @@ class OrderService
         $data['eatery_name'] = $eateryName;
         $data['department_name'] = $data['dept_name'];
 
+        $flag = true;
         Db::startTrans();
         if (empty($data['order_id'])) {//新增
             try {
@@ -97,6 +98,7 @@ class OrderService
 
                 Db::commit();
             }catch (\Exception $e){
+                $flag = false;
                 Db::rollback();
                 throw new MyException(10001, $e->getMessage());
             }
@@ -129,12 +131,13 @@ class OrderService
 
                 Db::commit();
             }catch (\Exception $e){
-                throw new MyException(10001, $e->getMessage());
+                $flag = false;
                 Db::rollback();
+                throw new MyException(10001, $e->getMessage());
             }
         }
 
-        return $sysConf;
+        return $flag;
     }
 
     /**

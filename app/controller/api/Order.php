@@ -56,10 +56,11 @@ class Order extends Base
 
         if ($status['isDingcanDay'] == 1 && $status['DingcanStauts'] == 1) {
             $result = SF::submit($data);
+            if (!$result) return json_error(10001);
             return json_ok($result);
         }
 
-        return json_error(16004);
+        return json_error(10001);
     }
 
     /**
