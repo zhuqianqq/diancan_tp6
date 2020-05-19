@@ -44,7 +44,7 @@ class AccessCheck
 
         //判断是否为管理员身份
         $userInfo = CompanyStaff::where('staffid = :user_id',['user_id' => $user_id])->field('platform_staffid')->find();
-        $isAdmin = CompanyAdmin::where('platform_userid = user_id',['user_id' => $userInfo['platform_staffid']])->find();
+        $isAdmin = CompanyAdmin::where('platform_userid = :user_id',['user_id' => $userInfo['platform_staffid']])->find();
         if(!$isAdmin){
             if($user_id != $request->param('user_id')){
                 throw new \app\MyException(10015);
