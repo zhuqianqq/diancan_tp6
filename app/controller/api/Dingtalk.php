@@ -13,6 +13,7 @@ use app\model\CompanyStaff;
 use think\facade\Db;
 use think\facade\Log;
 use app\model\CompanyAdmin;
+use app\util\AccessKeyHelper;
 
 $root_path = app()->getRootPath();
 
@@ -153,6 +154,9 @@ class Dingtalk extends Base
            $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
            //统一userid字段
            $userInfo->userid = $userInfo->staffid;
+
+           //返回生成的access_key
+           $userInfo['access_key'] = AccessKeyHelper::generateAccessKey($userInfo->userid);
            
            //判断该用户数据库是否有部门信息
            $userInfo['hasDepartment'] = $DTDepartmentModel->where('company_id',$userInfo['company_id'])->count();
@@ -169,10 +173,14 @@ class Dingtalk extends Base
            //员工身份 统一userid字段
            $isReg->userid = $isReg->staffid;
 
+           //返回生成的access_key
+           $isReg['access_key'] = AccessKeyHelper::generateAccessKey($isReg->userid); 
+
            //判断该用户数据库是否有部门信息
            $isReg['hasDepartment'] = $DTDepartmentModel->where('company_id',$isReg['company_id'])->count();
        }
 
+       
        //老用户查询后返回数据库结果
        return json_ok($isReg);
 
