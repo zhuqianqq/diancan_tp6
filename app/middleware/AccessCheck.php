@@ -23,8 +23,8 @@ class AccessCheck
         if(!$request_uri){
             throw new \app\MyException(11101);
         }
-        //钉钉相关接口不需要判断access-key ， H5餐馆订单详情页面不需验证
-        if(stripos($request_uri,'dingtalk') !== false  || stripos($request_uri,'eateryOrderDetail') !== false){
+        //钉钉相关接口不需要判断access-key ， adminInfo,H5餐馆订单详情页面不需验证
+        if(stripos($request_uri,'dingtalk') !== false || stripos($request_uri,'adminInfo') !== false || stripos($request_uri,'eateryOrderDetail') !== false){
             return $next($request);
         }
         
@@ -53,9 +53,9 @@ class AccessCheck
             }
         }else{
 
-            // if(($request_uid != $isAdmin['userid']) && ($user_id != $request_uid)){
-            //     throw new \app\MyException(10015);
-            // }
+            if(($request_uid != $isAdmin['userid']) && ($request_uid != $user_id  )){
+                throw new \app\MyException(10015);
+            }
         }
         
         //$request->user_id = $user_id;
