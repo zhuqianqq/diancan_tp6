@@ -52,10 +52,13 @@ class AccessCheck
                 throw new \app\MyException(10015);
             }
         }else{
-
-            // if(($request_uid != $isAdmin['userid']) && ($user_id != $request_uid)){
-            //     throw new \app\MyException(10015);
-            // }
+            echo $request_uid . '===========';
+            echo $isAdmin['userid'] . '===========';
+            echo $user_id . '===========';
+            die;
+            if(($request_uid != $isAdmin['userid']) && ($request_uid != $user_id  )){
+                throw new \app\MyException(10015);
+            }
         }
         
         //$request->user_id = $user_id;
