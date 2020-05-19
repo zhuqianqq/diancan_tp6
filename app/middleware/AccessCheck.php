@@ -46,12 +46,13 @@ class AccessCheck
         $userInfo = CompanyStaff::where('staffid = :user_id',['user_id' => $user_id])->field('platform_staffid')->find();
         $isAdmin = CompanyAdmin::where('platform_userid = :user_id',['user_id' => $userInfo['platform_staffid']])->find();
         if(!$isAdmin){
-            echo $user_id .'========';
-            echo $request->param('user_id');die();
+
             if($user_id != $request->param('user_id')){
                 throw new \app\MyException(10015);
             }
         }else{
+            echo $user_id .'========';
+            echo $isAdmin['userid'];die();
             if($user_id != $isAdmin['userid']){
                 throw new \app\MyException(10015);
             }
