@@ -30,7 +30,7 @@ class EateryService {
 	 * @throws \app\MyException
 	 */
 	public static function getlists() {
-		$user_id = input('user_id', '', 'int');
+		$user_id = input('user_id');
 		if (!$user_id) {
 			throw new MyException(13001);
 		}
@@ -66,11 +66,11 @@ class EateryService {
 	 */
 	public static function getlist() {
 		$user_id = input('user_id', '', 'int');
-		$eatery_id = input('eatery_id', '', 'int');
+		$eatery_id = input('eatery_id');
 		if (!$user_id || !$eatery_id) {
 			throw new MyException(13001);
 		}
-		$eateryInfo = ER::find($eatery_id);
+		$eateryInfo = ER::where('eatery_id=:eatery_id',['eatery_id'=>$eatery_id])->find();
 		if (!$eateryInfo) {
 			throw new MyException(13002);
 		}
@@ -80,24 +80,12 @@ class EateryService {
 		}
 
 		$where = ['company_id' => $userInfo->company_id, 'eatery_id' => $eatery_id];
-		/*$list = [];
-			       $eateryInfo = E::where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->find();
-			        if ($eateryInfo) {
-			            $eateryInfo = $eateryInfo->toArray();
-			            $foodInfo = Food::where('eatery_id=:eatery_id', ['eatery_id' => $eatery_id])->select();
-			            $list = $eateryInfo;
-			            if ($foodInfo) {
-			                $list['food'] = $foodInfo->toArray();
-			            }
-			            return $list;
-		*/
-
 		$list = E::with('food')->where('is_delete=0 and company_id=:company_id and eatery_id=:eatery_id', $where)->select();
 		if ($list) {
 			return $list->toArray();
 		}
 
-		return [];
+		return $list;
 	}
 
 	/**
