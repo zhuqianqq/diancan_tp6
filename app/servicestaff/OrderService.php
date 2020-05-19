@@ -32,7 +32,7 @@ class OrderService
      * @return array 对象数组
      * @throws \app\MyException
      */
-    public static function submit($data, $status)
+    public static function submit($data)
     {
         $cacheKey = config('cachekeys.order_submit') . ":USERID:" . $data['staffid'];
         $redis = \think\facade\Cache::handler();
