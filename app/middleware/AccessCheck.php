@@ -51,9 +51,8 @@ class AccessCheck
                 throw new \app\MyException(10015);
             }
         }else{
-            echo $user_id .'========';
-            echo $isAdmin['userid'];die();
-            if($user_id != $isAdmin['userid']){
+            
+            if($request->param('user_id') != $isAdmin['userid']){
                 throw new \app\MyException(10015);
             }
         }
