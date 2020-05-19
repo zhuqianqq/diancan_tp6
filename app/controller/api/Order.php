@@ -55,7 +55,7 @@ class Order extends Base
         $status = checkDingcanStauts($sysConf);
 
         if ($status['isDingcanDay'] == 1 && $status['DingcanStauts'] == 1) {
-            $result = SF::submit($data);
+            $result = SF::submit($data,$status);
             if (!$result) return json_error(10001);
             return json_ok($result);
         }
