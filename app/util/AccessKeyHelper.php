@@ -61,7 +61,7 @@ class AccessKeyHelper
         if ($acc_key == $access_key) {
             return true;
         } else {
-            Log::error("pro环境:access_token：" . $user_id . ":" . "生成key:" . $access_key);
+            Log::error("pro环境:access_token：" . $user_id . ":" . "生成key:" . $access_key . "服务端key:" . $acc_key);
             return false;
         }
     }

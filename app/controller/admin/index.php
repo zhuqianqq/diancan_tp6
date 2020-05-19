@@ -18,7 +18,6 @@ use think\annotation\route\Validate;
 use app\service\EateryService as SE;
 use app\service\ProposalService;
 use app\validate\Proposal;
-use think\annotation\route\Middleware;
 
 /**
  * 订餐后台首页
@@ -28,10 +27,10 @@ use think\annotation\route\Middleware;
  * @Group("admin/index")
  * 
  */
-// //@Middleware({\app\middleware\AccessCheck::class})
+
 class index extends Base
 {
- 
+
     /**
      * 订餐设置
      * @Route("orderSetting", method="POST")

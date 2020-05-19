@@ -13,4 +13,7 @@ return [
 
     // 允许跨域请求
     \app\middleware\AllowCors::class,
+
+    //access_key检查
+    \app\middleware\AccessCheck::class,
 ];
