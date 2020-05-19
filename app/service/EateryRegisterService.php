@@ -56,7 +56,7 @@ class EateryRegisterService
                 $oneEatery->eat_type = str_replace('，',',', $oneEateryR->eat_type);
                 $oneEatery->save();
                 Db::commit();
-                return [];
+                return $oneEateryR;
             } catch (\Exception $e){
                 Db::rollback();
                 throw new MyException(13100);
@@ -77,7 +77,7 @@ class EateryRegisterService
                 $oneEatery->eat_type = str_replace('，',',', $oneEateryR->eat_type);
                 $oneEatery->save($data);
                 Db::commit();
-                return [];
+                return $oneEateryR;
             }catch (\Exception $e){
                 throw new MyException(10001, $e->getMessage());
                 Db::rollback();
