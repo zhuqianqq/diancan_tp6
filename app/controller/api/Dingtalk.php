@@ -156,7 +156,7 @@ class Dingtalk extends Base
            $userInfo->userid = $userInfo->staffid;
 
            //返回生成的access_key
-           $userInfo['access_key'] = AccessKeyHelper::generateAccessKey($userInfo->userid);
+           $userInfo['access_key'] = AccessKeyHelper::generateAccessKey($userInfo->userid,'Staff');
            
            //判断该用户数据库是否有部门信息
            $userInfo['hasDepartment'] = $DTDepartmentModel->where('company_id',$userInfo['company_id'])->count();
@@ -174,7 +174,7 @@ class Dingtalk extends Base
            $isReg->userid = $isReg->staffid;
 
            //返回生成的access_key
-           $isReg['access_key'] = AccessKeyHelper::generateAccessKey($isReg->userid); 
+           $isReg['access_key'] = AccessKeyHelper::generateAccessKey($isReg->userid,'Staff'); 
 
            //判断该用户数据库是否有部门信息
            $isReg['hasDepartment'] = $DTDepartmentModel->where('company_id',$isReg['company_id'])->count();
