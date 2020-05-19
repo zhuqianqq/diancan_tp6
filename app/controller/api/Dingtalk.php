@@ -306,6 +306,7 @@ class Dingtalk extends Base
         //$list = Db::table("dc_company_staff")->where('staffid',1)->select();
         //echo Db::table("dc_company_staff")->getLastSql();die;
         //echo app()->getRootPath();die;
+        echo  \think\facade\Env::get("APP_ENV");die;
         $token = setH5token(19,4);
         echo $token;die;
        return json_ok(isWorkDayJs()); 

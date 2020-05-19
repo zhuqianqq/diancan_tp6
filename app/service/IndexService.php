@@ -230,10 +230,10 @@ class IndexService
         $admin_info['hasDepartment'] = $DTDepartmentModel->where('company_id',$admin_info['company_id'])->count();
 
         //更新管理员登录信息
-        CompanyAdmin::updateAdminInfo($admin_info['corpid'],$admin_info['platform_userid']);
+        //CompanyAdmin::updateAdminInfo($admin_info['corpid'],$admin_info['platform_userid']);
 
         //生成access_key
-        $admin_info['access_key'] = AccessKeyHelper::generateAccessKey($admin_info['userid']); 
+        //$admin_info['access_key'] = AccessKeyHelper::generateAccessKey($admin_info['userid']); 
 
         return $admin_info;
 
