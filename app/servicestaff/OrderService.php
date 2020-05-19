@@ -107,6 +107,7 @@ class OrderService
                     throw new MyException(16002);
                 }
                 unset($data['orderInfo']);
+                unset($data['eat_type']);
                 $oneOrder::where('order_id',$data['order_id'])->save($data);
 
                 //获取订单详情 先删除后新增
