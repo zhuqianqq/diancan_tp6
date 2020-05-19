@@ -102,14 +102,12 @@ class OrderService
             }
         } else { //编辑
             try {
-                if (!$data['order_id']) {
-                    throw new MyException(16001);
-                }
                 $oneOrder = MO::where('order_id',$data['order_id'])->find();
                 if (!$oneOrder) {
                     throw new MyException(16002);
                 }
-                $oneOrder->save($data);
+
+                $oneOrder->allowField(['order_id','company_id','company_name','eatery_id','eatery_name','staffid','staff_name','department_id','department_name','report_num','report_amount','create_time'])->save($data);
 
                 //获取订单详情 先删除后新增
                 $oneOrder->orderDetail->delete();
