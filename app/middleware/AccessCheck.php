@@ -4,6 +4,7 @@ declare (strict_types=1);
 namespace app\middleware;
 
 use app\util\AccessKeyHelper;
+use app\model\CompanyAdmin;
 
 class AccessCheck
 {
@@ -26,7 +27,7 @@ class AccessCheck
             return $next($request);
         }
         
-        $user_id = intval($request->header('user-id') ?? $request->param('user_id'));
+        $user_id = intval($request->header('user-id') ?? 0);
         $access_key = $request->header('access-key','');
 
         if($user_id <= 0 || empty($access_key)){
@@ -40,7 +41,13 @@ class AccessCheck
             throw new \app\MyException(11102);
         }
 
-        //$request->user_id = $user_id;
+        //判断是否为管理员身份
+        // CompanyAdmin::where('',)->find();
+        // if($user_id != $request->param('user_id')){
+
+        // }
+
+        $request->user_id = $user_id;
         $request->access_key = $access_key;
 
         return $next($request);
