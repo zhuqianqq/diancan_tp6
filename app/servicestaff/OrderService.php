@@ -76,10 +76,13 @@ class OrderService
         if (empty($data['order_id'])) {//新增
             try {
                 //判断当前有无新增订单
-                $orderCount = MD::where('eat_type=:eat_type and company_id=:company_id ',['eat_type'=>$status['send_time_key'],'company_id'=>$compAndDeptInfo['company_id']])
-                ->whereTime('create_time','today')
-                ->count();
+                $orderCount = OrdD::alias('od')
+                    ->join('order o','od.order_id = o.order_id')
+                    ->where('eat_type=:eat_type and company_id=:company_id and staffid=:staffid',['eat_type'=>$status['send_time_key'],'company_id'=>$data['company_id'],'staffid'=>$data['staffid']])
+                    ->whereTime('od.create_time','today')
+                    ->count();
                 if ($orderCount) {
+                    $flag = false;
                     throw new MyException(16005);
                 }
 
