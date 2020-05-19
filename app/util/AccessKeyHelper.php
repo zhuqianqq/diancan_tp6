@@ -55,13 +55,13 @@ class AccessKeyHelper
     {
         $acc_key = self::getAccessKey($user_id, $from);
         if (\think\facade\Env::get("APP_ENV") == "test") {
-            Log::info("test环境:access_token：" . $user_id . ":" . "访问key:" . $access_key . "服务端key:" . $acc_key);
+            Log::info("test环境:user_id：" . $user_id . ":" . "访问access_token:" . $access_key . "服务端access_token:" . $acc_key);
             return true;
         }
         if ($acc_key == $access_key) {
             return true;
         } else {
-            Log::error("pro环境:access_token：" . $user_id . ":" . "生成key:" . $access_key . "服务端key:" . $acc_key);
+            Log::error("pro环境:user_id：" . $user_id . ":" . "访问access_token:" . $access_key . "服务端access_token:" . $acc_key);
             return false;
         }
     }

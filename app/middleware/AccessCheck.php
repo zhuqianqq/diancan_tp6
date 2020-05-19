@@ -17,7 +17,6 @@ class AccessCheck
     {
 
         return $next($request);
-       
         $request_uri = $request->request()['s'] ?? '';
         if(!$request_uri){
             throw new \app\MyException(11101);
@@ -39,7 +38,7 @@ class AccessCheck
             throw new \app\MyException(11102);
         }
 
-        $request->user_id = $user_id;
+        //$request->user_id = $user_id;
         $request->access_key = $access_key;
 
         return $next($request);
