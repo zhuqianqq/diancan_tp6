@@ -74,11 +74,12 @@ class OrderService
         $flag = true;
         Db::startTrans();
         if (empty($data['order_id'])) {//新增
-            //try {
+            try {
                 //判断当前有无新增订单
                 $orderCount = MD::where('eat_type=:eat_type and company_id=:company_id ',['eat_type'=>$status['send_time_key'],'company_id'=>$compAndDeptInfo['company_id']])
                 ->whereTime('create_time','today')
                 ->count();
+                echo  MD::getLastSql();die;
                 if ($orderCount) {
                     throw new MyException(16005);
                 }
@@ -104,11 +105,11 @@ class OrderService
                 }
 
                 Db::commit();
-           // }catch (\Exception $e){
+            }catch (\Exception $e){
                 $flag = false;
                 Db::rollback();
-               // throw new MyException(10001, $e->getMessage());
-          //  }
+                throw new MyException(10001, $e->getMessage());
+            }
         } else { //编辑
             try {
                 $oneOrder = MO::where('order_id',$data['order_id'])->find();
