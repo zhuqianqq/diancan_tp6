@@ -192,7 +192,7 @@ class IndexService
             throw new MyException(10001, $e->getMessage());
         }
 
-        return [];
+        return $company;
     }
 
     /**
