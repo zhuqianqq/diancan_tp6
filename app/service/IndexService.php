@@ -184,6 +184,9 @@ class IndexService
 
         try{
             $company = CompanyRegister::where($where)->find();
+            if (!$company) {
+                throw new MyException(10002);
+            }
             $company->allowField($allowField)->save($data);
         }catch (\Exception $e){
             throw new MyException(10001, $e->getMessage());
