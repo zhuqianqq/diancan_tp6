@@ -50,7 +50,7 @@ class Order extends Base
         $data['staffid'] = input('param.staffid', '', 'int');
         $data['orderInfo'] = input('param.orderInfo');
         $data['eat_type'] = input('param.eat_type', '', 'int');
-        $data['order_id'] = input('param.order_id', '', 'int');
+        $data['order_id'] = input('param.order_id');
         $sysConf = SF::getSysConfigById($data['staffid']);
         $status = checkDingcanStauts($sysConf);
 
