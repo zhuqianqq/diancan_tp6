@@ -230,7 +230,7 @@ class IndexService
         CompanyAdmin::updateAdminInfo($admin_info['corpid'],$admin_info['platform_userid']);
 
         //生成access_key
-        $admin_info['access_key'] = AccessKeyHelper::generateAccessKey($admin_info['userid'],'Admin'); 
+        $admin_info['access_key'] = AccessKeyHelper::generateAccessKey($admin_info['userid']); 
 
         return $admin_info;
 
