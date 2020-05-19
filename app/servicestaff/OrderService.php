@@ -42,10 +42,9 @@ class OrderService
             $isLock = true;
         }
         if (!$isLock) {
-            return WSTReturn("请不要重复提交");
+            throw new MyException(10014);
         }
 
-        $data['order_id'] = isset($data['order_id'])  && preg_match("/^[1-9][0-9]*$/" ,$data['order_id']) ? $data['order_id'] : 0;
         //获取员工信息
         $staffid = $data['staffid'];
         $sysConf = self::getSysConfigById($staffid);
@@ -74,7 +73,7 @@ class OrderService
         $data['department_name'] = $data['dept_name'];
 
         Db::startTrans();
-        if ($data['order_id']==0) {//新增
+        if (empty($data['order_id'])) {//新增
             try {
                 //新增订单表
                 $orderM = new MO;
@@ -194,14 +193,14 @@ class OrderService
         //获取员工信息
         $staffInfo = CompanyStaff::where('staffid', $userId)->find();
         if (!$staffInfo) {
-            throw new MyException(10001);
+            throw new MyException(16002);
         }
         $company_id = $staffInfo->company_id;
 
         //获取订餐设置
         $sysConf = DS::where('company_id', $company_id)->find();
         if (!$sysConf) {
-            throw new MyException(10001);
+            throw new MyException(16002);
         }
 
         return $sysConf->toArray();
