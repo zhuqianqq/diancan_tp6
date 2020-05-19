@@ -16,8 +16,7 @@ class AccessCheck
     public function handle($request, \Closure $next)
     {
 
-        return $next($request);
-       
+        //return $next($request);
         $request_uri = $request->request()['s'] ?? '';
         if(!$request_uri){
             throw new \app\MyException(11101);
