@@ -42,21 +42,26 @@ class AccessCheck
             throw new \app\MyException(11102);
         }
 
-        $request_uid = $request->param('user_id') ?? $request->param('staffid');
+        $request_uid = $request->param('user_id','') ?? $request->param('staffid','');
         //判断是否为管理员身份
-        $userInfo = CompanyStaff::where('staffid = :user_id',['user_id' => $user_id])->field('platform_staffid')->find();
-        $isAdmin = CompanyAdmin::where('platform_userid = :user_id',['user_id' => $userInfo['platform_staffid']])->find();
-        if(!$isAdmin){
+        if($request_uid){
 
-            if($user_id != $request_uid){
-                throw new \app\MyException(10015);
-            }
-        }else{
+            $userInfo = CompanyStaff::where('staffid = :user_id',['user_id' => $user_id])->field('platform_staffid')->find();
+            $isAdmin = CompanyAdmin::where('platform_userid = :user_id',['user_id' => $userInfo['platform_staffid']])->find();
+            if(!$isAdmin){
 
-            if(($request_uid != $isAdmin['userid']) && ($request_uid != $user_id  )){
-                throw new \app\MyException(10015);
+                if($user_id != $request_uid){
+                    throw new \app\MyException(10015);
+                }
+            }else{
+
+                if(($request_uid != $isAdmin['userid']) && ($request_uid != $user_id  )){
+                    throw new \app\MyException(10015);
+                }
             }
+            
         }
+        
         
         //$request->user_id = $user_id;
         $request->access_key = $access_key;
