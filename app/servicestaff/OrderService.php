@@ -47,7 +47,6 @@ class OrderService
 
         //获取员工信息
         $staffid = $data['staffid'];
-        $sysConf = self::getSysConfigById($staffid);
         $compAndDeptInfo = CompanyStaff::getCompAndDeptInfoById($staffid);
         if(!$compAndDeptInfo){
             throw new MyException(20060);
@@ -74,18 +73,17 @@ class OrderService
         $flag = true;
         Db::startTrans();
         if (empty($data['order_id'])) {//新增
+            //判断当前有无新增订单
+            $orderCount = OrdD::alias('od')
+                ->join('order o','od.order_id = o.order_id')
+                ->where('eat_type=:eat_type and od.company_id=:company_id and staffid=:staffid',['eat_type'=>$status['send_time_key'],'company_id'=>$data['company_id'],'staffid'=>$data['staffid']])
+                ->whereTime('od.create_time','today')
+                ->count();
+            if ($orderCount) {
+                $flag = false;
+                throw new MyException(16005);
+            }
             try {
-                //判断当前有无新增订单
-                $orderCount = OrdD::alias('od')
-                    ->join('order o','od.order_id = o.order_id')
-                    ->where('eat_type=:eat_type and company_id=:company_id and staffid=:staffid',['eat_type'=>$status['send_time_key'],'company_id'=>$data['company_id'],'staffid'=>$data['staffid']])
-                    ->whereTime('od.create_time','today')
-                    ->count();
-                if ($orderCount) {
-                    $flag = false;
-                    throw new MyException(16005);
-                }
-
                 //新增订单表
                 $orderM = new MO;
                 $orderM->allowField(['company_id','company_name','eatery_id','eatery_name','staff_name','staffid','department_id','department_name','report_num','report_amount','is_settlement','create_time'])->save($data);
@@ -110,15 +108,14 @@ class OrderService
             }catch (\Exception $e){
                 $flag = false;
                 Db::rollback();
-                throw new MyException(10001, $e->getMessage());
+                throw new MyException(16006, $e->getMessage());
             }
         } else { //编辑
+            $oneOrder = MO::where('order_id',$data['order_id'])->find();
+            if (!$oneOrder) {
+                throw new MyException(16002);
+            }
             try {
-                $oneOrder = MO::where('order_id',$data['order_id'])->find();
-                if (!$oneOrder) {
-                    throw new MyException(16002);
-                }
-
                 $oneOrder->allowField(['order_id','company_id','company_name','eatery_id','eatery_name','staffid','staff_name','department_id','department_name','report_num','report_amount','create_time'])->save($data);
 
                 //获取订单详情 先删除后新增
@@ -143,7 +140,7 @@ class OrderService
             }catch (\Exception $e){
                 $flag = false;
                 Db::rollback();
-                throw new MyException(10001, $e->getMessage());
+                throw new MyException(16006, $e->getMessage());
             }
         }
 
