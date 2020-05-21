@@ -24,7 +24,7 @@ class AccessCheck
             throw new \app\MyException(11101);
         }
         //钉钉相关接口不需要判断access-key ， adminInfo,H5餐馆订单详情页面不需验证
-        if(stripos($request_uri,'dingtalk') !== false || stripos($request_uri,'adminInfo') !== false || stripos($request_uri,'eateryOrderDetail') !== false){
+        if(stripos($request_uri,'dingtalk') !== false || stripos($request_uri,'adminInfo') !== false || stripos($request_uri,'eateryOrderDetail') !== false || stripos($request_uri,'feedBackList') !== false){
             return $next($request);
         }
         

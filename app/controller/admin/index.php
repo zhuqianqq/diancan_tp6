@@ -141,5 +141,15 @@ class index extends Base
         return json_ok($result);
     }
 
+    /**
+     * 意见反馈
+     * @Route("feedBackList")
+     */
+    public function feedBackList()
+    {
+        $result = ProposalService::feedBackList();
+        return json_ok($result);
+    }
+
 }
 

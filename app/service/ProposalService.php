@@ -53,4 +53,18 @@ class ProposalService
         return [];
     }
 
+
+    public static function feedBackList()
+    {
+
+      $list = Proposal::alias('p')
+            ->join('company_register c','p.company_id = c.company_id')
+            ->field('p.*,c.company_name')
+            ->select();
+
+      return $list;
+
+    }
+    
+
 }
