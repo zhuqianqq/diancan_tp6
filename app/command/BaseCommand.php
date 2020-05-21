@@ -56,9 +56,9 @@ abstract class BaseCommand extends Command
      */
     protected function execute(Input $input, Output $output)
     {
-        //$this->_init();
+        $this->_init();
         //$this->log('start');
-        //$this->_execute();
+        $this->_execute();
         //$this->log('end|memory:' . (memory_get_usage(true) / 1024 / 1024) . 'MB|PeakMemory:' . (memory_get_peak_usage(true) / 1024 / 1024) . 'MB');
     }
 
