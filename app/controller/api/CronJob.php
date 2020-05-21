@@ -101,8 +101,8 @@ class CronJob extends Base {
 
 		$dingcanStatus = checkDingcanStauts($sysConfs);
 
-		//在订餐日且状态是订餐报名中的
-		if ($dingcanStatus['isDingcanDay'] == 1 && $dingcanStatus['DingcanStauts'] == 1) {
+		//在订餐日
+		if ($dingcanStatus['isDingcanDay'] == 1 ) {
 			$news_time_arr = json_decode($sysConfs['news_time'], true);
 
 			$news_time = $news_time_arr[$dingcanStatus['send_time_key']];
@@ -111,8 +111,8 @@ class CronJob extends Base {
 
 			$news_time = strtotime(date('Y-m-d',$nowTimestamp) . ' ' . $news_time . ':00');
 
-			//现在时间早于消息通知时间 返回ture
-			if ($nowTimestamp < $news_time) {
+			//现在时间大于消息通知时间 返回ture
+			if ($nowTimestamp >= $news_time) {
 		
 				return true;
 			} else {
