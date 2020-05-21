@@ -60,6 +60,7 @@ class ProposalService
       $list = Proposal::alias('p')
             ->join('company_register c','p.company_id = c.company_id')
             ->field('p.*,c.company_name')
+            ->order('create_time','desc')
             ->select();
 
       return $list;
