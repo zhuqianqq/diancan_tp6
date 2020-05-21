@@ -184,9 +184,18 @@ class OrderService
     {
         //获取系统设置
         $sysConf = self::getSysConfigById($user_id);
+        $twoOclock = strtotime(date('Y-m-d 14:00:00',time()));//下午两点时间戳
+        $nowTime = time();
+        if ($nowTime < $twoOclock) {//上午
+            $star_time = date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
+            $end_time = $twoOclock;
+        } else {
+            $star_time = $twoOclock;
+            $end_time = strtotime(date('Y-m-d 23:59:59',time()));//下午两点时间戳
+        }
+
         $where = ['company_id' => $sysConf['company_id'], 'staffid' => $user_id];
-        $todaytime=date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
-        $order = MO::where($where)->where('create_time','>',$todaytime)->find();
+        $order = MO::where($where)->whereTime('create_time','between',[$star_time, $end_time])->find();
         if ($order) return $order->toArray();
         return [];
     }
