@@ -16,7 +16,7 @@ use app\traits\ModelTrait;
  * @package app\model
  * @author  2066362155@qq.com
  */
-class DingcanSysconfig extends Model
+class DingcanSysconfig extends BaseModel
 {
     //时间字段显示格式
     protected $dateFormat = 'Y-m-d H:i:s';

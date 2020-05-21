@@ -8,8 +8,6 @@
 
 namespace app\model;
 
-
-use think\Model;
 use app\traits\ModelTrait;
 
 /**
@@ -18,7 +16,7 @@ use app\traits\ModelTrait;
  * @package app\model
  * @author  2066362155@qq.com
  */
-class Order extends Model
+class Order extends BaseModel
 {
     protected $pk = 'order_id';
     //时间字段显示格式

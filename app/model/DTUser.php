@@ -1,9 +1,7 @@
 <?php
 declare (strict_types=1);
-
 namespace app\model;
 
-use think\Model;
 use app\traits\ModelTrait;
 use think\facade\Db;
 
@@ -13,7 +11,7 @@ use think\facade\Db;
  * @package app\model
  * @author  2066362155@qq.com
  */
-class DTUser extends Model
+class DTUser extends BaseModel
 {
 
     use ModelTrait;

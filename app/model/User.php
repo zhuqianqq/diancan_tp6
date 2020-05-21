@@ -3,7 +3,6 @@ declare (strict_types=1);
 
 namespace app\model;
 
-use think\Model;
 use think\model\concern\SoftDelete;
 use app\traits\ModelTrait;
 
@@ -13,7 +12,7 @@ use app\traits\ModelTrait;
  * @package app\model
  * @author  2066362155@qq.com
  */
-class User extends Model
+class User extends BaseModel
 {
     use SoftDelete;
     //时间字段显示格式

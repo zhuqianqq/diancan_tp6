@@ -7,7 +7,6 @@
  */
 namespace app\model;
 
-use think\Model;
 use app\traits\ModelTrait;
 
 /**
@@ -16,7 +15,7 @@ use app\traits\ModelTrait;
  * @package app\model
  * @author  2066362155@qq.com
  */
-class EateryRegister extends Model
+class EateryRegister extends BaseModel
 {
     CONST EAT_TYPE_BREAKFAST = 1;//早餐
     CONST EAT_TYPE_LUNCH = 2;//中餐

@@ -7,7 +7,6 @@
  */
 namespace app\model;
 
-use think\Model;
 use app\traits\ModelTrait;
 
 /**
@@ -16,7 +15,7 @@ use app\traits\ModelTrait;
  * @package app\model
  * @author  2066362155@qq.com
  */
-class OrderDetail extends Model
+class OrderDetail extends BaseModel
 {
     //时间字段显示格式
     protected $dateFormat = 'Y-m-d H:i:s';

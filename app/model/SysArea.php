@@ -9,6 +9,7 @@ namespace app\model;
 
 use app\traits\ModelTrait;
 use app\model\BaseModel;
+
 /**
  * 管理员
  * Class SysArea
