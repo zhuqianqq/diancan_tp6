@@ -81,7 +81,7 @@ class OrderService
                 ->count();
             if ($orderCount) {
                 $flag = false;
-                throw new MyException(16005);
+                throw new MyException(10014);
             }
             try {
                 //新增订单表
