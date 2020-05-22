@@ -4,6 +4,7 @@ namespace app\model;
 
 use app\traits\ModelTrait;
 use think\facade\Db;
+use app\model\CompanyRegister;
 
 /**
  * 用户
@@ -50,5 +51,13 @@ class DTDepartment extends BaseModel
             self::where('id',$v2->id)->update(['parentid'=>$_parentid]);
         }
 
+    }
+
+     //获取钉钉对应公司的部门id
+    public static function getDingDepartmentIds($corpId)
+    {
+        $company_id = CompanyRegister::where('corpid',$corpId)->value('company_id');
+
+        return self::where('company_id',$company_id)->column('platform_departid');
     }
 }

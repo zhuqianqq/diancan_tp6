@@ -272,21 +272,56 @@ class Dingtalk extends Base
         // $sub_data['single_url'] = "http://www.baidu.com";
         // $opt['msg']['action_card'] = $sub_data;
 
+        //判断上午还是下午
+        $no = date("H",time());
+        if ($no < 14){
+            $content = "午餐订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐";
+        } else {
+            $content = "晚餐订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐";
+        }
+  
         //文本方式
         $opt['msg']['msgtype'] = 'text';
-        $opt['msg']['text'] = ['content'=>"订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐"];
+        $opt['msg']['text'] = ['content'=>$content];
 
-        $userid_list_arr = CompanyStaff::getDingdingUserIds($corpId);
-        if(!$userid_list_arr){
+       
+        $departmentid_list_arr = DTDepartment::getDingDepartmentIds($corpId);
+ 
+        if(!$departmentid_list_arr){
             return  json_error(20900);
         } 
+        //ISV场景：钉钉接口不能全员发送工作消息，分割数组为两部分
+        if(count($departmentid_list_arr) == 1){
 
-        $userid_list = implode(',', $userid_list_arr);
+            //只有一个部门 按照进入订餐应用实际注册的钉钉Userid来发送工作消息
+            $userid_list_arr = CompanyStaff::getDingdingUserIds($corpId);
+            if(!$userid_list_arr){
+                return  json_error(20900);
+            } 
 
-        $opt['userid_list'] = $userid_list;
+            $userid_list = implode(',', $userid_list_arr);
 
-        $res = $Message->corpConversation($isvCorpAccessToken,$opt);
-      
+            $opt['userid_list'] = $userid_list;
+             
+            $res = $Message->corpConversation($isvCorpAccessToken,$opt);
+
+        }else{
+
+            //若多个部门  每5个部门为一组发送工作消息   避免全员发送消息不成功情况
+            $departmentid_five_arr = array_chunk($departmentid_list_arr, 5);
+   
+            foreach ($departmentid_five_arr as $k1 => $v1) {
+              # code...
+              $departmentid_list = implode(',', $v1);
+
+              $opt['dept_id_list'] = $departmentid_list;
+
+              $res = $Message->corpConversation($isvCorpAccessToken,$opt);
+
+            }
+
+        }
+       
         if($res->errcode == 0 ){
             $msg = "发送订餐消息成功：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
             Log::info($msg);
