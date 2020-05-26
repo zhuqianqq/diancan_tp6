@@ -105,7 +105,7 @@ class Dingtalk extends Base
         /**
          * 获取企业授权信息
          */
-        $res = $this->isvService->getAuthInfo($suiteAccessToken, $CorpId, $permanent_code);
+        $res = $this->ISVService->getAuthInfo($suiteAccessToken, $CorpId, $permanent_code);
         if ($res->errcode != 0)
         {
             throw new MyException(10001, "Failed: " . json_encode($res));
