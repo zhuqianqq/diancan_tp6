@@ -71,9 +71,9 @@ class EateryService
 
         if (!$eateryList || !$sysConf) return json_error(13001);
 
-        $firstEatery = [];
+        //$firstEatery = [];
         foreach ($eateryList as $k => $v) {
-            if ($k == 0) $firstEatery = $eateryList[$k];
+            //if ($k == 0) $firstEatery = $eateryList[$k];
             if (count($sysConfEatTypeArr) == 1) {//公司只订一种餐  中餐或者晚餐
                 if ($sysConfEatType == EateryRegister::EAT_TYPE_LUNCH || $sysConfEatType == EateryRegister::EAT_TYPE_DINNER) {
                     if (strpos($v['eat_type'], $sysConfEatType) === false) {
@@ -99,9 +99,9 @@ class EateryService
         }
 
         //没有餐馆则取第一个
-        if (count($eateryList) == 0) {
+        /*if (count($eateryList) == 0) {
             return [$firstEatery];
-        }
+        }*/
 
         return array_values($eateryList);
     }
