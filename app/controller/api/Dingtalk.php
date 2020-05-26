@@ -4,6 +4,7 @@ declare (strict_types=1);
 namespace app\controller\api;
 
 use app\controller\api\Base;
+use app\model\CompanyRegister;
 use think\annotation\route\Group;
 use think\annotation\Route;
 use app\model\DTCompany;
@@ -66,6 +67,7 @@ class Dingtalk extends Base
         //获取suite_ticket
         $allPushData = Db::connect('yun_push')
             ->table('open_sync_biz_data')
+            ->order('id desc')
             ->select();
 
         foreach ($allPushData as $k => $v) {
@@ -96,7 +98,37 @@ class Dingtalk extends Base
         $request = request();
         $user_info->isMobile = $request->isMobile();
 
+
+        /**
+         * 获取企业授权信息
+         */
+        $res = $this->isvService->getAuthInfo($suiteAccessToken, $CorpId, $permanent_code);
+        if ($res->errcode != 0)
+        {
+            throw new MyException(10001, "Failed: " . json_encode($res));
+        }
+
+        //注册公司 返回结果 kevin
+        if(!self::registerCompany($res,$permanent_code)){
+            throw new MyException(10001, "registerCompanyFailed: " . json_encode($res));
+        };
+
         return json_ok($user_info);
+    }
+
+
+
+    static function registerCompany($_data,$permanetCode='')
+    {
+        $DTCompanyModel = new CompanyRegister();
+        $data = [];
+        $data['company_name'] = $_data->auth_corp_info->corp_name ?? '';
+        $data['corpid'] = $_data->auth_corp_info->corpid ?? '';
+        $data['industry'] = $_data->auth_corp_info->industry ?? '';
+        $data['corp_logo_url'] = $_data->auth_corp_info->corp_logo_url ?? '';
+        $data['register_time'] = date('Y-m-d H:i:s',time());
+        $data['permanent_code'] = $permanetCode;
+        return $DTCompanyModel->save($data);
     }
 
 
