@@ -89,9 +89,11 @@ class Dingtalk extends Base
                 }
             }
         }
-
+echo $suiteTicket.'<pr />';
+echo $permanent_code.'<pr />';
+echo $CorpId.'<pr />';
         $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
-echo $suiteAccessToken;'<pr />';
+echo $suiteAccessToken.'<pr />';die;
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
         echo $isvCorpAccessToken;'<pr />';
         $User = new \User();
