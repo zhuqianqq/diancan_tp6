@@ -51,16 +51,56 @@ class Dingtalk extends Base
         if(!$corpId && !$code){
             return json_error(20001);
         }
-        //获取企业授权凭证
-        $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
+
+       /* //获取企业授权凭证
+        //$isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
+        $isvCorpAccessToken = $this->getAccessToken($corpId);
 
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
 
         //判定设备型号
         $request = request();
+        $user_info->isMobile = $request->isMobile();*/
+
+        /*$data = Db::connect('yun_push')
+            ->table('open_sync_biz_data')
+            ->where('corp_id=:corp_id', ['corp_id' => $corpId])
+            ->value('biz_data');*/
+
+        //获取suite_ticket
+        $allPushData = Db::connect('yun_push')
+            ->table('open_sync_biz_data')
+            ->select();
+
+        foreach ($allPushData as $k => $v) {
+            $item = json_decode($v['biz_data'], true);
+            foreach ($item as $kk => $vv) {
+                if ($kk == 'suiteTicket') {
+                    $suiteTicket = $vv;
+                }
+
+                if ($kk == 'permanent_code') {
+                    $permanent_code = $vv;
+                }
+
+                if ($kk == 'auth_corp_info') {
+                    $CorpId = $vv['corpid'];
+                }
+            }
+        }
+
+        $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
+
+        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
+
+        $User = new \User();
+        $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
+        //print_r($user_info);die;
+        //判定设备型号
+        $request = request();
         $user_info->isMobile = $request->isMobile();
-        
+        //print_r($user_info->toArray());die;
         return json_ok($user_info);
     }
 
@@ -80,10 +120,10 @@ class Dingtalk extends Base
      * @Route("getSuiteAccessToken")
      */
     //获取isv套件应用凭证
-     public function getSuiteAccessToken()
+     public function getSuiteAccessToken($suiteTicket)
     {
 
-        $suiteAccessToken = $this->ISVService->getSuiteAccessToken('10530003');
+        $suiteAccessToken = $this->ISVService->getSuiteAccessToken($suiteTicket);
 
         return $suiteAccessToken;
 
@@ -92,6 +132,7 @@ class Dingtalk extends Base
     //isv应用免登陆的公司AccessToken
     public function getIsvCorpAccessToken($corpId)
     {
+
         $key = 'dingding_corp_info_'.$corpId;
 
         $CorpInfo = json_decode($this->Auth->cache->getCorpInfo($key),true);
@@ -256,7 +297,7 @@ class Dingtalk extends Base
         if(!$agentid){
             return  json_error(20800);
         }
-     
+
         require_once app()->getRootPath() . 'extend/dingtalk_isv_php_sdk/api/Message.php';
         $Message = new \Message();
         $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
@@ -286,7 +327,7 @@ class Dingtalk extends Base
 
        
         $departmentid_list_arr = DTDepartment::getDingDepartmentIds($corpId);
- 
+
         if(!$departmentid_list_arr){
             return  json_error(20900);
         } 
@@ -297,7 +338,7 @@ class Dingtalk extends Base
             $userid_list_arr = CompanyStaff::getDingdingUserIds($corpId);
             if(!$userid_list_arr){
                 return  json_error(20900);
-            } 
+            }
 
             $userid_list = implode(',', $userid_list_arr);
 
