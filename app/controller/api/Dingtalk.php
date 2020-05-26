@@ -67,7 +67,7 @@ class Dingtalk extends Base
             ->table('open_sync_biz_data')
             ->where('corp_id=:corp_id', ['corp_id' => $corpId])
             ->value('biz_data');*/
-
+echo 11;die;
         //获取suite_ticket
         $allPushData = Db::connect('yun_push')
             ->table('open_sync_biz_data')
