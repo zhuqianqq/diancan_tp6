@@ -63,11 +63,6 @@ class Dingtalk extends Base
         $request = request();
         $user_info->isMobile = $request->isMobile();*/
 
-        /*$data = Db::connect('yun_push')
-            ->table('open_sync_biz_data')
-            ->where('corp_id=:corp_id', ['corp_id' => $corpId])
-            ->value('biz_data');*/
-
         //获取suite_ticket
         $allPushData = Db::connect('yun_push')
             ->table('open_sync_biz_data')
@@ -89,20 +84,18 @@ class Dingtalk extends Base
                 }
             }
         }
-/*echo $suiteTicket.'<pr />';
-echo $permanent_code.'<pr />';
-echo $CorpId.'<pr />';*/
+
         $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
-//echo $suiteAccessToken.'<pr />';die;
+
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
-        //echo $isvCorpAccessToken;'<pr />';
+
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
-//        print_r($user_info);die;
+
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
-        //print_r($user_info->toArray());die;
+
         return json_ok($user_info);
     }
 
