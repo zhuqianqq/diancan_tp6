@@ -5,6 +5,7 @@ namespace app\controller\api;
 
 use app\controller\api\Base;
 use app\model\CompanyRegister;
+use app\MyException;
 use think\annotation\route\Group;
 use think\annotation\Route;
 use app\model\DTCompany;
@@ -83,16 +84,18 @@ class Dingtalk extends Base
 
                 if ($kk == 'auth_corp_info') {
                     $CorpId = $vv['corpid'];
+                    $key = 'dingding_corp_info_'.$corpId;
+                    $this->Auth->cache->setCorpInfo($key, $vv);
                 }
             }
         }
 
         $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
 
-        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
+        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $permanent_code);
 
         $User = new \User();
-        $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
+        $user_info = $User->getUserInfo($isvCorpAccessToken, $code);
 
         //判定设备型号
         $request = request();
