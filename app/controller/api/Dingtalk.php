@@ -72,7 +72,7 @@ class Dingtalk extends Base
         $allPushData = Db::connect('yun_push')
             ->table('open_sync_biz_data')
             ->select();
-print_r($allPushData);die;
+
         foreach ($allPushData as $k => $v) {
             $item = json_decode($v['biz_data'], true);
             foreach ($item as $kk => $vv) {
@@ -91,14 +91,14 @@ print_r($allPushData);die;
         }
 echo $suiteTicket.'<pr />';
 echo $permanent_code.'<pr />';
-echo $CorpId.'<pr />';die;
+echo $CorpId.'<pr />';
         $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
-echo $suiteAccessToken.'<pr />';die;
+//echo $suiteAccessToken.'<pr />';die;
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
         echo $isvCorpAccessToken;'<pr />';
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
-        print_r($user_info);die;
+//        print_r($user_info);die;
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
