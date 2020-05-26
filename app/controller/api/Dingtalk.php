@@ -72,7 +72,7 @@ class Dingtalk extends Base
         $allPushData = Db::connect('yun_push')
             ->table('open_sync_biz_data')
             ->select();
-
+print_r($allPushData);
         foreach ($allPushData as $k => $v) {
             $item = json_decode($v['biz_data'], true);
             foreach ($item as $kk => $vv) {
@@ -91,7 +91,7 @@ class Dingtalk extends Base
         }
 echo $suiteTicket.'<pr />';
 echo $permanent_code.'<pr />';
-echo $CorpId.'<pr />';
+echo $CorpId.'<pr />';die;
         $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
 echo $suiteAccessToken.'<pr />';die;
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
