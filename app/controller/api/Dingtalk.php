@@ -89,13 +89,13 @@ class Dingtalk extends Base
                 }
             }
         }
-echo $suiteTicket.'<pr />';
+/*echo $suiteTicket.'<pr />';
 echo $permanent_code.'<pr />';
-echo $CorpId.'<pr />';
+echo $CorpId.'<pr />';*/
         $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
 //echo $suiteAccessToken.'<pr />';die;
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
-        echo $isvCorpAccessToken;'<pr />';
+        //echo $isvCorpAccessToken;'<pr />';
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
 //        print_r($user_info);die;
