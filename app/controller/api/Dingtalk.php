@@ -72,7 +72,7 @@ class Dingtalk extends Base
         $allPushData = Db::connect('yun_push')
             ->table('open_sync_biz_data')
             ->select();
-print_r($allPushData);
+print_r($allPushData);die;
         foreach ($allPushData as $k => $v) {
             $item = json_decode($v['biz_data'], true);
             foreach ($item as $kk => $vv) {

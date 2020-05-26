@@ -62,13 +62,13 @@ return [
             // 数据库类型
             'type'              => 'mysql',
             // 服务器地址
-            'hostname'          => env('DB_HOSTNAME', '192.168.190.162'),
+            'hostname'          => env('DB_HOSTNAME', 'rm-bp121j1561lt3o88s.mysql.rds.aliyuncs.com'),
             // 数据库名
             'database'          => "ding_cloud_push",
             // 用户名
-            'username'          => env('DB_USER', 'root'),
+            'username'          => env('DB_USER', 'ding_user'),
             // 密码
-            'password'          => env('DB_PASSWORD', 'root'),
+            'password'          => env('DB_PASSWORD', 'dc_user321'),
             // 端口
             'hostport'          => env('DB_PORT', '3306'),
             // 数据库连接参数
