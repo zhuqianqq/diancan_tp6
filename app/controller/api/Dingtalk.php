@@ -110,7 +110,7 @@ class Dingtalk extends Base
         /**
          * 获取企业授权信息
          */
-        $this->ISVService->getIsvCorpAuthInfo($suiteAccessToken, $CorpId, $permanent_code);
+        $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $permanent_code);
         $res = $this->getIsvCorpAuthInfo($CorpId);
         if ($res->errcode != 0)
         {
