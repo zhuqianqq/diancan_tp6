@@ -156,7 +156,8 @@ class ISVService
                     "permanent_code" => $permanentCode
                 )));
             $this->check($authInfo);
-            $this->cache->setAuthInfo("corpAuthInfo_".$authCorpId, json_encode($authInfo->auth_info));
+            //$this->cache->setAuthInfo("corpAuthInfo_".$authCorpId, json_encode($authInfo->auth_info));
+            $this->cache->setAuthInfo("corpAuthInfo_".$authCorpId, json_encode($authInfo));
         }
 
         return $authInfo;
