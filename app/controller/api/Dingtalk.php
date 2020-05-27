@@ -112,8 +112,7 @@ class Dingtalk extends Base
          */
         $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $permanent_code);
         $res = $this->getIsvCorpAuthInfo($CorpId);
-        print_r($res);die;
-        if ($res->errcode != 0)
+        if ($res['errcode'] != 0)
         {
             throw new MyException(10001, "Failed: " . json_encode($res));
         }
@@ -132,10 +131,10 @@ class Dingtalk extends Base
     {
         $DTCompanyModel = new CompanyRegister();
         $data = [];
-        $data['company_name'] = $_data->auth_corp_info->corp_name ?? '';
-        $data['corpid'] = $_data->auth_corp_info->corpid ?? '';
-        $data['industry'] = $_data->auth_corp_info->industry ?? '';
-        $data['corp_logo_url'] = $_data->auth_corp_info->corp_logo_url ?? '';
+        $data['company_name'] = $_data['auth_corp_info']['corp_name'] ?? '';
+        $data['corpid'] = $_data['auth_corp_info']['corpid'] ?? '';
+        $data['industry'] = $_data['auth_corp_info']['industry'] ?? '';
+        $data['corp_logo_url'] = $_data['auth_corp_info']['corp_logo_url'] ?? '';
         $data['register_time'] = date('Y-m-d H:i:s',time());
         $data['permanent_code'] = $permanetCode;
         return $DTCompanyModel->save($data);
