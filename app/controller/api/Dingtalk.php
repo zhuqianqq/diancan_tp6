@@ -4,6 +4,7 @@ declare (strict_types=1);
 namespace app\controller\api;
 
 use app\controller\api\Base;
+use app\model\BaseModel;
 use app\model\CompanyRegister;
 use app\MyException;
 use think\annotation\route\Group;
@@ -47,10 +48,10 @@ class Dingtalk extends Base
      */
     //钉钉登录首页
     public function index()
-    {   
-        $corpId = input('corpId','');
+    {
+        $CorpId = input('corpId','');
         $code = input('code','');
-        if(!$corpId && !$code){
+        if(!$CorpId && !$code){
             return json_error(20001);
         }
 
@@ -67,60 +68,56 @@ class Dingtalk extends Base
 
 
         //$isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
-        $isvCorpAccessToken = '';
-        if (!$isvCorpAccessToken) {
-            //获取suite_ticket
-            $allPushData = Db::connect('yun_push')
-                ->table('open_sync_biz_data')
-                ->order('id desc')
-                ->select();
+        //获取suite_ticket
+        $authData = Db::connect('yun_push')
+            ->table('open_sync_biz_data')
+            ->order('id desc')
+            ->where('corp_id =:corp_id and biz_type=4', ['corp_id' => $CorpId])
+            ->order('gmt_create desc')
+            ->find();
 
-            foreach ($allPushData as $k => $v) {
-                $item = json_decode($v['biz_data'], true);
-                foreach ($item as $kk => $vv) {
-                    if ($kk == 'suiteTicket') {
-                        $suiteTicket = $vv;
-                    }
+        //获取所有已经存在的公司
+        $oneCompany =  Db::connect('mysql')
+            ->table('dc_company_register')
+            ->where('corpid =:corpid', ['corpid' => $CorpId])
+            ->find();
 
-                    if ($kk == 'permanent_code') {
-                        $permanent_code = $vv;
-                    }
-
-                    if ($kk == 'auth_corp_info') {
-                        $CorpId = $vv['corpid'];
-                        $key = 'dingding_corp_info_'.$corpId;
-                        $this->Auth->cache->setCorpInfo($key, json_encode($vv));
-                    }
-                }
-            }
-
-            $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
-
-            $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $permanent_code);
+        $data = json_decode($authData['biz_data'], true);
+        if (!$oneCompany) {
+            self::registerCompany($data['auth_corp_info'], $data['permanent_code']);
         }
 
+        $user_info = new \stdClass();
+        $request = request();
+        $user_info->isMobile = $request->isMobile();
+        $user_info->userid =  $data['auth_user_info']['userId'];
+        return json_ok($user_info);
+
+
+       /* $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
+        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $permanent_code);
 
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken, $code);
 
         //判定设备型号
         $request = request();
-        $user_info->isMobile = $request->isMobile();
+        $user_info->isMobile = $request->isMobile();*/
 
         /**
          * 获取企业授权信息
          */
-        $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $permanent_code);
-        $res = $this->getIsvCorpAuthInfo($CorpId);
-        if ($res['errcode'] != 0)
-        {
-            throw new MyException(10001, "Failed: " . json_encode($res));
-        }
+        /* $this->ISVService->getAuthInfo($suiteAccessToken, $CorpId, $permanent_code);
+         $res = $this->getIsvCorpAuthInfo($CorpId);
+         if ($res['errcode'] != 0)
+         {
+             throw new MyException(10001, "Failed: " . json_encode($res));
+         }
 
-        //注册公司 返回结果 kevin
-        if(!self::registerCompany($res,$permanent_code)){
-            throw new MyException(10001, "registerCompanyFailed: " . json_encode($res));
-        };
+         //注册公司 返回结果 kevin
+         if(!self::registerCompany($res,$permanent_code)){
+             throw new MyException(10001, "registerCompanyFailed: " . json_encode($res));
+         };*/
 
         return json_ok($user_info);
     }
@@ -131,13 +128,18 @@ class Dingtalk extends Base
     {
         $DTCompanyModel = new CompanyRegister();
         $data = [];
-        $data['company_name'] = $_data['auth_corp_info']['corp_name'] ?? '';
-        $data['corpid'] = $_data['auth_corp_info']['corpid'] ?? '';
-        $data['industry'] = $_data['auth_corp_info']['industry'] ?? '';
-        $data['corp_logo_url'] = $_data['auth_corp_info']['corp_logo_url'] ?? '';
+        $data['company_name'] = $_data['corp_name'] ?? '';
+        $data['corpid'] = $_data['corpid'] ?? '';
+        $data['industry'] = $_data['industry'] ?? '';
+        $data['corp_logo_url'] = $_data['corp_logo_url'] ?? '';
         $data['register_time'] = date('Y-m-d H:i:s',time());
         $data['permanent_code'] = $permanetCode;
-        return $DTCompanyModel->save($data);
+        try {
+            $DTCompanyModel->save($data);
+        } catch (\Exception $e) {
+            BaseModel::rollbackTrans();
+            throw new MyException(10001, $e->getMessage());
+        }
     }
 
 
