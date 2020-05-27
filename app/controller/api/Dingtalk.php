@@ -89,7 +89,6 @@ class Dingtalk extends Base
                     if ($kk == 'auth_corp_info') {
                         $CorpId = $vv['corpid'];
                         $key = 'dingding_corp_info_'.$corpId;
-                        print_r($vv);die;
                         $this->Auth->cache->setCorpInfo($key, $vv);
                     }
                 }
