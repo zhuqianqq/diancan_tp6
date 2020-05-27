@@ -66,7 +66,8 @@ class Dingtalk extends Base
         $user_info->isMobile = $request->isMobile();*/
 
 
-        $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
+        //$isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
+        $isvCorpAccessToken = '';
         if (!$isvCorpAccessToken) {
             //获取suite_ticket
             $allPushData = Db::connect('yun_push')
@@ -88,6 +89,7 @@ class Dingtalk extends Base
                     if ($kk == 'auth_corp_info') {
                         $CorpId = $vv['corpid'];
                         $key = 'dingding_corp_info_'.$corpId;
+                        print_r($vv);die;
                         $this->Auth->cache->setCorpInfo($key, $vv);
                     }
                 }
