@@ -55,19 +55,6 @@ class Dingtalk extends Base
             return json_error(20001);
         }
 
-       /* //获取企业授权凭证
-        //$isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
-        $isvCorpAccessToken = $this->getAccessToken($corpId);
-
-        $User = new \User();
-        $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
-
-        //判定设备型号
-        $request = request();
-        $user_info->isMobile = $request->isMobile();*/
-
-
-        //$isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
         //获取suite_ticket
         $authData = Db::connect('yun_push')
             ->table('open_sync_biz_data')
@@ -91,34 +78,6 @@ class Dingtalk extends Base
         $request = request();
         $user_info->isMobile = $request->isMobile();
         $user_info->userid =  $data['auth_user_info']['userId'];
-        return json_ok($user_info);
-
-
-       /* $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
-        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $permanent_code);
-
-        $User = new \User();
-        $user_info = $User->getUserInfo($isvCorpAccessToken, $code);
-
-        //判定设备型号
-        $request = request();
-        $user_info->isMobile = $request->isMobile();*/
-
-        /**
-         * 获取企业授权信息
-         */
-        /* $this->ISVService->getAuthInfo($suiteAccessToken, $CorpId, $permanent_code);
-         $res = $this->getIsvCorpAuthInfo($CorpId);
-         if ($res['errcode'] != 0)
-         {
-             throw new MyException(10001, "Failed: " . json_encode($res));
-         }
-
-         //注册公司 返回结果 kevin
-         if(!self::registerCompany($res,$permanent_code)){
-             throw new MyException(10001, "registerCompanyFailed: " . json_encode($res));
-         };*/
-
         return json_ok($user_info);
     }
 
