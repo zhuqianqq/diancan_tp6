@@ -55,14 +55,8 @@ class Dingtalk extends Base
             return json_error(20001);
         }
 
-        //获取suite_ticket
-        $authData = Db::connect('yun_push')
-            ->table('open_sync_biz_data')
-            ->order('id desc')
-            ->where('corp_id =:corp_id and biz_type=4', ['corp_id' => $CorpId])
-            ->order('gmt_create desc')
-            ->find();
-
+        //获取授权信息
+        $authData = self::getAuthOrTicketInfo($CorpId, 4);
         //获取所有已经存在的公司
         $oneCompany =  Db::connect('mysql')
             ->table('dc_company_register')
@@ -78,12 +72,24 @@ class Dingtalk extends Base
         $request = request();
         $user_info->isMobile = $request->isMobile();
         $user_info->userid =  $data['auth_user_info']['userId'];
+        $this->cache->setAuthInfo("corpAuthInfo_".$CorpId, json_encode($authData));
+
         return json_ok($user_info);
     }
 
+    public static function getAuthOrTicketInfo($CorpId, $type)
+    {
+        $info = Db::connect('yun_push')
+            ->table('open_sync_biz_data')
+            ->order('id desc')
+            ->where('corp_id =:corp_id and biz_type=:biz_type', ['corp_id' => $CorpId, 'biz_type' => $type])
+            ->order('gmt_create desc')
+            ->find();
 
+        return $info;
+    }
 
-    static function registerCompany($_data,$permanetCode='')
+    public static function registerCompany($_data,$permanetCode='')
     {
         $DTCompanyModel = new CompanyRegister();
         $data = [];
@@ -129,8 +135,25 @@ class Dingtalk extends Base
     //isv应用免登陆的公司AccessToken
     public function getIsvCorpAccessToken($corpId)
     {
+        //获取票据信息
+        //$ticketData = self::getAuthOrTicketInfo($corpId, 2);
+        $ticketData = Db::connect('yun_push')
+            ->table('open_sync_biz_data')
+            ->order('id desc')
+            ->where('biz_type=:biz_type', ['biz_type' => 2])
+            ->order('gmt_create desc')
+            ->find();
 
-        $key = 'dingding_corp_info_'.$corpId;
+        //获取授权信息
+        $authData = self::getAuthOrTicketInfo($corpId, 4);
+
+        $ticketDatArr = \GuzzleHttp\json_decode($ticketData['biz_data'], true);
+        $authDataArr = \GuzzleHttp\json_decode($authData['biz_data'], true);
+        $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
+
+        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $corpId, $authDataArr['permanent_code']);
+
+        /*$key = 'dingding_corp_info_'.$corpId;
 
         $CorpInfo = json_decode($this->Auth->cache->getCorpInfo($key),true);
 
@@ -141,7 +164,7 @@ class Dingtalk extends Base
 
         $suiteAccessToken = $this->getSuiteAccessToken();
         //获取企业授权凭证
-        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);
+        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);*/
 
         return $isvCorpAccessToken;
 
