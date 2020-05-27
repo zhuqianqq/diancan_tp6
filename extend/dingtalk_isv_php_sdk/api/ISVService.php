@@ -141,8 +141,7 @@ class ISVService
 
     public function getAuthInfo($suiteAccessToken, $authCorpId, $permanentCode)
     {
-//        $authInfo = json_decode($this->cache->getAuthInfo("corpAuthInfo_".$authCorpId));
-        $authInfo = '';
+        $authInfo = json_decode($this->cache->getAuthInfo("corpAuthInfo_".$authCorpId));
         if (!$authInfo)
         {
             $authInfo = $this->http->post("/service/get_auth_info",
@@ -157,7 +156,6 @@ class ISVService
                     "permanent_code" => $permanentCode
                 )));
             $this->check($authInfo);
-            print_r($authInfo);die;
             //$this->cache->setAuthInfo("corpAuthInfo_".$authCorpId, json_encode($authInfo->auth_info));
             $this->cache->setAuthInfo("corpAuthInfo_".$authCorpId, json_encode($authInfo));
         }
