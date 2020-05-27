@@ -100,13 +100,12 @@ class Dingtalk extends Base
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
-echo $suiteAccessToken.'<br />'.$CorpId.'<br />'.$permanent_code;die;
 
         /**
          * 获取企业授权信息
          */
         $res = $this->ISVService->getAuthInfo($suiteAccessToken, $CorpId, $permanent_code);
-//        print_r($res);die;
+        print_r($res);die;
         if ($res->errcode != 0)
         {
             throw new MyException(10001, "Failed: " . json_encode($res));
