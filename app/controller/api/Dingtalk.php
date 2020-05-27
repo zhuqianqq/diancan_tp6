@@ -169,7 +169,7 @@ class Dingtalk extends Base
     {
 
         $key = 'dingding_corp_info_'.$corpId;
-
+echo $key;die;
         $CorpInfo = json_decode($this->Auth->cache->getCorpInfo($key),true);
 
         foreach ($CorpInfo as $k => $v) {
