@@ -23,9 +23,9 @@ return [
             // 数据库类型
             'type'              => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname'          => Env::get('database.hostname', '175.6.97.91'),
+            'hostname'          => Env::get('database.hostname', 'rm-bp121j1561lt3o88s.mysql.rds.aliyuncs.com'),
             // 数据库名
-            'database'          => Env::get('database.database', 'dingcan'),
+            'database'          => Env::get('database.database', 'ttdiancan'),
             // 用户名
             'username'          => Env::get('database.username', 'dc_user'),
             // 密码

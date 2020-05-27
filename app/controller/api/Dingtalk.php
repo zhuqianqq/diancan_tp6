@@ -65,34 +65,39 @@ class Dingtalk extends Base
         $request = request();
         $user_info->isMobile = $request->isMobile();*/
 
-        //获取suite_ticket
-        $allPushData = Db::connect('yun_push')
-            ->table('open_sync_biz_data')
-            ->order('id desc')
-            ->select();
 
-        foreach ($allPushData as $k => $v) {
-            $item = json_decode($v['biz_data'], true);
-            foreach ($item as $kk => $vv) {
-                if ($kk == 'suiteTicket') {
-                    $suiteTicket = $vv;
-                }
+        $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
+        if (!$isvCorpAccessToken) {
+            //获取suite_ticket
+            $allPushData = Db::connect('yun_push')
+                ->table('open_sync_biz_data')
+                ->order('id desc')
+                ->select();
 
-                if ($kk == 'permanent_code') {
-                    $permanent_code = $vv;
-                }
+            foreach ($allPushData as $k => $v) {
+                $item = json_decode($v['biz_data'], true);
+                foreach ($item as $kk => $vv) {
+                    if ($kk == 'suiteTicket') {
+                        $suiteTicket = $vv;
+                    }
 
-                if ($kk == 'auth_corp_info') {
-                    $CorpId = $vv['corpid'];
-                    $key = 'dingding_corp_info_'.$corpId;
-                    $this->Auth->cache->setCorpInfo($key, $vv);
+                    if ($kk == 'permanent_code') {
+                        $permanent_code = $vv;
+                    }
+
+                    if ($kk == 'auth_corp_info') {
+                        $CorpId = $vv['corpid'];
+                        $key = 'dingding_corp_info_'.$corpId;
+                        $this->Auth->cache->setCorpInfo($key, $vv);
+                    }
                 }
             }
+
+            $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
+
+            $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $permanent_code);
         }
 
-        $suiteAccessToken = $this->getSuiteAccessToken($suiteTicket);
-
-        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $permanent_code);
 
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken, $code);

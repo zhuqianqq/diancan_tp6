@@ -149,12 +149,12 @@ class ISVService
                     "suite_access_token" => $suiteAccessToken,
                     "suite_key" => SUITE_KEY,
                     "auth_corpid" => $authCorpId,
-                ));
-                /*json_encode(array(
+                ),
+                json_encode(array(
                     "suite_key" => SUITE_KEY,
                     "auth_corpid" => $authCorpId,
                     "permanent_code" => $permanentCode
-                )));*/
+                )));
             $this->check($authInfo);
             $this->cache->setAuthInfo("corpAuthInfo_".$authCorpId, json_encode($authInfo->auth_info));
         }
