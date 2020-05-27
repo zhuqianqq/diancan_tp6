@@ -112,6 +112,7 @@ class Dingtalk extends Base
          */
         $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $permanent_code);
         $res = $this->getIsvCorpAuthInfo($CorpId);
+        print_r($res);die;
         if ($res['errcode'] != 0)
         {
             throw new MyException(10001, "Failed: " . json_encode($res));
