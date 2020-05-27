@@ -64,7 +64,7 @@ return [
             // 服务器地址
             'hostname'          => env('DB_HOSTNAME', 'rm-bp121j1561lt3o88s.mysql.rds.aliyuncs.com'),
             // 数据库名
-            'database'          => env('DB_DATABASE', 'ding_cloud_push'),
+            'database'          => env('DB_HOSTNAME', 'ding_cloud_push'),
             // 用户名
             'username'          => env('DB_USER', 'ding_user'),
             // 密码
