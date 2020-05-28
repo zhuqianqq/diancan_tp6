@@ -193,7 +193,7 @@ class Dingtalk extends Base
 
 
     /**
-     * @Route("DTGetUserInfo")
+     * @Route("DTGetUserInfo", method="GET")
      */
 
     //获取钉钉员工详细信息
