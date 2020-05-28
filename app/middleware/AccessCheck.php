@@ -20,9 +20,9 @@ class AccessCheck
 
         //return $next($request);
         $request_uri = $request->request()['s'] ?? '';
-        if (stripos($request_uri,'api/Dingtalk/DTGetUserInfo')!== false) {
+       /* if (stripos($request_uri,'api/Dingtalk/DTGetUserInfo')!== false) {
             echo $request_uri;die;
-        }
+        }*/
 
         if(!$request_uri){
             throw new \app\MyException(11101);
