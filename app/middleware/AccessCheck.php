@@ -20,14 +20,10 @@ class AccessCheck
 
         //return $next($request);
         $request_uri = $request->request()['s'] ?? '';
-       /* if (stripos($request_uri,'api/Dingtalk/DTGetUserInfo')!== false) {
-            echo $request_uri;die;
-        }*/
 
         if(!$request_uri){
             throw new \app\MyException(11101);
         }
-
 
         //钉钉相关接口不需要判断access-key ， adminInfo,H5餐馆订单详情页面不需验证
         if(stripos($request_uri,'Dingtalk') !== false || stripos($request_uri,'adminInfo') !== false || stripos($request_uri,'eateryOrderDetail') !== false || stripos($request_uri,'feedBackList') !== false){
@@ -39,7 +35,6 @@ class AccessCheck
         $access_key = $request->header('access-key','');
 
         if($user_id <= 0 || empty($access_key)){
-            echo '222'.$request_uri;die;
             throw new \app\MyException(11101);
             //$res = ['user_id'=>$user_id,'access_key'=>$access_key];
             //throw new \app\MyException(11101,json_encode($res));
@@ -47,7 +42,6 @@ class AccessCheck
 
         $check = AccessKeyHelper::validateAccessKey($user_id,$access_key);
         if(!$check){
-            echo '333'.$request_uri;die;
             throw new \app\MyException(11102);
         }
 
