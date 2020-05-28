@@ -67,7 +67,7 @@ print_r($user_info->toArray());die;
 
         } catch (\Exception $e) {
                 Db::rollback();
-                throw new \app\MyException(20020);
+                throw new \app\MyException(20020, $e->getMessage());
         }
     	
     	return true;
