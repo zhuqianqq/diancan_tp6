@@ -61,7 +61,7 @@ class DTUser extends BaseModel
 
                 Db::table("dc_company_admin")->insert($admin_data);
             }
-            var_dump($data);
+            var_dump($data);die;
             Db::table("dc_company_staff")->insert($data);
             Db::commit();
 
