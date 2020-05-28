@@ -73,6 +73,7 @@ class AccessCheck
         
         //$request->user_id = $user_id;
         $request->access_key = $access_key;
+        $request->is_sys = 1;
 
         return $next($request);
     }
