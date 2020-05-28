@@ -84,7 +84,7 @@ class Dingtalk extends Base
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
-        $this->Auth->cache->setAuthInfo("corpAuthInfo_".$CorpId, json_encode($authData));
+        $this->Auth->cache->setAuthInfo("corpAuthInfo_".$CorpId, json_encode($authDataArr['auth_info']));
 
         return json_ok($user_info);
     }
