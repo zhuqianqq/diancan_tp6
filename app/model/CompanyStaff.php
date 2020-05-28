@@ -58,7 +58,7 @@ class CompanyStaff extends BaseModel
             ->join(CompanyRegister::$_table . ' r', 'r.company_id = s.company_id')
             ->join(DTDepartment::$_table . ' d', 'd.company_id = s.company_id and d.platform_departid = s.department_id')
             ->where('staff_status = 1 and staffid=:staffid',['staffid' => $user_id])
-            ->field(['staffid','s.company_id','staff_name','department_id','company_name','platform_departid','dept_name'])
+            ->field(['staffid','s.company_id','staff_name','d.id department_id','company_name','platform_departid','dept_name'])
             ->find();
 
         return $result;

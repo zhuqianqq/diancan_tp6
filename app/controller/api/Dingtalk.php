@@ -76,13 +76,7 @@ class Dingtalk extends Base
         $ticketDatArr = \GuzzleHttp\json_decode($ticketData['biz_data'], true);
         $authDataArr = \GuzzleHttp\json_decode($authData['biz_data'], true);
         $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
-
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $authDataArr['permanent_code']);
-
-
-
-        //获取企业授权凭证
-        //$isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
 
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
@@ -90,17 +84,16 @@ class Dingtalk extends Base
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
-
-
-       /* $user_info = new \stdClass();
-        $request = request();
-        $user_info->isMobile = $request->isMobile();
-        $user_info->userid =  $data['auth_user_info']['userId'];*/
         $this->Auth->cache->setAuthInfo("corpAuthInfo_".$CorpId, json_encode($authData));
 
         return json_ok($user_info);
     }
 
+    /**
+     * 获取钉钉云推送信息
+     * @param $CorpId
+     * @param $type
+     */
     public static function getAuthOrTicketInfo($CorpId, $type)
     {
         $info = Db::connect('yun_push')
@@ -113,6 +106,11 @@ class Dingtalk extends Base
         return $info;
     }
 
+    /**
+     * 注册公司
+     * @param $_data
+     * @param string $permanetCode
+     */
     public static function registerCompany($_data,$permanetCode='')
     {
         $DTCompanyModel = new CompanyRegister();
@@ -126,7 +124,6 @@ class Dingtalk extends Base
         try {
             $DTCompanyModel->save($data);
         } catch (\Exception $e) {
-            BaseModel::rollbackTrans();
             throw new MyException(10001, $e->getMessage());
         }
     }
@@ -149,11 +146,8 @@ class Dingtalk extends Base
     //获取isv套件应用凭证
      public function getSuiteAccessToken($suiteTicket)
     {
-
         $suiteAccessToken = $this->ISVService->getSuiteAccessToken($suiteTicket);
-
         return $suiteAccessToken;
-
     }
 
     //isv应用免登陆的公司AccessToken
@@ -190,9 +184,7 @@ class Dingtalk extends Base
     //获取订单公司授权信息 cache数据
     public function getIsvCorpAuthInfo($corpId)
     {
-
         $key = 'corpAuthInfo_'.$corpId;
-
         return json_decode($this->Auth->cache->getAuthInfo($key),true);
     }
 
