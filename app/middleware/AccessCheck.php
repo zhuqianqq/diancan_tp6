@@ -26,7 +26,7 @@ class AccessCheck
 
         //钉钉相关接口不需要判断access-key ， adminInfo,H5餐馆订单详情页面不需验证
         if(stripos($request_uri,'Dingtalk') !== false || stripos($request_uri,'adminInfo') !== false || stripos($request_uri,'eateryOrderDetail') !== false || stripos($request_uri,'feedBackList') !== false){
-          
+
             return $next($request);
         }
         
@@ -42,6 +42,7 @@ class AccessCheck
 
         $check = AccessKeyHelper::validateAccessKey($user_id,$access_key);
         if(!$check){
+            echo '333'.$request_uri;die;
             throw new \app\MyException(11102);
         }
 
