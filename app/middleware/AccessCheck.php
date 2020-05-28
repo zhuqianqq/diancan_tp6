@@ -20,13 +20,12 @@ class AccessCheck
 
         //return $next($request);
         $request_uri = $request->request()['s'] ?? '';
-        print_r($request_uri);die;
         if(!$request_uri){
             throw new \app\MyException(11101);
         }
 
         //钉钉相关接口不需要判断access-key ， adminInfo,H5餐馆订单详情页面不需验证
-        if(stripos($request_uri,'dingtalk') !== false || stripos($request_uri,'DTGetUserInfo') !== false ||stripos($request_uri,'adminInfo') !== false || stripos($request_uri,'eateryOrderDetail') !== false || stripos($request_uri,'feedBackList') !== false){
+        if(stripos($request_uri,'dingtalk') !== false || stripos($request_uri,'adminInfo') !== false || stripos($request_uri,'eateryOrderDetail') !== false || stripos($request_uri,'feedBackList') !== false){
             return $next($request);
         }
         
