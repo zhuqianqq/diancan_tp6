@@ -52,7 +52,7 @@ class AccessCheck
 
         $request_uid = $request->param('user_id','') ?? $request->param('staffid','');
         //判断是否为管理员身份
-       /* if($request_uid){
+        if($request_uid){
 
             $userInfo = CompanyStaff::where('staffid = :user_id',['user_id' => $user_id])->field('platform_staffid')->find();
             $isAdmin = CompanyAdmin::where('platform_userid = :user_id',['user_id' => $userInfo['platform_staffid']])->find();
@@ -68,12 +68,11 @@ class AccessCheck
                 }
             }
             
-        }*/
+        }
         
         
         //$request->user_id = $user_id;
         $request->access_key = $access_key;
-        $request->is_sys = 1;
 
         return $next($request);
     }

@@ -81,6 +81,9 @@ class Dingtalk extends Base
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
 
+        $user_info->is_sys = 1;
+
+        
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
