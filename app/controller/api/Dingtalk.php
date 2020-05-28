@@ -83,7 +83,7 @@ class Dingtalk extends Base
 
         $user_info->is_sys = 1;
 
-        
+
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
