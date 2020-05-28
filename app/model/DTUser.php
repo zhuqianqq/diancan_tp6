@@ -43,7 +43,7 @@ class DTUser extends BaseModel
             ->value('company_id');
 
             $data['company_id'] = $company_id;
-
+print_r($user_info->toArray());die;
             //如果该用户为管理员 增加公司管理员信息
             if($user_info->isAdmin === true ){
                 $admin_data = [];
