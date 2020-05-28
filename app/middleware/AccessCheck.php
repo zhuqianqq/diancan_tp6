@@ -26,7 +26,7 @@ class AccessCheck
 
         //钉钉相关接口不需要判断access-key ， adminInfo,H5餐馆订单详情页面不需验证
         if(stripos($request_uri,'Dingtalk') !== false || stripos($request_uri,'adminInfo') !== false || stripos($request_uri,'eateryOrderDetail') !== false || stripos($request_uri,'feedBackList') !== false){
-            echo '11111'.$request_uri;die;
+          
             return $next($request);
         }
         
