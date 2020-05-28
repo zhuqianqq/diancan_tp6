@@ -23,10 +23,11 @@ class DTUser extends BaseModel
     //注册
     public function registerStaff($user_info,$cropId){
 
+        $department_id = DTDepartment::where('platform_departid =:platform_departid', ['platform_departid', $user_info->department[0]])->value('id');
+        print_r($department_id);die;
+
         try {
             //根据平台department_id获取系统department_id
-            $department_id = DTDepartment::where('platform_departid =:platform_departid', ['platform_departid', $user_info->department[0]])->value('id');
-
             Db::startTrans();
             $data = [];
             $data['staff_name'] = $user_info->name ?? '';
