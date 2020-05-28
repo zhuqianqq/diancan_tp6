@@ -22,9 +22,7 @@ class DTUser extends BaseModel
 
     //注册
     public function registerStaff($user_info,$cropId){
-
-        $department_id = DTDepartment::where('platform_departid =:platform_departid', ['platform_departid', $user_info->department[0]])->value('id');
-        print_r($department_id);die;
+        $department_id = DTDepartment::where('platform_departid=:platform_departid', ['platform_departid' => $user_info->department[0]])->value('id');
 
         try {
             //根据平台department_id获取系统department_id
@@ -44,7 +42,6 @@ class DTUser extends BaseModel
             ->value('company_id');
 
             $data['company_id'] = $company_id;
-print_r($user_info->toArray());die;
             //如果该用户为管理员 增加公司管理员信息
             if($user_info->isAdmin === true ){
                 $admin_data = [];
@@ -62,7 +59,6 @@ print_r($user_info->toArray());die;
 
                 Db::table("dc_company_admin")->insert($admin_data);
             }
-            var_dump($data);die;
             Db::table("dc_company_staff")->insert($data);
             Db::commit();
 
