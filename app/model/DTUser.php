@@ -22,7 +22,11 @@ class DTUser extends BaseModel
 
     //注册
     public function registerStaff($user_info,$cropId){
-        $department_id = DTDepartment::where('platform_departid=:platform_departid', ['platform_departid' => $user_info->department[0]])->value('id');
+        //根据cropId查询公司id
+        $company_id =  Db::table("dc_company_register")
+            ->where('corpid', $cropId)
+            ->value('company_id');
+        $department_id = DTDepartment::where('company_id=:company_id and platform_departid=:platform_departid', ['company_id' => $company_id, 'platform_departid' => $user_info->department[0]])->value('id');
 
         try {
             //根据平台department_id获取系统department_id
@@ -37,9 +41,7 @@ class DTUser extends BaseModel
             $data['staff_status'] = $user_info->active ? 1 : 0;
             $data['register_time'] = date('Y-m-d H:i:s',time());
 
-            $company_id =  Db::table("dc_company_register")
-            ->where('corpid',$cropId)
-            ->value('company_id');
+
 
             $data['company_id'] = $company_id;
             //如果该用户为管理员 增加公司管理员信息
