@@ -153,8 +153,10 @@ class Dingtalk extends Base
     //isv应用免登陆的公司AccessToken
     public function getIsvCorpAccessToken($corpId)
     {
+        //授权方企业ID
+        $authCorpId = CORP_ID;
         //获取票据信息
-        $ticketData = self::getAuthOrTicketInfo($corpId, 2);
+        $ticketData = self::getAuthOrTicketInfo($authCorpId, 2);
         //获取授权信息
         $authData = self::getAuthOrTicketInfo($corpId, 4);
 
@@ -379,7 +381,7 @@ class Dingtalk extends Base
 
             //若多个部门  每5个部门为一组发送工作消息   避免全员发送消息不成功情况
             $departmentid_five_arr = array_chunk($departmentid_list_arr, 5);
-          
+
             foreach ($departmentid_five_arr as $k1 => $v1) {
               # code...
               $departmentid_list = implode(',', $v1);

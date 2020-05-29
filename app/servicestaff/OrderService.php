@@ -38,7 +38,7 @@ class OrderService
         $redis = \think\facade\Cache::handler();
         $isLock = false;
         if ($redis->setnx($cacheKey, 1)) {
-            $redis->expire($cacheKey, 2);
+            $redis->expire($cacheKey, 1);
             $isLock = true;
         }
         if (!$isLock) {

@@ -140,8 +140,7 @@ class IndexService
                $eM->eatery_alias_name = '默认餐馆';
                $eM->company_id = $userInfo['company_id'];
                $eM->eatery_id = $erM->eatery_id;
-               //$eM->eat_type = $mealType;
-               $eM->eat_type = '2,4';//为了在只添加了默认餐馆的情况下，员工端进来有餐馆信息展示
+               $eM->eat_type = $mealType;
                try {
                    $eM->save();
                } catch (\Exception $e){
