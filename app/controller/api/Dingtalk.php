@@ -86,8 +86,11 @@ class Dingtalk extends Base
         $request = request();
         $user_info->isMobile = $request->isMobile();
 
-        $key = 'corpAuthInfo_'.$CorpId;
-        Cache::set($key, json_encode($authDataArr['auth_info']), 86400); //缓存1天时间
+        if ($user_info->is_sys) {
+            $key = 'corpAuthInfo_'.$CorpId;
+            Cache::set($key, json_encode($authDataArr['auth_info']), 86400); //缓存1天时间
+        }
+
 
         //$this->Auth->cache->setAuthInfo("corpAuthInfo_".$CorpId, json_encode($authDataArr['auth_info']));
 
