@@ -69,18 +69,7 @@ class Dingtalk extends Base
             self::registerCompany($data['auth_corp_info'], $data['permanent_code']);
         }
 
-      /*  //授权方企业ID
-        $authCorpId = CORP_ID;
-        //获取票据信息
-        $ticketData = self::getAuthOrTicketInfo($authCorpId, 2);
-
         //获取授权信息
-        $authData = self::getAuthOrTicketInfo($CorpId, 4);
-
-        $ticketDatArr = \GuzzleHttp\json_decode($ticketData['biz_data'], true);
-        $authDataArr = \GuzzleHttp\json_decode($authData['biz_data'], true);
-        $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
-        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $authDataArr['permanent_code']);*/
         $isvCorpAccessToken = $this->getIsvCorpAccessToken($CorpId);
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
@@ -88,8 +77,6 @@ class Dingtalk extends Base
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
-
-        //$this->Auth->cache->setAuthInfo("corpAuthInfo_".$CorpId, json_encode($authDataArr['auth_info']));
 
         return json_ok($user_info);
     }
@@ -158,7 +145,6 @@ class Dingtalk extends Base
     //isv应用免登陆的公司AccessToken
     public function getIsvCorpAccessToken($corpId)
     {
-
         //授权方企业ID
         $authCorpId = CORP_ID;
         //获取票据信息
@@ -176,20 +162,6 @@ class Dingtalk extends Base
         if (!Cache::get($key)) {
             Cache::set($key, json_encode($authDataArr['auth_info']), 86400); //缓存1天时间
         }
-
-
-        /*$key = 'dingding_corp_info_'.$corpId;
-
-        $CorpInfo = json_decode($this->Auth->cache->getCorpInfo($key),true);
-
-        foreach ($CorpInfo as $k => $v) {
-           $CorpId = $k;
-           $permanent_code = $v['permanent_code'];
-        }
-
-        $suiteAccessToken = $this->getSuiteAccessToken();
-        //获取企业授权凭证
-        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken,$CorpId,$permanent_code);*/
 
         return $isvCorpAccessToken;
 
@@ -219,10 +191,13 @@ class Dingtalk extends Base
          return  json_error(20005);
        }
 
+       //根据corpid查询公司id
+
+
        $DTUserModel = new DTUser;
        $DTDepartmentModel = new DTDepartment;
        
-       $isReg = $DTUserModel->where('platform_staffid',$userid)->find();
+       $isReg = $DTUserModel->where('platform_staffid =:platform_staffid and cropid=:cropid', ['platform_staffid' => $userid, 'cropid' => $corpId])->find();
 
        if(!$isReg){
            //新用户 注册逻辑
