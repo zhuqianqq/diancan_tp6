@@ -81,7 +81,7 @@ class Dingtalk extends Base
         $authDataArr = \GuzzleHttp\json_decode($authData['biz_data'], true);
         $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $authDataArr['permanent_code']);*/
-        $isvCorpAccessToken = $this->IgetIsvCorpAccessToken($CorpId);
+        $isvCorpAccessToken = $this->getIsvCorpAccessToken($CorpId);
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
 
