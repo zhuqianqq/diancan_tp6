@@ -186,13 +186,9 @@ class Dingtalk extends Base
        $userid = input('userid','');
        $corpId = input('corpId','');
 
-
        if(!$userid || !$corpId){
          return  json_error(20005);
        }
-
-       //根据corpid查询公司id
-
 
        $DTUserModel = new DTUser;
        $DTDepartmentModel = new DTDepartment;
@@ -205,19 +201,15 @@ class Dingtalk extends Base
            $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
 
            $User = new \User();
-
            $user_info = $User->get($isvCorpAccessToken,$userid);
-           
            $DTUserModel->registerStaff($user_info,$corpId);
 
            //员工信息
            $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
            //统一userid字段
            $userInfo->userid = $userInfo->staffid;
-
            //返回生成的access_key
            $userInfo['access_key'] = AccessKeyHelper::generateAccessKey($userInfo->userid);
-           
            //判断该用户数据库是否有部门信息
            $userInfo['hasDepartment'] = $DTDepartmentModel->where('company_id',$userInfo['company_id'])->count();
 
@@ -239,18 +231,15 @@ class Dingtalk extends Base
               //生成的access_key
               $isReg['access_key'] = AccessKeyHelper::generateAccessKey($isReg->userid); 
            }
-           
 
            //判断该用户数据库是否有部门信息
            $isReg['hasDepartment'] = $DTDepartmentModel->where('company_id',$isReg['company_id'])->count();
        }
 
-       
        //老用户查询后返回数据库结果
        return json_ok($isReg);
 
     }
-
 
      /**
      * @Route("DTGetDepartment")
@@ -297,16 +286,12 @@ class Dingtalk extends Base
        return json_ok();
     }
 
-
-
     /**
      * @Route("sendMessage")
      */
     //发送订餐消息（钉钉工作消息类型）
     public function sendMessage($corpId)
     {
-        //$corpId = input('corpId','ding856732f3dcf58a39a1320dcb25e91351');
-
         if(!$corpId){
               return  json_error(20002);
         }
@@ -344,9 +329,7 @@ class Dingtalk extends Base
         $opt['msg']['msgtype'] = 'text';
         $opt['msg']['text'] = ['content'=>$content];
 
-       
         $departmentid_list_arr = DTDepartment::getDingDepartmentIds($corpId);
-
         if(!$departmentid_list_arr){
             return  json_error(20900);
         } 

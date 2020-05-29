@@ -79,10 +79,10 @@ class OrderService
             ->paginate($page_size)->toArray();
 
         $totalNum = 0;
-        $totalMoney = 0;
+        $totalMoney = '0';
         foreach ($page['data'] as $k => $v) {
             $totalNum += $v['report_num'];
-            $totalMoney += $v['report_amount'];
+            $totalMoney = bcadd($totalMoney, $v['report_amount'] . '', 2);
         }
 
         $page['timeInfo'] = [
@@ -122,9 +122,7 @@ class OrderService
         $where = ['od.company_id' => $userInfo->company_id, 'od.eatery_id' => $eatery_id, 'o.is_settlement' => $is_settlement];
 
         if($eat_type){
-
             if (strpos($eat_type,',') !== false) {
-                 
                $eat_type = explode(',', $eat_type);
             }
 
@@ -137,11 +135,14 @@ class OrderService
             throw new MyException(13002);
         }
 
+        $start_time = $date;
+        $end_time = $date . ' 23:59:59';
+
         $orderDetails = OrdD::alias('od')
                         ->join('order o','od.order_id = o.order_id')
                         ->where($where)
                         ->field('od.id,od.order_id,od.staff_name,od.food_name,od.price,od.eat_type,od.report_amount,od.report_num,o.is_settlement')
-                        ->whereTime('od.create_time',$date)
+                        ->whereTime('od.create_time', 'between', [$start_time, $end_time])
                         ->select();
 
         $totalNum = $totalMoney = 0;
