@@ -387,7 +387,7 @@ class Dingtalk extends Base
               $departmentid_list = implode(',', $v1);
 
               $opt['dept_id_list'] = $departmentid_list;
-
+                Log::info($opt['dept_id_list']);
               $res = $Message->corpConversation($isvCorpAccessToken,$opt);
 
             }
