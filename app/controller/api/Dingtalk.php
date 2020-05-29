@@ -89,7 +89,6 @@ class Dingtalk extends Base
         $request = request();
         $user_info->isMobile = $request->isMobile();
 
-
         //$this->Auth->cache->setAuthInfo("corpAuthInfo_".$CorpId, json_encode($authDataArr['auth_info']));
 
         return json_ok($user_info);
@@ -159,10 +158,6 @@ class Dingtalk extends Base
     //isv应用免登陆的公司AccessToken
     public function getIsvCorpAccessToken($corpId)
     {
-        $key = 'corpAuthInfo_'.$corpId;
-        if (Cache::get($key)) {
-            return json_decode(Cache::get($key),true);
-        }
 
         //授权方企业ID
         $authCorpId = CORP_ID;
@@ -177,7 +172,11 @@ class Dingtalk extends Base
 
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $corpId, $authDataArr['permanent_code']);
 
-        Cache::set($key, json_encode($authDataArr['auth_info']), 86400); //缓存1天时间
+        $key = 'corpAuthInfo_'.$corpId;
+        if (!Cache::get($key)) {
+            Cache::set($key, json_encode($authDataArr['auth_info']), 86400); //缓存1天时间
+        }
+
 
         /*$key = 'dingding_corp_info_'.$corpId;
 
