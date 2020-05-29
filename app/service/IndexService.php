@@ -140,7 +140,9 @@ class IndexService
                $eM->eatery_alias_name = '默认餐馆';
                $eM->company_id = $userInfo['company_id'];
                $eM->eatery_id = $erM->eatery_id;
-               $eM->eat_type = $mealType;
+               //$eM->eat_type = $mealType;
+               $eM->eat_type = '2,4';
+
                try {
                    $eM->save();
                } catch (\Exception $e){
