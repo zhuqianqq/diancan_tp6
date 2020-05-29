@@ -128,7 +128,7 @@ class IndexService
                $erM->city = '';
                $erM->district = '';
                $erM->address = '';
-               $erM->eat_type = '';
+               $erM->eat_type = '2,4';
 
                try {
                    $erM->save();
