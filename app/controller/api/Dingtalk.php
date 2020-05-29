@@ -69,27 +69,25 @@ class Dingtalk extends Base
             self::registerCompany($data['auth_corp_info'], $data['permanent_code']);
         }
 
+      /*  //授权方企业ID
+        $authCorpId = CORP_ID;
         //获取票据信息
-        $ticketData = self::getAuthOrTicketInfo($CorpId, 2);
+        $ticketData = self::getAuthOrTicketInfo($authCorpId, 2);
+
         //获取授权信息
         $authData = self::getAuthOrTicketInfo($CorpId, 4);
 
         $ticketDatArr = \GuzzleHttp\json_decode($ticketData['biz_data'], true);
         $authDataArr = \GuzzleHttp\json_decode($authData['biz_data'], true);
         $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
-        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $authDataArr['permanent_code']);
-
+        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $CorpId, $authDataArr['permanent_code']);*/
+        $isvCorpAccessToken = $this->IgetIsvCorpAccessToken($CorpId);
         $User = new \User();
         $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
 
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
-
-        if ($user_info->is_sys) {
-            $key = 'corpAuthInfo_'.$CorpId;
-            Cache::set($key, json_encode($authDataArr['auth_info']), 86400); //缓存1天时间
-        }
 
 
         //$this->Auth->cache->setAuthInfo("corpAuthInfo_".$CorpId, json_encode($authDataArr['auth_info']));
@@ -161,6 +159,11 @@ class Dingtalk extends Base
     //isv应用免登陆的公司AccessToken
     public function getIsvCorpAccessToken($corpId)
     {
+        $key = 'corpAuthInfo_'.$corpId;
+        if (Cache::get($key)) {
+            return json_decode(Cache::get($key),true);
+        }
+
         //授权方企业ID
         $authCorpId = CORP_ID;
         //获取票据信息
@@ -173,6 +176,8 @@ class Dingtalk extends Base
         $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
 
         $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $corpId, $authDataArr['permanent_code']);
+
+        Cache::set($key, json_encode($authDataArr['auth_info']), 86400); //缓存1天时间
 
         /*$key = 'dingding_corp_info_'.$corpId;
 

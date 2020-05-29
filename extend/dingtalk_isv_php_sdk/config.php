@@ -2,6 +2,7 @@
 define('DIR_ROOT', dirname(__FILE__).'/');
 define("OAPI_HOST", "https://oapi.dingtalk.com");
 //Suite
+define("CORP_ID", "ding076b713cc1eff17735c2f4657eb6378f");
 define("SUITE_KEY", "suiteqoemhn2iyzgy9qql");
 define("SUITE_SECRET", "xdO3u7cUeX8nFOa99l5C6ekpZ0bZV4BHg31SFTU5sfVepiUi9ZnwRpcGFnAuGUiQ");
 define("TOKEN", "diancantoken");
