@@ -13,6 +13,7 @@ use app\model\DTCompany;
 use app\model\DTUser;
 use app\model\DTDepartment;
 use app\model\CompanyStaff;
+use think\facade\Cache;
 use think\facade\Db;
 use think\facade\Log;
 use app\model\CompanyAdmin;
@@ -84,7 +85,11 @@ class Dingtalk extends Base
         //判定设备型号
         $request = request();
         $user_info->isMobile = $request->isMobile();
-        $this->Auth->cache->setAuthInfo("corpAuthInfo_".$CorpId, json_encode($authDataArr['auth_info']));
+
+        $key = 'corpAuthInfo_'.$CorpId;
+        Cache::set($key, json_encode($authDataArr['auth_info']), 86400); //缓存1天时间
+
+        //$this->Auth->cache->setAuthInfo("corpAuthInfo_".$CorpId, json_encode($authDataArr['auth_info']));
 
         return json_ok($user_info);
     }
@@ -187,7 +192,8 @@ class Dingtalk extends Base
     public function getIsvCorpAuthInfo($corpId)
     {
         $key = 'corpAuthInfo_'.$corpId;
-        return json_decode($this->Auth->cache->getAuthInfo($key),true);
+        //return json_decode($this->Auth->cache->getAuthInfo($key),true);
+        return json_decode(Cache::get($key),true);
     }
 
 
