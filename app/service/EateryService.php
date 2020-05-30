@@ -127,15 +127,17 @@ class EateryService {
 				->field('order_id,eat_type,create_time')
 				->order('id','desc')
 				->find();
-			$dingcanStauts['send_time_key'] = $eat_type = $recentOrder['eat_type'];
-			$_searchDay = explode(' ', $recentOrder['create_time']);
-			$searchDay = $_searchDay[0];
-			$dingcanStauts['recent_day'] = $searchDay;
+
+			if (!$recentOrder) {
+                $dingcanStauts['send_time_key'] = $eat_type = $recentOrder['eat_type'];
+                $_searchDay = explode(' ', $recentOrder['create_time']);
+                $searchDay = $_searchDay[0];
+                $dingcanStauts['recent_day'] = $searchDay;
+            }
 		}
 
         //报名中状态判断是否发送了订餐消息
         if($dingcanStauts['DingcanStauts'] == 1){
-
             $today = date('Ymd', time());
             $key = self::MES_KEY . $today . ':' . $dingcanStauts['send_time_key'] . ':' . $userInfo->corpid;
             if (Cache::has($key)) {
