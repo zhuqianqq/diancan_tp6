@@ -128,7 +128,7 @@ class EateryService {
 				->order('id','desc')
 				->find();
 
-			if (!$recentOrder) {
+			if (!empty($recentOrder['create_time'])) {
                 $dingcanStauts['send_time_key'] = $eat_type = $recentOrder['eat_type'];
                 $_searchDay = explode(' ', $recentOrder['create_time']);
                 $searchDay = $_searchDay[0];
