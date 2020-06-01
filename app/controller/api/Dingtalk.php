@@ -311,25 +311,25 @@ class Dingtalk extends Base
         $opt = $sub_data = [];
         $opt['agent_id'] = $agentid;
 
-        //动作卡方式
-        // $opt['msg']['msgtype'] = 'action_card';
-        // $sub_data['title'] = "天天点餐";
-        // $sub_data['markdown'] = "订餐开始喽！请及时进入小程序订餐";
-        // $sub_data['single_title'] = "立即订餐";
-        // $sub_data['single_url'] = "http://www.baidu.com";
-        // $opt['msg']['action_card'] = $sub_data;
-
         //判断上午还是下午
         $no = date("H",time());
         if ($no < 14){
-            $content = "午餐订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐。";
+            $content = "午餐订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐";
         } else {
-            $content = "晚餐订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐。";
+            $content = "晚餐订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐";
         }
-  
+
+        //动作卡方式
+        $opt['msg']['msgtype'] = 'action_card';
+        $sub_data['title'] = "天天点餐";
+        $sub_data['markdown'] = $content;
+        $sub_data['single_title'] = "立即订餐";
+        $sub_data['single_url'] = "eapp://pages/orderIndex/orderIndex";
+        $opt['msg']['action_card'] = $sub_data;
+
         //文本方式
-        $opt['msg']['msgtype'] = 'text';
-        $opt['msg']['text'] = ['content'=>$content];
+        // $opt['msg']['msgtype'] = 'text';
+        // $opt['msg']['text'] = ['content'=>$content];
 
         $departmentid_list_arr = DTDepartment::getDingDepartmentIds($corpId);
         if(!$departmentid_list_arr){

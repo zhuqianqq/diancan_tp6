@@ -105,7 +105,7 @@ class CronJob extends Base {
 		if ($dingcanStatus['isDingcanDay'] == 1 ) {
 			$news_time_arr = json_decode($sysConfs['news_time'], true);
 
-			$news_time = $news_time_arr[$send_time_key];
+			$news_time = $news_time_arr[$send_time_key] ?? '';
 
 			if(!$news_time){
 				return false;
