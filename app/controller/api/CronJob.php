@@ -107,6 +107,10 @@ class CronJob extends Base {
 
 			$news_time = $news_time_arr[$dingcanStatus['send_time_key']];
 
+			if(!$news_time){
+				return false;
+			}
+
 			$nowTimestamp = time();
 
 			$news_time = strtotime(date('Y-m-d',$nowTimestamp) . ' ' . $news_time . ':00');
