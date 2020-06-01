@@ -39,7 +39,7 @@ class ISVService
                 )));
             $this->check($response);
             $suiteAccessToken = $response->suite_access_token;
-            \think\facade\Cache::set($suiteKey, $suiteAccessToken, 60*60*24*2);//缓存两天
+            \think\facade\Cache::set($suiteKey, $suiteAccessToken, 60*60*2-50);//缓存两小时
             //$this->cache->setSuiteAccessToken($suiteAccessToken);
         }
         return $suiteAccessToken;
@@ -140,7 +140,7 @@ class ISVService
                 )));
             $this->check($response);
             $corpAccessToken = $response->access_token;
-            \think\facade\Cache::set($key, $suiteAccessToken, 60*60*24*2);//缓存两天
+            \think\facade\Cache::set($key, $corpAccessToken, 60*60*2-50);//缓存两天
             //$this->cache->setIsvCorpAccessToken($key,$corpAccessToken);
         }
         return $corpAccessToken;
