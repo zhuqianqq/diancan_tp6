@@ -67,6 +67,7 @@ class Dingtalk extends Base
         $data = json_decode($authData['biz_data'], true);
         if (!$oneCompany) {
             self::registerCompany($data['auth_corp_info'], $data['permanent_code']);
+            self::DTGetDepartment($CorpId);
         }
 
         //获取授权信息
@@ -145,6 +146,7 @@ class Dingtalk extends Base
     //isv应用免登陆的公司AccessToken
     public function getIsvCorpAccessToken($corpId)
     {
+
         //授权方企业ID
         $authCorpId = CORP_ID;
         //获取票据信息
@@ -246,9 +248,9 @@ class Dingtalk extends Base
      */
 
     //获取钉钉企业部门信息
-    public function DTGetDepartment()
+    public function DTGetDepartment($corpId='')
     {
-       $corpId = input('corpId','');
+       //$corpId = input('corpId','');
 
        if(!$corpId){
               return  json_error(20002);
