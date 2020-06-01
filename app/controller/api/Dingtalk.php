@@ -159,6 +159,7 @@ class Dingtalk extends Base
         $suiteKey = 'suiteTicket_' . $authCorpId;
         if (Cache::get($suiteKey)) {
             $suiteAccessToken = Cache::get($suiteKey);
+            echo $suiteAccessToken;die;
         } else {
             $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
         }
@@ -169,6 +170,7 @@ class Dingtalk extends Base
         } else {
             $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $corpId, $authDataArr['permanent_code']);
         }
+
 
         $key = 'corpAuthInfo_'.$corpId;
         if (!Cache::get($key)) {
