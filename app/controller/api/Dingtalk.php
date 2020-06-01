@@ -163,7 +163,7 @@ class Dingtalk extends Base
             $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
         }
 
-        $accessTokenkey = "IsvCorpAccessToken_".$authCorpId;
+        $accessTokenkey = "IsvCorpAccessToken_" . $corpId;
         if (Cache::get($accessTokenkey)) {
             $isvCorpAccessToken = Cache::get($accessTokenkey);
         } else {
