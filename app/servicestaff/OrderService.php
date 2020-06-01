@@ -197,7 +197,7 @@ class OrderService
         $where = ['company_id' => $sysConf['company_id'], 'staffid' => $user_id];
         $order = MO::where($where)->whereTime('create_time','between',[$star_time, $end_time])->find();
         if ($order) return $order->toArray();
-        return [];
+        return (object)[];
     }
 
     /**
