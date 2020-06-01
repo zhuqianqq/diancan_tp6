@@ -100,13 +100,13 @@ class CronJob extends Base {
 		}
 
 		$dingcanStatus = checkDingcanStauts($sysConfs);
-
+		var_dump($dingcanStatus);die;
 		//在订餐日
 		if ($dingcanStatus['isDingcanDay'] == 1 ) {
 			$news_time_arr = json_decode($sysConfs['news_time'], true);
-			echo $dingcanStatus['send_time_key'];die;
+
 			$news_time = $news_time_arr[$dingcanStatus['send_time_key']];
-			echo $news_time;die;
+
 			if(!$news_time){
 				return false;
 			}
