@@ -40,8 +40,6 @@ class ISVService
             $this->check($response);
             $suiteAccessToken = $response->suite_access_token;
             \think\facade\Cache::set($suiteKey, $suiteAccessToken, 60*60*24*2);//缓存两天
-echo 222;
-echo \think\facade\Cache::get($suiteKey);die;
             //$this->cache->setSuiteAccessToken($suiteAccessToken);
         }
         return $suiteAccessToken;
