@@ -156,9 +156,12 @@ class Dingtalk extends Base
         $ticketDatArr = \GuzzleHttp\json_decode($ticketData['biz_data'], true);
         $authDataArr = \GuzzleHttp\json_decode($authData['biz_data'], true);
 
-        $suiteKey = 'suiteTicket' . $authCorpId;
+        $suiteKey = 'suiteTicket_' . $authCorpId;
         if (Cache::get($suiteKey)) {
             $suiteAccessToken = Cache::get($suiteKey);
+            echo 111 .'<br />';
+            echo $suiteAccessToken;die;
+
         } else {
             $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
         }
