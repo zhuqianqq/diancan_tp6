@@ -55,7 +55,7 @@ class Order extends Base
         $status = checkDingcanStauts($sysConf);
 
         if ($status['isDingcanDay'] == 1 && $status['DingcanStauts'] == 1) {
-            $result = SF::submit($data,$status);
+            $result = SF::submit($data, $status);
             if (!$result) return json_error(10001);
             return json_ok($result);
         }
@@ -69,7 +69,7 @@ class Order extends Base
      */
     public function myOrder()
     {
-        $user_id = input('get.user_id','','int');
+        $user_id = input('get.user_id', '', 'int');
         if (!$user_id) {
             return json_error(10002);
         }
@@ -116,20 +116,20 @@ class Order extends Base
      */
     public function eateryOrderDetail()
     {
-        $token = urldecode(input('token',''));
-        if(!$token){
+        $token = urldecode(input('token', ''));
+        if (!$token) {
             return json_error(10001);
         }
 
         $data = getH5token($token);
         $eatery_id = $data['eatery_id'] ?? '';
         $eat_type = $data['eat_type'] ?? '';
-        if(!$eatery_id || !$eat_type){
+        if (!$eatery_id || !$eat_type) {
             return json_error(10001);
         }
-    
-        $result = SF::getH5OrderDetail($eatery_id,$eat_type);
-       
+
+        $result = SF::getH5OrderDetail($eatery_id, $eat_type);
+
         return json_ok($result);
     }
 }
