@@ -184,6 +184,9 @@ class OrderService
     {
         //获取系统设置
         $sysConf = self::getSysConfigById($user_id);
+        if (empty($sysConf)) {
+            throw new MyException(20950);
+        }
         $twoOclock = strtotime(date('Y-m-d 14:00:00',time()));//下午两点时间戳
         $nowTime = time();
         if ($nowTime < $twoOclock) {//上午
