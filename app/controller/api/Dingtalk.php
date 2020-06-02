@@ -13,6 +13,7 @@ use app\model\DTCompany;
 use app\model\DTUser;
 use app\model\DTDepartment;
 use app\model\CompanyStaff;
+use app\model\DingcanSysconfig;
 use think\facade\Cache;
 use think\facade\Db;
 use think\facade\Log;
@@ -77,7 +78,7 @@ class Dingtalk extends Base
 
         //判定设备型号
         $request = request();
-        $user_info->isMobile = $request->isMobile();
+        $user_info->isMobile = $request->isMobile(); 
 
         return json_ok($user_info);
     }
