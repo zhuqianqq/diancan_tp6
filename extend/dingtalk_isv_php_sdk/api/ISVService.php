@@ -23,7 +23,11 @@ class ISVService
      */
     public function getSuiteAccessToken($suiteTicket)
     {
-        $suiteAccessToken = $this->cache->getSuiteAccessToken();
+        //授权方企业ID
+        $authCorpId = CORP_ID;
+        $suiteKey = 'suiteTicket_' . $authCorpId;
+        $suiteAccessToken = \think\facade\Cache::get($suiteKey);
+        //$suiteAccessToken = $this->cache->getSuiteAccessToken();
 	    if (!$suiteAccessToken)
         {
             $response = $this->http->post("/service/get_suite_token",
@@ -35,6 +39,7 @@ class ISVService
                 )));
             $this->check($response);
             $suiteAccessToken = $response->suite_access_token;
+            \think\facade\Cache::set($suiteKey, $suiteAccessToken, 60*60*2-50);//缓存两小时
             //$this->cache->setSuiteAccessToken($suiteAccessToken);
         }
         return $suiteAccessToken;
@@ -121,7 +126,8 @@ class ISVService
     public function getIsvCorpAccessToken($suiteAccessToken, $authCorpId, $permanentCode)
     {
         $key = "IsvCorpAccessToken_".$authCorpId;
-        $corpAccessToken = $this->cache->getIsvCorpAccessToken($key);
+        $corpAccessToken = \think\facade\Cache::get($key);
+        //$corpAccessToken = $this->cache->getIsvCorpAccessToken($key);
         if (!$corpAccessToken)
         {
             $response = $this->http->post("/service/get_corp_token",
@@ -134,6 +140,7 @@ class ISVService
                 )));
             $this->check($response);
             $corpAccessToken = $response->access_token;
+            \think\facade\Cache::set($key, $corpAccessToken, 60*60*2-50);//缓存两天
             //$this->cache->setIsvCorpAccessToken($key,$corpAccessToken);
         }
         return $corpAccessToken;

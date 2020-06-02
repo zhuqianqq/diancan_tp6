@@ -79,8 +79,8 @@ class EateryRegisterService
                 Db::commit();
                 return $oneEateryR;
             }catch (\Exception $e){
-                throw new MyException(10001, $e->getMessage());
                 Db::rollback();
+                throw new MyException(10001, $e->getMessage());
             }
         }
     }

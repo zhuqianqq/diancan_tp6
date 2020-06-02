@@ -147,7 +147,6 @@ class Dingtalk extends Base
     //isv应用免登陆的公司AccessToken
     public function getIsvCorpAccessToken($corpId)
     {
-
         //授权方企业ID
         $authCorpId = CORP_ID;
         //获取票据信息
@@ -157,9 +156,20 @@ class Dingtalk extends Base
 
         $ticketDatArr = \GuzzleHttp\json_decode($ticketData['biz_data'], true);
         $authDataArr = \GuzzleHttp\json_decode($authData['biz_data'], true);
-        $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
 
-        $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $corpId, $authDataArr['permanent_code']);
+        $suiteKey = 'suiteTicket_' . $authCorpId;
+        if (Cache::get($suiteKey)) {
+            $suiteAccessToken = Cache::get($suiteKey);
+        } else {
+            $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
+        }
+
+        $accessTokenkey = "IsvCorpAccessToken_" . $corpId;
+        if (Cache::get($accessTokenkey)) {
+            $isvCorpAccessToken = Cache::get($accessTokenkey);
+        } else {
+            $isvCorpAccessToken = $this->ISVService->getIsvCorpAccessToken($suiteAccessToken, $corpId, $authDataArr['permanent_code']);
+        }
 
         $key = 'corpAuthInfo_'.$corpId;
         if (!Cache::get($key)) {
