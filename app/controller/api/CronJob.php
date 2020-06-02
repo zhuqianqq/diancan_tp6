@@ -72,7 +72,7 @@ class CronJob extends Base {
 			foreach ($corpIds as $k3 => $v3) {
 				$res = $dingTalk->sendMessage($v3);
 				if ($res !== false) {
-					$key = self::MES_KEY . $today . ':' . $send_time_key . ':' . $v1['corpid'];
+					$key = self::MES_KEY . $today . ':' . $send_time_key . ':' . $res;
 					Cache::set($key, 1, 86400); //缓存1天时间
 				}
 			}
