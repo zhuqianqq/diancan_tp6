@@ -351,6 +351,7 @@ class Dingtalk extends Base
             return  json_error(20900);
         } 
         //ISV场景：钉钉接口不能全员发送工作消息，分割数组为两部分
+        $flag = 1;//默认工作消息全部发送成功
         if(count($departmentid_list_arr) == 1){
 
             //只有一个部门 按照进入订餐应用实际注册的钉钉Userid来发送工作消息
@@ -366,31 +367,43 @@ class Dingtalk extends Base
             $res = $Message->corpConversation($isvCorpAccessToken,$opt);
 
         }else{
-
+            
             //若多个部门  每5个部门为一组发送工作消息   避免全员发送消息不成功情况
             $departmentid_five_arr = array_chunk($departmentid_list_arr, 5);
 
             foreach ($departmentid_five_arr as $k1 => $v1) {
-              # code...
+              
               $departmentid_list = implode(',', $v1);
 
               $opt['dept_id_list'] = $departmentid_list;
-                Log::info($opt['dept_id_list']);
+   
               $res = $Message->corpConversation($isvCorpAccessToken,$opt);
+
+              if($res->errcode == 0){
+                  $msg = "发送订餐消息成功：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE) . ' 对应发送部门的id： ' . $opt['dept_id_list'];
+                  Log::info($msg);
+                 
+              }else{
+                  $flag = 0;
+                  $msg = "发送订餐消息失败：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE)  . ' 对应发送部门的id： ' . $opt['dept_id_list'];
+                  Log::error($msg);
+                  Log::error('opt:' . json_encode($opt,JSON_UNESCAPED_UNICODE));
+                
+              }
 
             }
 
         }
 
-        if($res->errcode == 0 ){
-                $msg = "发送订餐消息成功：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
-                Log::info($msg);
-                return $corpId;
+        if($flag == 1){
+            //$msg = "发送订餐消息成功：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
+            //Log::info($msg);
+            return $corpId;
         }else{
 
-            $msg = "发送订餐消息失败：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
-            Log::error($msg);
-            Log::error('opt:' . json_encode($opt,JSON_UNESCAPED_UNICODE));
+            //$msg = "发送订餐消息失败：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
+            //Log::error($msg);
+            //Log::error('opt:' . json_encode($opt,JSON_UNESCAPED_UNICODE));
             return false;
         }
     }
