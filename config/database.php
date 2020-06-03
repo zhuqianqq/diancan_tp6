@@ -23,13 +23,13 @@ return [
             // 数据库类型
             'type'              => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname'          => Env::get('database.hostname', 'rm-bp121j1561lt3o88s.mysql.rds.aliyuncs.com'),
+            'hostname'          => Env::get('database.hostname', '192.168.190.162'),
             // 数据库名
             'database'          => Env::get('database.database', 'ttdiancan'),
             // 用户名
-            'username'          => Env::get('database.username', 'dc_user'),
+            'username'          => Env::get('database.username', 'root'),
             // 密码
-            'password'          => Env::get('database.password', 'dc_user321'),
+            'password'          => Env::get('database.password', 'root'),
             // 端口
             'hostport'          => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -62,13 +62,13 @@ return [
             // 数据库类型
             'type'              => 'mysql',
             // 服务器地址
-            'hostname'          => env('DB_HOSTNAME', 'rm-bp121j1561lt3o88s.mysql.rds.aliyuncs.com'),
+            'hostname'          => env('DB_HOSTNAME', '192.168.190.162'),
             // 数据库名
-            'database'          => env('DB_HOSTNAME', 'ding_cloud_push'),
+            'database'          => env('DB_DATABASE', 'ding_cloud_push'),
             // 用户名
-            'username'          => env('DB_USER', 'ding_user'),
+            'username'          => env('DB_USER', 'root'),
             // 密码
-            'password'          => env('DB_PASSWORD', 'dc_user321'),
+            'password'          => env('DB_PASSWORD', 'root'),
             // 端口
             'hostport'          => env('DB_PORT', '3306'),
             // 数据库连接参数

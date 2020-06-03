@@ -59,13 +59,16 @@ class Dingtalk extends Base
 
         //获取授权信息
         $authData = self::getAuthOrTicketInfo($CorpId, 4);
+        if (empty($authData)) {
+            return json_error(10004);
+        }
+        $data = json_decode($authData['biz_data'], true);
+
         //获取所有已经存在的公司
         $oneCompany =  Db::connect('mysql')
             ->table('dc_company_register')
             ->where('corpid =:corpid', ['corpid' => $CorpId])
             ->find();
-
-        $data = json_decode($authData['biz_data'], true);
         if (!$oneCompany) {
             self::registerCompany($data['auth_corp_info'], $data['permanent_code']);
             self::DTGetDepartment($CorpId);
@@ -90,13 +93,13 @@ class Dingtalk extends Base
      */
     public static function getAuthOrTicketInfo($CorpId, $type)
     {
+
         $info = Db::connect('yun_push')
             ->table('open_sync_biz_data')
             ->order('id desc')
             ->where('corp_id =:corp_id and biz_type=:biz_type', ['corp_id' => $CorpId, 'biz_type' => $type])
             ->order('gmt_create desc')
             ->find();
-
         return $info;
     }
 
@@ -147,6 +150,7 @@ class Dingtalk extends Base
     //isv应用免登陆的公司AccessToken
     public function getIsvCorpAccessToken($corpId)
     {
+
         //授权方企业ID
         $authCorpId = CORP_ID;
         //获取票据信息
@@ -379,9 +383,9 @@ class Dingtalk extends Base
         }
 
         if($res->errcode == 0 ){
-            $msg = "发送订餐消息成功：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
-            Log::info($msg);
-            return $corpId;
+                $msg = "发送订餐消息成功：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
+                Log::info($msg);
+                return $corpId;
         }else{
 
             $msg = "发送订餐消息失败：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
