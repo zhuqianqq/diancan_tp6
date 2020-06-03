@@ -219,7 +219,7 @@ class OrderService
 
         //获取订餐设置
         $sysConf = DS::where('company_id', $company_id)->find();
-        if (!$sysConf) {
+        if (empty($sysConf)) {
             throw new MyException(16002);
         }
 
