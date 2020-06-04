@@ -220,7 +220,7 @@ class OrderService
         //获取订餐设置
         $sysConf = DS::where('company_id', $company_id)->find();
         if (empty($sysConf)) {
-            throw new MyException(16002);
+            throw new MyException(20950);
         }
 
         return $sysConf->toArray();
