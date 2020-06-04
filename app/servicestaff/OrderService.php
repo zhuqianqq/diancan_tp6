@@ -188,17 +188,42 @@ class OrderService
             throw new MyException(20950);
         }
         $twoOclock = strtotime(date('Y-m-d 14:00:00',time()));//下午两点时间戳
-        $nowTime = time();
-        if ($nowTime < $twoOclock) {//上午
-            $star_time = date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
-            $end_time = $twoOclock;
+
+        //获取具体的送餐时间
+        $send_time_info = json_decode($sysConf['send_time_info'],true);
+        //判断是否报餐中餐与晚餐[1,2] 或只报中餐 1 或只报晚餐 2;
+        $send_time_info_keys = array_keys($send_time_info);
+
+        if (count($send_time_info_keys) == 1) {
+            if ($send_time_info_keys[0] == 2) {//只报中餐
+                $star_time = date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
+                $end_time = $twoOclock;
+                $eat_type = 2;
+            } else {//只报晚餐
+                $star_time = date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
+                $end_time = strtotime(date('Y-m-d 23:59:59',time()));
+                $eat_type = 4;
+            }
         } else {
-            $star_time = $twoOclock;
-            $end_time = strtotime(date('Y-m-d 23:59:59',time()));//下午两点时间戳
+            $nowTime = time();
+            if ($nowTime < $twoOclock) {//上午
+                $star_time = date('Y-m-d H:i:s',strtotime(date("Y-m-d"),time()));//今天零点
+                $end_time = $twoOclock;
+                $eat_type = 2;
+            } else {
+                $star_time = $twoOclock;
+                $end_time = strtotime(date('Y-m-d 23:59:59',time()));
+                $eat_type = 4;
+            }
         }
 
-        $where = ['company_id' => $sysConf['company_id'], 'staffid' => $user_id];
-        $order = MO::where($where)->whereTime('create_time','between',[$star_time, $end_time])->find();
+        $where = ['od.company_id' => $sysConf['company_id'], 'staffid' => $user_id, 'eat_type'=>$eat_type];
+        $order = MO::alias('o')
+            ->join(OrdD::$_table . ' od','od.order_id = o.order_id')
+            ->where($where)
+            ->whereTime('od.create_time','between',[$star_time, $end_time])
+            ->find();
+
         if ($order) return $order->toArray();
         return (object)[];
     }
@@ -224,6 +249,23 @@ class OrderService
         }
 
         return $sysConf->toArray();
+    }
+
+    /**
+     * 取消订单
+     * @param $orderId
+     * @return object
+     */
+    public static function cancelOrder($orderId)
+    {
+        $oneOrder = MO::where('order_id=:order_id', ['order_id' => $orderId])->with('orderDetail')->find();
+        try {
+            $oneOrder->together(['orderDetail'])->delete();
+        } catch (\Exception $e) {
+            throw new MyException(16006, $e->getMessage());
+        }
+
+        return (object)[];
     }
 
 

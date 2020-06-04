@@ -22,6 +22,9 @@ class OrderDetail extends BaseModel
     // 开启自动写入时间戳字段
     protected $autoWriteTimestamp = 'datetime';
 
+    public static $_table = 'dc_order_detail';
+    protected $table = 'dc_order_detail';
+
     use ModelTrait;
 
 }

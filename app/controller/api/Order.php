@@ -132,4 +132,21 @@ class Order extends Base
 
         return json_ok($result);
     }
+
+
+
+    /**
+     * 取消订单
+     * @Route("cancelOrder", method="POST")
+     */
+    public function cancelOrder()
+    {
+        $orderId = input('post.orderId');
+        if (!$orderId) {
+            return json_error(10002);
+        }
+
+        $result = SF::cancelOrder($orderId);
+        return json_ok($result);
+    }
 }
