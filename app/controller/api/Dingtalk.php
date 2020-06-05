@@ -69,9 +69,17 @@ class Dingtalk extends Base
             ->table('dc_company_register')
             ->where('corpid =:corpid', ['corpid' => $CorpId])
             ->find();
+
+        BaseModel::beginTrans();
         if (!$oneCompany) {
-            self::registerCompany($data['auth_corp_info'], $data['permanent_code']);
-            self::DTGetDepartment($CorpId);
+            try {
+                self::registerCompany($data['auth_corp_info'], $data['permanent_code']);
+                self::DTGetDepartment($CorpId);
+                BaseModel::commitTrans();
+            } catch (\Exception $e) {
+                BaseModel::rollbackTrans();
+                throw new MyException(10001, $e->getMessage());
+            }
         }
 
         //获取授权信息
@@ -153,17 +161,16 @@ class Dingtalk extends Base
         //授权方企业ID
         $authCorpId = CORP_ID;
         $suiteKey = 'suiteTicket_' . $authCorpId;
+        //获取票据信息
+        $ticketData = self::getAuthOrTicketInfo($authCorpId, 2);
+        //获取授权信息
+        $authData = self::getAuthOrTicketInfo($corpId, 4);
+
+        $ticketDatArr = \GuzzleHttp\json_decode($ticketData['biz_data'], true);
+        $authDataArr = \GuzzleHttp\json_decode($authData['biz_data'], true);
         if (Cache::get($suiteKey)) {
             $suiteAccessToken = Cache::get($suiteKey);
         } else {
-            //获取票据信息
-            $ticketData = self::getAuthOrTicketInfo($authCorpId, 2);
-            //获取授权信息
-            $authData = self::getAuthOrTicketInfo($corpId, 4);
-
-            $ticketDatArr = \GuzzleHttp\json_decode($ticketData['biz_data'], true);
-            $authDataArr = \GuzzleHttp\json_decode($authData['biz_data'], true);
-
             $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
         }
 
