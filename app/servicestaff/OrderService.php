@@ -2,6 +2,7 @@
 declare (strict_types=1);
 namespace app\servicestaff;
 
+use app\model\DTDepartment;
 use app\model\Order as MO;
 use app\model\OrderDetail as MD;
 use app\model\Eatery;
@@ -68,7 +69,17 @@ class OrderService
             throw new MyException(13002);
         }
         $data['eatery_name'] = $eateryName;
-        $data['department_name'] = $data['dept_name'];
+
+        //获取部门信息
+        if (!$data['department_id']) {
+            $data['department_name'] = '';
+        } else {
+            $oneDept = DTDepartment::find($data['department_id']);
+            if (empty($oneDept)) {
+                $data['department_name'] = '';
+            } else
+                $data['department_name'] = $oneDept->dept_name;
+        }
 
         $flag = true;
         Db::startTrans();
