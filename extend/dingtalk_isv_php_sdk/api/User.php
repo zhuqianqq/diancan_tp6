@@ -10,16 +10,9 @@ class User
 
     public function getUserInfo($accessToken, $code)
     {
-        $key = "UserInfo_".$accessToken;
-        $UserInfo = \think\facade\Cache::get($key);
-        if (!$UserInfo)
-        {
-            $UserInfo = $this->http->get("/user/getuserinfo",
-                array("access_token" => $accessToken, "code" => $code));
-            \think\facade\Cache::set($key, $UserInfo, 60*60*2);//缓存两天
-        }
-
-        return $UserInfo;
+        $response = $this->http->get("/user/getuserinfo",
+            array("access_token" => $accessToken, "code" => $code));
+        return $response;
     }
 
     public function get($accessToken, $userId)
