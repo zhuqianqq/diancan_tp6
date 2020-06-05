@@ -150,21 +150,20 @@ class Dingtalk extends Base
     //isv应用免登陆的公司AccessToken
     public function getIsvCorpAccessToken($corpId)
     {
-
         //授权方企业ID
         $authCorpId = CORP_ID;
-        //获取票据信息
-        $ticketData = self::getAuthOrTicketInfo($authCorpId, 2);
-        //获取授权信息
-        $authData = self::getAuthOrTicketInfo($corpId, 4);
-
-        $ticketDatArr = \GuzzleHttp\json_decode($ticketData['biz_data'], true);
-        $authDataArr = \GuzzleHttp\json_decode($authData['biz_data'], true);
-
         $suiteKey = 'suiteTicket_' . $authCorpId;
         if (Cache::get($suiteKey)) {
             $suiteAccessToken = Cache::get($suiteKey);
         } else {
+            //获取票据信息
+            $ticketData = self::getAuthOrTicketInfo($authCorpId, 2);
+            //获取授权信息
+            $authData = self::getAuthOrTicketInfo($corpId, 4);
+
+            $ticketDatArr = \GuzzleHttp\json_decode($ticketData['biz_data'], true);
+            $authDataArr = \GuzzleHttp\json_decode($authData['biz_data'], true);
+
             $suiteAccessToken = $this->getSuiteAccessToken($ticketDatArr['suiteTicket']);
         }
 
@@ -397,7 +396,7 @@ class Dingtalk extends Base
 
         if($flag == 1){
             //$msg = "发送订餐消息成功：对应公司corpId:{$corpId},agentid:{$agentid} ,钉钉接口返回： ". json_encode($res,JSON_UNESCAPED_UNICODE);
-            //Log::info($msg);
+            //Log       ::info($msg);
             return $corpId;
         }else{
 

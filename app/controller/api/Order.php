@@ -11,6 +11,7 @@ use think\annotation\route\Validate;
 use think\exception\ValidateException;
 use app\servicestaff\OrderService as SF;
 use app\servicestaff\EateryService as SE;
+use think\Request;
 
 /**
  * 订餐接口
@@ -141,12 +142,15 @@ class Order extends Base
      */
     public function cancelOrder()
     {
+        $headInfo = \think\facade\Request::header();
+        $user_id = $headInfo['user-id'];
         $orderId = input('post.orderId');
-        if (!$orderId) {
+
+        if (!$user_id || !$orderId) {
             return json_error(10002);
         }
 
-        $result = SF::cancelOrder($orderId);
+        $result = SF::cancelOrder($orderId, $user_id);
         return json_ok($result);
     }
 }

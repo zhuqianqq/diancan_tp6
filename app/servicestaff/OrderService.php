@@ -256,8 +256,42 @@ class OrderService
      * @param $orderId
      * @return object
      */
-    public static function cancelOrder($orderId)
+    public static function cancelOrder($orderId, $user_id)
     {
+        //获取系统设置
+        $sysConf = self::getSysConfigById($user_id);
+        if (empty($sysConf)) {
+            throw new MyException(20950);
+        }
+
+        //判断上午还是下午
+        $no = date("H",time());
+        if ($no < 14){
+            $send_time_key = 2;
+        } else {
+            $send_time_key = 4;
+        }
+
+        $allowDelete = true;
+        $send_time_info = \GuzzleHttp\json_decode($sysConf['send_time_info'], true);
+        $nowTime = time();
+
+        $send_time = $send_time_info[$send_time_key];
+        $send_time_str = date('Y-m-d',time()).$send_time.':00';
+        //获取报餐提前多久的系统设置
+        $confEndTime = confEndTimeType($sysConf['end_time_type'])*60;
+        //送餐时间戳
+        $sendTimeStamp = strtotime($send_time_str);
+        //报名截止时间戳
+        $baomingEndTimeStamp = $sendTimeStamp - $confEndTime;
+        if ($nowTime > $baomingEndTimeStamp) {
+            $allowDelete = false;
+        }
+
+        if (!$allowDelete) {
+            throw new MyException(16007);
+        }
+
         $oneOrder = MO::where('order_id=:order_id', ['order_id' => $orderId])->with('orderDetail')->find();
         try {
             $oneOrder->together(['orderDetail'])->delete();
