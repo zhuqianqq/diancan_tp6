@@ -275,8 +275,13 @@ class OrderService
         $allowDelete = true;
         $send_time_info = \GuzzleHttp\json_decode($sysConf['send_time_info'], true);
         $nowTime = time();
+        $send_time_info_keys = array_keys($send_time_info);
 
-        $send_time = $send_time_info[$send_time_key];
+        if (count($send_time_info_keys) == 1) {
+            $send_time = $send_time_info[$send_time_info_keys[0]];
+        } else
+            $send_time = $send_time_info[$send_time_key];
+
         $send_time_str = date('Y-m-d',time()).$send_time.':00';
         //获取报餐提前多久的系统设置
         $confEndTime = confEndTimeType($sysConf['end_time_type'])*60;
