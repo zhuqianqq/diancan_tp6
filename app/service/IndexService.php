@@ -14,6 +14,7 @@ use app\model\Eatery;
 use app\model\DingcanSysconfig as DS;
 use app\model\DTDepartment;
 use app\util\AccessKeyHelper;
+use think\facade\Cache;
 
 /**
  * 首页
