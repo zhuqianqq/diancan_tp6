@@ -413,18 +413,24 @@ class Dingtalk extends Base
         $opt = $sub_data = [];
         $opt['agent_id'] = $agentid;
 
+        //获取订餐截止时间 start
         $sys_conf = DingcanSysconfig::getSysConfByCorpId($corpId);
         if(!$sys_conf){
             return  json_error(20090);
         }
-
+  
+        $dingcan_conf = checkDingcanStauts($sys_conf);
+        $baomingEndTime = date('H:i:s',$dingcan_conf['baomingEndTimeStamp']);
+        $content = "可以开始订晚餐了，{$baomingEndTime}截止哦。点下面的按钮开始点餐。";
+        //获取订餐截止时间 end
+        echo $content;die;
         //判断上午还是下午
-        $no = date("H",time());
-        if ($no < 14){
-            $content = "可以开始订晚餐了，5：00截止哦。点下面的按钮开始点餐。";
-        } else {
-            $content = "可以开始订晚餐了，5：00截止哦。点下面的按钮开始点餐。";
-        }
+        // $no = date("H",time());
+        // if ($no < 14){
+        //     $content = "可以开始订晚餐了，5：00截止哦。点下面的按钮开始点餐。";
+        // } else {
+        //     $content = "可以开始订晚餐了，5：00截止哦。点下面的按钮开始点餐。";
+        // }
 
         //动作卡方式
         $opt['msg']['msgtype'] = 'action_card';

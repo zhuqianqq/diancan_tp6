@@ -32,7 +32,7 @@ class DingcanSysconfig extends Base
 
     /**
     * 订餐设置
-     * @Validate(VDS::class,scene="save",batch="true")
+    * @Validate(VDS::class,scene="save",batch="true")
     * @Route("setting", method="POST")
     */
     public function setting()

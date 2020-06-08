@@ -69,7 +69,7 @@ class DingcanSysconfigService
 
         //完成订餐设置标志 存入redis缓存 
         $completeSysConfKey = "completeSysConf:" . $userInfo['corpid'];
-        Cache::set($completeSysConfKey, 1,7000); 
+        Cache::set($completeSysConfKey, 1);
 
         return [];
     }
