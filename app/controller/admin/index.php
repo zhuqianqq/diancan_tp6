@@ -18,6 +18,8 @@ use think\annotation\route\Validate;
 use app\service\EateryService as SE;
 use app\service\ProposalService;
 use app\validate\Proposal;
+use think\facade\Cache;
+
 
 /**
  * 订餐后台首页

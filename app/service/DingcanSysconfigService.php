@@ -6,7 +6,6 @@ use app\model\DingcanSysconfig as DF;
 use app\MyException;
 use app\traits\ServiceTrait;
 use app\model\CompanyAdmin;
-use think\facade\Cache;
 
 /**
  * 订餐设置
@@ -66,10 +65,6 @@ class DingcanSysconfigService
         } catch (\Exception $e){
             throw new MyException(10001, $e->getMessage());
         }
-
-        //完成订餐设置标志 存入redis缓存 
-        $completeSysConfKey = "completeSysConf:" . $userInfo['corpid'];
-        Cache::set($completeSysConfKey, 1);
 
         return [];
     }
