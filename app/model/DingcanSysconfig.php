@@ -27,12 +27,20 @@ class DingcanSysconfig extends BaseModel
     use ModelTrait;
 
 
-    //获取钉钉对应公司的部门id
+    //是否完成订餐设置
     public static function isCompleteSysConf($corpId)
     {
         $company_id = CompanyRegister::where('corpid',$corpId)->value('company_id');
 
         return self::where('company_id',$company_id)->count();
+    }
+
+    //获取订餐设置
+    public static function getSysConfByCorpId($corpId)
+    {
+        $company_id = CompanyRegister::where('corpid',$corpId)->value('company_id');
+
+        return self::where('company_id',$company_id)->find();
     }
 
 }

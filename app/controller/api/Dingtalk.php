@@ -292,7 +292,7 @@ class Dingtalk extends Base
      * @Route("backendDTGetUserInfo", method="POST")
      */
 
-    //获取钉钉员工详细信息
+    //获取钉钉员工详细信息(后台)
     public function backendDTGetUserInfo()
     {
        $userid = input('userid','');
@@ -413,12 +413,17 @@ class Dingtalk extends Base
         $opt = $sub_data = [];
         $opt['agent_id'] = $agentid;
 
+        $sys_conf = DingcanSysconfig::getSysConfByCorpId($corpId);
+        if(!$sys_conf){
+            return  json_error(20090);
+        }
+
         //判断上午还是下午
         $no = date("H",time());
         if ($no < 14){
-            $content = "午餐订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐";
+            $content = "可以开始订晚餐了，5：00截止哦。点下面的按钮开始点餐。";
         } else {
-            $content = "晚餐订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐";
+            $content = "可以开始订晚餐了，5：00截止哦。点下面的按钮开始点餐。";
         }
 
         //动作卡方式
