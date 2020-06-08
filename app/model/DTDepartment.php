@@ -60,4 +60,5 @@ class DTDepartment extends BaseModel
 
         return self::where('company_id',$company_id)->column('platform_departid');
     }
+
 }
