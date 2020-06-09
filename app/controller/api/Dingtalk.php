@@ -499,6 +499,33 @@ class Dingtalk extends Base
     }
 
 
+    /**
+     * @Route("departmentStatus")
+     */
+    //钉钉部门变更事件 主动轮训该方法
+    //备注：授权微应用的企业，发生部门的增加、删除、修改的时刻推送，插入表open_sync_biz_data_medium
+    public function departmentStatus()
+    {
+      $infos = Db::connect('yun_push')
+            ->table('open_sync_biz_data_medium')
+            ->order('id desc')
+            ->where(['biz_type' => 14,'status'=> 0])
+            ->select();
+
+      if(!$infos){
+          return json_ok(); 
+      }
+
+      foreach ($infos as $k => $v) {
+        # code...
+        $data = json_decode($v['biz_data'], true);
+        echo '<pre>';var_dump($data);
+      }
+    }
+
+
+// {"errcode":0,"userPermits":"","userPerimits":"","syncAction":"org_dept_create","outerDept":false,"errmsg":"ok","deptManagerUseridList":"","parentid":1,"groupContainSubDept":false,"outerPermitUsers":"","outerPermitDepts":"","deptPerimits":"","createDeptGroup":true,"name":"技术部","id":364066223,"autoAddUser":true,"deptHiding":false,"deptPermits":"","order":364066223,"syncSeq":"049D21CC8562A0F22301A9E776"}
+
 
     /**
      * @Route("test")
