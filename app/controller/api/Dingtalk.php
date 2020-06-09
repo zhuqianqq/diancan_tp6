@@ -508,19 +508,27 @@ class Dingtalk extends Base
     {
       $infos = Db::connect('yun_push')
             ->table('open_sync_biz_data_medium')
-            ->order('id desc')
             ->where(['biz_type' => 14,'status'=> 0])
             ->select();
-
-      if(!$infos){
-          return json_ok(); 
+      
+      if(count($infos) == 0){
+          return json_error(21010); 
       }
 
+      $DTDepartmentModel = new DTDepartment;
       foreach ($infos as $k => $v) {
-        # code...
-        $data = json_decode($v['biz_data'], true);
-        echo '<pre>';var_dump($data);
+         
+          $data = json_decode($v['biz_data'], true);
+
+          $res = $DTDepartmentModel->updateDepartmentInfo($data,$v['corp_id']);
+          if($res === true){
+              Db::connect('yun_push')
+              ->table('open_sync_biz_data_medium')
+              ->where('id',$v['id'])
+              ->update(['status'=> 1]);
+          }
       }
+      return json_ok();
     }
 
 
