@@ -9,6 +9,7 @@ namespace app\model;
 
 use think\Model;
 use app\traits\ModelTrait;
+use app\model\CompanyRegister;
 
 /**
  * 订餐设置
@@ -24,5 +25,22 @@ class DingcanSysconfig extends BaseModel
     protected $autoWriteTimestamp = 'datetime';
 
     use ModelTrait;
+
+
+    //是否完成订餐设置
+    public static function isCompleteSysConf($corpId)
+    {
+        $company_id = CompanyRegister::where('corpid',$corpId)->value('company_id');
+
+        return self::where('company_id',$company_id)->count();
+    }
+
+    //获取订餐设置
+    public static function getSysConfByCorpId($corpId)
+    {
+        $company_id = CompanyRegister::where('corpid',$corpId)->value('company_id');
+
+        return self::where('company_id',$company_id)->find();
+    }
 
 }

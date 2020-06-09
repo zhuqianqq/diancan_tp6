@@ -14,6 +14,7 @@ use app\model\Eatery;
 use app\model\DingcanSysconfig as DS;
 use app\model\DTDepartment;
 use app\util\AccessKeyHelper;
+use think\facade\Cache;
 
 /**
  * 首页
@@ -170,6 +171,11 @@ class IndexService
             }
         }
         self::commitTrans();
+
+        //完成订餐设置标志 存入redis缓存 
+        $completeSysConfKey = "completeSysConf:" . $userInfo['corpid'];
+        Cache::set($completeSysConfKey, 1);
+
         return [];
     }
 

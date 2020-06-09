@@ -44,12 +44,40 @@ class Dingtalk extends Base
         $this->ISVService = new \ISVService();
     }
 
-
     /**
      * @Route("index", method="GET")
      */
-    //钉钉登录首页
+    //钉钉登录首页 （小程序登录接口）
     public function index()
+    {
+        $CorpId = input('corpId','');
+        $code = input('code','');
+        if(!$CorpId && !$code){
+            return json_error(20001);
+        }
+
+        //获取授权信息
+        $authData = self::getAuthOrTicketInfo($CorpId, 4);
+        if (empty($authData)) {
+            return json_error(10004);
+        }
+        $data = json_decode($authData['biz_data'], true);
+
+        //获取授权信息
+        $isvCorpAccessToken = $this->getIsvCorpAccessToken($CorpId);
+        $User = new \User();
+        $user_info = $User->getUserInfo($isvCorpAccessToken,$code);
+
+        return json_ok($user_info);
+    }
+
+
+
+    /**
+     * @Route("backendIndex", method="GET")
+     */
+    //钉钉登录首页 （后台登录接口）
+    public function backendIndex()
     {
         $CorpId = input('corpId','');
         $code = input('code','');
@@ -78,7 +106,7 @@ class Dingtalk extends Base
                 BaseModel::commitTrans();
             } catch (\Exception $e) {
                 BaseModel::rollbackTrans();
-                throw new MyException(10001, $e->getMessage());
+                throw new MyException(20080);
             }
         }
 
@@ -106,7 +134,6 @@ class Dingtalk extends Base
             ->table('open_sync_biz_data')
             ->order('id desc')
             ->where('corp_id =:corp_id and biz_type=:biz_type', ['corp_id' => $CorpId, 'biz_type' => $type])
-            ->order('gmt_create desc')
             ->find();
         return $info;
     }
@@ -213,6 +240,13 @@ class Dingtalk extends Base
          return  json_error(20005);
        }
 
+       //查询后台是否完成了公司的设置
+       $completeSysConfKey = "completeSysConf:" . $corpId;
+       //先读缓存 若缓存没有再读数据库  数据库查询不到抛出未完成公司设置异常
+       if(!Cache::get($completeSysConfKey) && !DingcanSysconfig::isCompleteSysConf($corpId)){
+         return  json_error(20950);
+       };
+
        $DTUserModel = new DTUser;
        $DTDepartmentModel = new DTDepartment;
        
@@ -233,36 +267,83 @@ class Dingtalk extends Base
            $userInfo->userid = $userInfo->staffid;
            //返回生成的access_key
            $userInfo['access_key'] = AccessKeyHelper::generateAccessKey($userInfo->userid);
-           //判断该用户数据库是否有部门信息
-           $userInfo['hasDepartment'] = $DTDepartmentModel->where('company_id',$userInfo['company_id'])->count();
-
+           
            return json_ok($userInfo);
 
-       }else{
-           //若为管理员 维护其登录时间login_time login_ip字段 同时把返回前端信息换成管理员数据库信息
-           $isAdmin = CompanyAdmin::isAdmin($corpId,$userid);
-           if($isAdmin){
-                CompanyAdmin::updateAdminInfo($corpId,$userid);
-           }
+       }
+          
+       //员工身份 统一userid字段
+       $isReg->userid = $isReg->staffid;
 
-           //员工身份 统一userid字段
-           $isReg->userid = $isReg->staffid;
-
-           //判断redis缓存是否有access_key 并且 未过期
-           $isReg['access_key'] = AccessKeyHelper::getAccessKey($isReg->userid);
-           if(!$isReg['access_key']){
-              //生成的access_key
-              $isReg['access_key'] = AccessKeyHelper::generateAccessKey($isReg->userid); 
-           }
-
-           //判断该用户数据库是否有部门信息
-           $isReg['hasDepartment'] = $DTDepartmentModel->where('company_id',$isReg['company_id'])->count();
+       //判断redis缓存是否有access_key 并且 未过期
+       $isReg['access_key'] = AccessKeyHelper::getAccessKey($isReg->userid);
+       if(!$isReg['access_key']){
+          //生成的access_key
+          $isReg['access_key'] = AccessKeyHelper::generateAccessKey($isReg->userid); 
        }
 
        //老用户查询后返回数据库结果
        return json_ok($isReg);
 
     }
+
+
+    /**
+     * @Route("backendDTGetUserInfo", method="POST")
+     */
+
+    //获取钉钉员工详细信息(后台)
+    public function backendDTGetUserInfo()
+    {
+       $userid = input('userid','');
+       $corpId = input('corpId','');
+
+       if(!$userid || !$corpId){
+         return  json_error(20005);
+       }
+
+       $DTUserModel = new DTUser;
+       $DTDepartmentModel = new DTDepartment;
+    
+       $isReg = $DTUserModel->where('platform_staffid =:platform_staffid and cropid=:cropid', ['platform_staffid' => $userid, 'cropid' => $corpId])->find();
+
+       if(!$isReg){
+           //新用户（管理员） 注册逻辑
+           //获取企业授权凭证
+           $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
+
+           $User = new \User();
+           $user_info = $User->get($isvCorpAccessToken,$userid);
+           $DTUserModel->registerStaff($user_info,$corpId);
+
+           //员工信息
+           $userInfo = $DTUserModel->where('platform_staffid',$userid)->find();
+           //统一userid字段
+           $userInfo->userid = $userInfo->staffid;
+           //返回生成的access_key
+           $userInfo['access_key'] = AccessKeyHelper::generateAccessKey($userInfo->userid);
+         
+           return json_ok($userInfo);
+
+       }
+
+       //维护管理员登录时间login_time login_ip字段 同时把返回前端信息换成管理员数据库信息
+       CompanyAdmin::updateAdminInfo($corpId,$userid);
+       //员工身份 统一userid字段
+       $isReg->userid = $isReg->staffid;
+
+       //判断redis缓存是否有access_key 并且 未过期
+       $isReg['access_key'] = AccessKeyHelper::getAccessKey($isReg->userid);
+       if(!$isReg['access_key']){
+          //生成的access_key
+          $isReg['access_key'] = AccessKeyHelper::generateAccessKey($isReg->userid); 
+       }
+
+       //老用户查询后返回数据库结果
+       return json_ok($isReg);
+
+    }
+
 
      /**
      * @Route("DTGetDepartment")
@@ -332,13 +413,16 @@ class Dingtalk extends Base
         $opt = $sub_data = [];
         $opt['agent_id'] = $agentid;
 
-        //判断上午还是下午
-        $no = date("H",time());
-        if ($no < 14){
-            $content = "午餐订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐";
-        } else {
-            $content = "晚餐订餐开始喽！请及时进入钉钉工作台->应用->订餐应用小程序进行订餐";
+        //获取订餐截止时间 start
+        $sys_conf = DingcanSysconfig::getSysConfByCorpId($corpId);
+        if(!$sys_conf){
+            return  json_error(20090);
         }
+  
+        $dingcan_conf = checkDingcanStauts($sys_conf);
+        $baomingEndTime = date('H:i',$dingcan_conf['baomingEndTimeStamp']);
+        $content = "可以开始订晚餐了,{$baomingEndTime}截止哦。点下面的按钮开始点餐。";
+        //获取订餐截止时间 end
 
         //动作卡方式
         $opt['msg']['msgtype'] = 'action_card';
@@ -414,6 +498,41 @@ class Dingtalk extends Base
         }
     }
 
+
+    /**
+     * @Route("departmentStatus")
+     */
+    //钉钉部门变更事件 主动轮训该方法
+    //备注：授权微应用的企业，发生部门的增加、删除、修改的时刻推送，插入表open_sync_biz_data_medium
+    public function departmentStatus()
+    {
+      $infos = Db::connect('yun_push')
+            ->table('open_sync_biz_data_medium')
+            ->where(['biz_type' => 14,'status'=> 0])
+            ->select();
+      
+      if(count($infos) == 0){
+          return json_error(21010); 
+      }
+
+      $DTDepartmentModel = new DTDepartment;
+      foreach ($infos as $k => $v) {
+         
+          $data = json_decode($v['biz_data'], true);
+
+          $res = $DTDepartmentModel->updateDepartmentInfo($data,$v['corp_id']);
+          if($res === true){
+              Db::connect('yun_push')
+              ->table('open_sync_biz_data_medium')
+              ->where('id',$v['id'])
+              ->update(['status'=> 1]);
+          }
+      }
+      return json_ok();
+    }
+
+
+// {"errcode":0,"userPermits":"","userPerimits":"","syncAction":"org_dept_create","outerDept":false,"errmsg":"ok","deptManagerUseridList":"","parentid":1,"groupContainSubDept":false,"outerPermitUsers":"","outerPermitDepts":"","deptPerimits":"","createDeptGroup":true,"name":"技术部","id":364066223,"autoAddUser":true,"deptHiding":false,"deptPermits":"","order":364066223,"syncSeq":"049D21CC8562A0F22301A9E776"}
 
 
     /**

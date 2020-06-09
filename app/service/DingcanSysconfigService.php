@@ -65,6 +65,7 @@ class DingcanSysconfigService
         } catch (\Exception $e){
             throw new MyException(10001, $e->getMessage());
         }
+
         return [];
     }
 

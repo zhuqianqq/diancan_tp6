@@ -16,4 +16,7 @@ return [
 
     //access_key检查
     \app\middleware\AccessCheck::class,
+
+    //限流检查
+    \app\middleware\RateLimit::class,
 ];
