@@ -67,14 +67,7 @@ class RateLimit
 
         if (!$this->minLimit($currentUrlData)) {
             //记录失败次数
-            while (true){
-                if(!$this->redis->set('fail_lock',1,['EX'=>5,'NX']))//拿锁的权限，没拿到则continue
-                    continue;
-                $num = $this->redis->get('fail_num');
-                $this->redis->set('fail_num', $num+1);
-                $this->redis->del('fail_lock');//解锁
-                break;
-            }
+            $this->redis->inc('fail_num');
             throw new \app\MyException(10016);
         }
 
