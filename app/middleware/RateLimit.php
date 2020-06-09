@@ -3,15 +3,13 @@ declare (strict_types=1);
 
 namespace app\middleware;
 
-use think\Cache;
+use app\util\CacheHelper;
 use think\Config;
-use think\facade\Log;
 
 class RateLimit
 {
     /**
      * 缓存对象
-     * @var Cache
      */
     protected $cache;
 
@@ -32,9 +30,9 @@ class RateLimit
         'visit_fail_text' => '访问频率受到限制，请稍等__WAIT__秒再试',
     ];
 
-    public function __construct(Cache $cache, Config $config)
+    public function __construct(Config $config)
     {
-        $this->cache  = $cache;
+        $this->cache  = CacheHelper::getRedisConn();
     }
 
     protected $wait_seconds = 0;
