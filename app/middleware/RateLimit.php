@@ -3,46 +3,86 @@ declare (strict_types=1);
 
 namespace app\middleware;
 
-use app\util\CacheHelper;
+use think\Cache;
+use think\Config;
 use think\facade\Log;
 
 class RateLimit
 {
-    protected $redis;
-    public function __construct()
+    /**
+     * 缓存对象
+     * @var Cache
+     */
+    protected $cache;
+
+    /**
+     * 配置参数
+     * @var array
+     */
+    protected $config = [
+        // 缓存键前缀，防止键值与其他应用冲突
+        'prefix' => 'throttle_',
+        // 节流规则 true为自动规则
+        'key'    => true,
+        // 节流频率 null 表示不限制 eg: 10/m  20/h  300/d
+        'visit_rate' => '500/s',
+        // 访问受限时返回的http状态码
+        'visit_fail_code' => 10016,
+        // 访问受限时访问的文本信息
+        'visit_fail_text' => '访问频率受到限制，请稍等__WAIT__秒再试',
+    ];
+
+    public function __construct(Cache $cache, Config $config)
     {
-        $this->redis = CacheHelper::getRedisConn();
+        $this->cache  = $cache;
     }
+
+    protected $wait_seconds = 0;
+
+    protected $duration = [
+        's' => 1,
+        'm' => 60,
+        'h' => 3600,
+        'd' => 86400,
+    ];
+
+    protected $need_save = false;
+    protected $history = [];
+    protected $key = '';
+    protected $now = 0;
+    protected $num_requests = 0;
+    protected $expire = 1;
+    protected $uri = '';
 
     private $interfaceData = [
         '//api/order/submit' => [//员工订餐接口
             'uri' => '//api/order/submit',
-            'secNum' => 49,//每秒允许的最大并发数
+            'secNum' => '49/s',//每秒允许的最大并发数
             //'dayNum' => 10,//单个接口每天总的访问量
         ],
         '//api/order/getSysconfig' => [//获取系统配置
             'uri' => '//api/order/getSysconfig',
-            'secNum' => 47,//单个接口每秒访问数
+            'secNum' => '47/s',//单个接口每秒访问数
            // 'dayNum' => 500,//单个接口每天总的访问量
         ],
         '//api/order/isOrder' => [//判断今日有无订单记录
             'uri' => '//api/order/isOrder',
-            'secNum' => 500,//单个接口每秒访问数
+            'secNum' => '500/s',//单个接口每秒访问数
             //'dayNum' => 500,//单个接口每天总的访问量
         ],
         '//api/order/index' => [//订餐首页接口
             'uri' => '//api/order/index',
-            'secNum' => 45,// 单个接口每秒访问数
+            'secNum' => '45/s',// 单个接口每秒访问数
             //'dayNum' => 500, //单个接口每天总的访问量
         ],
         '//api/order/myOrder' => [//订单详情接口
             'uri' => '//api/order/myOrder',
-            'secNum' => 40,// 单个接口每秒访问数
+            'secNum' => '40/s',// 单个接口每秒访问数
             //'dayNum' => 500, //单个接口每天总的访问量
         ],
         '//api/order/cancelOrder' => [//取消订单接口
             'uri' => '//api/order/cancelOrder',
-            'secNum' => 35,// 单个接口每秒访问数
+            'secNum' => '35/s',// 单个接口每秒访问数
             //'dayNum' => 500, //单个接口每天总的访问量
         ],
     ];
@@ -51,7 +91,6 @@ class RateLimit
      * 处理请求
      * @param \think\Request $request
      * @param \Closure $next
-     * @return Response
      */
     public function handle($request, \Closure $next)
     {
@@ -63,72 +102,126 @@ class RateLimit
         $currentUrlData = $this->interfaceData[$request_uri] ?? '';
         if (!$currentUrlData) return $next($request);
 
-        $this->redis->select(1);
+        $this->uri = $request_uri;
+        $this->config['visit_rate'] = $currentUrlData['secNum'];
 
-        if (!$this->minLimit($currentUrlData)) {
-            //记录失败次数
-            $this->redis->inc('fail_num');
-            throw new \app\MyException(10016);
+        $allow = $this->allowRequest($request);
+        if (!$allow) {
+            // 访问受限
+            $code = $this->config['visit_fail_code'];
+            $content = str_replace('__WAIT__', $this->wait_seconds, $this->config['visit_fail_text']);
+            $this->cache->select(1);
+            $this->cache->inc('fail_num' . ":" . $this->uri);
+            throw new \app\MyException($code, $content);
         }
+        $response = $next($request);
+        if ($this->need_save && 200 == $response->getCode()) {
+            $this->history[] = $this->now;
+            $this->cache->set($this->key, $this->history, $this->expire);
 
-        return $next($request);
+            // 将速率限制 headers 添加到响应中
+            $remaining = $this->num_requests - count($this->history);
+            $response->header([
+                'X-Rate-Limit-Limit' => $this->num_requests,
+                'X-Rate-Limit-Remaining' => $remaining < 0 ? 0: $remaining,
+                'X-Rate-Limit-Reset' => $this->now + $this->expire,
+            ]);
+        }
+        return $response;
     }
 
     /**
-     * 接口限流
-     * @param $urlData
-     * @return bool
+     * 生成缓存的 key
+     * @param Request $request
+     * @return null|string
      */
-    public function minLimit($urlData)
+    protected function getCacheKey($request)
     {
-        $minNumKey = $urlData['uri'] . '_secNum';
-        $resMin = $this->rateCheck($minNumKey, $urlData['secNum']);
-        if (!$resMin['status']) {
-            return false;
+        $key = $this->config['key'];
+
+        if ($key instanceof \Closure) {
+            $key = call_user_func($key, $this, $request);
         }
 
-        return true;
+        if (null === $key || false === $key || null === $this->config['visit_rate']) {
+            // 关闭当前限制
+            return;
+        }
+
+        if (true === $key) {
+            $key = $request->ip();
+        }
+
+        return md5($this->config['prefix'] . $key . $this->uri);
     }
 
     /**
-     * 令牌桶限流算法
-     * @param $key
-     * @param $initNum
-     * @param $expire
+     * 解析频率配置项
+     * @param $rate
      * @return array
      */
-    public function rateCheck($key, $initNum)
+    protected function parseRate($rate)
     {
-        $nowTime = time();
-        $result = ['status' => true, 'msg' => ''];
+        list($num, $period) = explode("/", $rate);
+        $num_requests = intval($num);
+        $duration = $this->duration[$period] ?? intval($period);
+        return [$num_requests, $duration];
+    }
 
-        $this->redis->watch($key); //命令用于监视一个(或多个) key ，如果在事务执行之前这个(或这些) key 被其他命令所改动，那么事务将被打断
-        $limitVal = $this->redis->get($key);
+    /**
+     * 计算距离下次合法请求还有多少秒
+     * @param $history
+     * @param $now
+     * @param $duration
+     * @return void
+     */
+    protected function wait($history, $now, $duration)
+    {
+        $wait_seconds = $history ? $duration - ($now - $history[0]) : $duration;
+        if ($wait_seconds < 0) {
+            $wait_seconds = 0;
+        }
+        $this->wait_seconds = $wait_seconds;
+    }
 
-        if ($limitVal) {
-            $limitVal = json_decode($limitVal, true);
-            $newNum = min($initNum, ($limitVal['num'] - 1) + (1 / $initNum) * ($nowTime - $limitVal['time']));
-            //Log::info($newNum . '__' . ($nowTime - $limitVal['time']));
-            if ($newNum > 0) {
-                $redisVal = json_encode(['num' => $newNum, 'time' => time()]);
-            } else {
-                return ['status' => false, 'msg' => '当前时刻令牌消耗完！'];
-            }
-        } else {
-            $redisVal = json_encode(['num' => $initNum, 'time' => time()]);
+    /**
+     * 请求是否允许
+     * @param $request
+     * @return bool
+     */
+    protected function allowRequest($request)
+    {
+        $key = $this->getCacheKey($request);
+        if (null === $key) {
+            return true;
+        }
+        list($num_requests, $duration) = $this->parseRate($this->config['visit_rate']);
+        $history = $this->cache->get($key, []);
+        $now = time();
+
+        // 移除过期的请求的记录
+        $history = array_values(array_filter($history, function ($val) use ($now, $duration) {
+            return $val >= $now - $duration;
+        }));
+
+        if (count($history) < $num_requests) {
+            // 允许访问
+            $this->need_save = true;
+            $this->key = $key;
+            $this->now = $now;
+            $this->history = $history;
+            $this->expire = $duration;
+            $this->num_requests = $num_requests;
+            return true;
         }
 
-        try {
-            $this->redis->multi();//开启事务
-            $this->redis->set($key, $redisVal);//更新缓存中的值
-            $rob_result = $this->redis->exec();//提交事务e
-            if (!$rob_result) {
-                $result = ['status' => false, 'msg' => '访问频次过多！'];
-            }
-        } catch (\Exception $e) {
-            throw new \app\MyException(10016, $e->getMessage());
-        }
+        $this->wait($history, $now, $duration);
+        return false;
+    }
 
-        return $result;
+
+    public function setRate($rate)
+    {
+        $this->config['visit_rate'] = $rate;
     }
 }
