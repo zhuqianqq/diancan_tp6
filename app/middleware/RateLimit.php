@@ -24,13 +24,13 @@ class RateLimit
         '//api/order/submit' => [
             //员工订餐接口
             'uri' => 'api-order-submit',
-            'secNum' => 49,//每分钟允许的最大并发数
+            'secNum' => 3000,//每分钟允许的最大并发数
             //'dayNum' => 10,//单个接口每天总的访问量
         ],
         '//api/order/getSysconfig' => [
             //获取系统配置
             'uri' => 'api-order-getSysconfig',
-            'secNum' => 47,//单个接口每分钟访问数
+            'secNum' => 3000,//单个接口每分钟访问数
             // 'dayNum' => 500,//单个接口每天总的访问量
         ],
         '//api/order/isOrder' => [
@@ -42,19 +42,19 @@ class RateLimit
         '//api/order/index' => [
             //订餐首页接口
             'uri' => 'api-order-index',
-            'secNum' => 45,// 单个接口每分钟访问数
+            'secNum' => 3000,// 单个接口每分钟访问数
             //'dayNum' => 500, //单个接口每天总的访问量
         ],
         '//api/order/myOrder' => [
             //订单详情接口
             'uri' => 'api-order-myOrder',
-            'secNum' => 40,// 单个接口每分钟访问数
+            'secNum' => 3000,// 单个接口每分钟访问数
             //'dayNum' => 500, //单个接口每天总的访问量
         ],
         '//api/order/cancelOrder' => [
             //取消订单接口
             'uri' => 'api-order-cancelOrder',
-            'secNum' => 35,// 单个接口每分钟访问数
+            'secNum' => 3000,// 单个接口每分钟访问数
             //'dayNum' => 500, //单个接口每天总的访问量
         ],
     ];
