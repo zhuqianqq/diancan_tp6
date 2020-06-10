@@ -36,7 +36,7 @@ class RateLimit
         '//api/order/isOrder' => [
             //判断今日有无订单记录
             'uri' => 'api-order-isOrder',
-            'secNum' => 50,//单个接口每秒访问数
+            'secNum' => 500,//单个接口每秒访问数
             //'dayNum' => 500,//单个接口每天总的访问量
         ],
         '//api/order/index' => [
@@ -66,6 +66,12 @@ class RateLimit
         return md5($ip . $uri);
     }
 
+    function microtime_float()
+    {
+        list($msec, $sec) = explode(" ", microtime());
+        return (float)sprintf('%.0f', (floatval($msec) + floatval($sec)) * 1000);
+    }
+
     /**
      * 处理请求
      * @param \think\Request $request
@@ -88,19 +94,20 @@ class RateLimit
         $key = $this->getCacheKey();
         $len = $this->cache->llen($key);
         if ($len === 0) {
-            $this->cache->lpush($key, time());
-            $this->cache->expire($key, 60);
+            $this->cache->lpush($key, $this->microtime_float());
+            $this->cache->expire($key, 1);
         } else {
             //判断有没有超过1分钟
             $max_time = $this->cache->lrange($key, 0, 0);
-            //判断最后一次访问的时间比对是否超过了1分钟
-            if ((time() - $max_time[0]) < 60) {
+            //判断最后一次访问的时间比对是否超过了1秒钟
+
+            if (($this->microtime_float() - $max_time[0]) < 1000) {
                 if ($len > $secNum) {
                     //记录失败次数
                     $this->cache->inc('fail_num:' . $this->uri);
                     throw new \app\MyException(10016);
                 } else {
-                    $this->cache->lpush($key, time());
+                    $this->cache->lpush($key, $this->microtime_float());
                 }
             }
         }
