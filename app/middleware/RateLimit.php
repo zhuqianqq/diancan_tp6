@@ -90,7 +90,9 @@ class RateLimit
 
         //接口时间限流，这种方式可以防止钻时间漏洞无限的访问接口 比如在59秒的时候访问，就钻了空子
         $expireTime = 60;
-
+        // 统计所有的请求数
+        $this->cache->inc('total:' . $this->uri);
+        
         $key = $this->getCacheKey();
         $len = $this->cache->llen($key);
         if ($len === 0) {
