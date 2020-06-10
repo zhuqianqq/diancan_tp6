@@ -68,7 +68,6 @@ class RateLimit
     protected function getRedis()
     {
         $this->cache = CacheHelper::getRedisConn();
-        $this->cache->select(1);
     }
 
     protected function getCacheKey()

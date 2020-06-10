@@ -41,8 +41,20 @@ class CacheHelper
      */
     static private function connRedis()
     {
+        $options = [
+            'host'       => 'r-bp11ggbzfhgtsoz2rh.redis.rds.aliyuncs.com',
+            'port'       => 6379,
+            'password'   => 'zaqWSX987',
+            'select'     => 1,
+            'timeout'    => 0,
+            'expire'     => 0,
+            'persistent' => false,
+            'prefix'     => '',
+            'tag_prefix' => 'tag:',
+            'serialize'  => [],
+        ];
         try {
-            $redis_ocean = new Redis();
+            $redis_ocean = new Redis($options);
         } catch (\Exception $e) {
             throw new \app\MyException(10016, $e->getMessage());
         }
