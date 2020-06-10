@@ -14,16 +14,22 @@ class RateLimit
     // uri
     protected $uri;
 
-    public function __construct()
-    {
-        $this->cache = CacheHelper::getRedisConn();
-        $this->cache->select(1);
-    }
-
     private $interfaceData = [
         '//api/order/submit' => [
             //员工订餐接口
             'uri' => 'api-order-submit',
+            'secNum' => 3000,//每分钟允许的最大并发数
+            //'dayNum' => 10,//单个接口每天总的访问量
+        ],
+        '//api/Dingtalk/index' => [
+            //员工订餐接口
+            'uri' => 'api-Dingtalk-index',
+            'secNum' => 3000,//每分钟允许的最大并发数
+            //'dayNum' => 10,//单个接口每天总的访问量
+        ],
+        '//api/Dingtalk/DTGetUserInfo' => [
+            //员工订餐接口
+            'uri' => 'api-Dingtalk-DTGetUserInfo',
             'secNum' => 3000,//每分钟允许的最大并发数
             //'dayNum' => 10,//单个接口每天总的访问量
         ],
@@ -59,6 +65,12 @@ class RateLimit
         ],
     ];
 
+    protected function getRedis()
+    {
+        $this->cache = CacheHelper::getRedisConn();
+        $this->cache->select(1);
+    }
+
     protected function getCacheKey()
     {
         $uri = $this->uri;
@@ -87,6 +99,8 @@ class RateLimit
         if (!$currentUrlData) return $next($request);
         $this->uri = $currentUrlData['uri'];
         $secNum = $currentUrlData['secNum'];
+
+        $this->getRedis();
 
         //接口时间限流，这种方式可以防止钻时间漏洞无限的访问接口 比如在59秒的时候访问，就钻了空子
         $expireTime = 60;
