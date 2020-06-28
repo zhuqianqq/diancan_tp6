@@ -362,7 +362,7 @@ function checkDingcanStauts($sysConf)
         $no = 7;
     }
 
-    if (!$isMutiChoose !== false) {
+    if (!$isMutiChoose) {
         //判断工作日
         if ($sysConf['dc_date'] == 0) {
              $isWorkDay = isWorkDayJs();
