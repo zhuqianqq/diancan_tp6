@@ -361,7 +361,7 @@ function checkDingcanStauts($sysConf)
     if ($no == 0) {
         $no = 7;
     }
-    echo $sysConf['dc_date'];die;
+
     if (!$isMutiChoose) {
         //判断工作日
         if ($sysConf['dc_date'] == 0) {
