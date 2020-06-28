@@ -359,7 +359,7 @@ function checkDingcanStauts($sysConf)
     //判断星期几; 数字度0表示是星期天,数字123456表示星期一到六知
     $no = date("w");
     if ($no == 0) {
-        $no = 7;
+        $no = '7';
     }
     if (!$isMutiChoose) {
         //判断工作日
