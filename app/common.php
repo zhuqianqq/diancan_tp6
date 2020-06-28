@@ -377,12 +377,10 @@ function checkDingcanStauts($sysConf)
             }
         }
     } else {
-        echo $no.'-----';
          if (strpos($sysConf['dc_date'], $no) !== false) {
-            echo 456;
                 $DingcanDay = 1;
          } else {
-            echo 789;
+      
             //是否都选工作日
             if(strpos($sysConf['dc_date'], '0') !== false) {
                  $isWorkDay = isWorkDayJs();
