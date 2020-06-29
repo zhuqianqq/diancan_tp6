@@ -8,6 +8,7 @@ return [
     'commands' => [
         \app\command\TestCommand::class,
         \app\command\SendMessageCommand::class,
+        \app\command\GetRoleInfoCommand::class,
     ],
 
 ];

@@ -25,6 +25,7 @@ $root_path = app()->getRootPath();
 require_once $root_path . 'extend/dingtalk_isv_php_sdk/api/Auth.php';
 require_once $root_path . 'extend/dingtalk_isv_php_sdk/api/ISVService.php';
 require_once $root_path . 'extend/dingtalk_isv_php_sdk/api/User.php';
+require_once $root_path . 'extend/dingtalk_isv_php_sdk/api/Role.php';
 require_once $root_path . 'extend/dingtalk_isv_php_sdk/api/Department.php';
 
 /**
@@ -84,7 +85,6 @@ class Dingtalk extends Base
         if(!$CorpId && !$code){
             return json_error(20001);
         }
-
         //获取授权信息
         $authData = self::getAuthOrTicketInfo($CorpId, 4);
         if (empty($authData)) {
@@ -540,15 +540,66 @@ class Dingtalk extends Base
      */
     public function test()
     {
+      //$this->getRoleList('ding856732f3dcf58a39a1320dcb25e91351');
+      
+       //$list = Db::table("dc_company_staff")->where('staffid',1)->select();
+       //echo Db::table("dc_company_staff")->getLastSql();die;
+       //echo app()->getRootPath();die;
+       //  echo  \think\facade\Env::get("APP_ENV");die;
+       //  $token = setH5token(19,4);
+       //  echo $token;die;
+       // return json_ok(isWorkDayJs()); 
 
-        //$list = Db::table("dc_company_staff")->where('staffid',1)->select();
-        //echo Db::table("dc_company_staff")->getLastSql();die;
-        //echo app()->getRootPath();die;
-        echo  \think\facade\Env::get("APP_ENV");die;
-        $token = setH5token(19,4);
-        echo $token;die;
-       return json_ok(isWorkDayJs()); 
+    }
 
+
+    //获取钉钉角色列表 角色组 与角色详情信息 
+    //单纯调用钉钉该接口  不做任何处理
+    public function getRoleList(){
+
+        $DTCompanyModel = new CompanyRegister();
+        //随机获取数据库中一条公司的钉钉corpid
+        $corpId = $DTCompanyModel->field("corpid")->limit(1)->orderRand()->select();
+        $corpId = $corpId[0]['corpid'];
+        
+        $isvCorpAccessToken = $this->getIsvCorpAccessToken($corpId);
+        $Role = new \Role();
+        $getRoleList = $Role->getRoleList($isvCorpAccessToken);
+        if($getRoleList->errcode == 0){
+          //获取角色列表中第一个数组中的组id => groupid
+            $firstGroupId = $getRoleList->result->list[0]->groupId ?? 0;
+            if($firstGroupId != 0){
+
+                $roleGroup = $Role->getRoleGroup($isvCorpAccessToken,$firstGroupId);
+                if($roleGroup->errcode == 0){
+
+                      $roleGroupArr = $roleGroup->role_group->roles ?? [];
+                      if(!empty($roleGroupArr)){
+                         $rolesInfoArr = [];
+                         foreach ($roleGroupArr as $k=> $v) {
+                           $rolesInfoArr[] = $Role->getRoleGroup($isvCorpAccessToken,$v->role_id);
+                         }
+                         return $rolesInfoArr;
+
+                      }else{
+
+                         die('未获取到角色组数组数据');
+                      }
+
+                }else{
+
+                  die('未获取到角色组id下对应角色组数据');
+                }
+
+            }else{
+
+              die('未获取到角色组id数据');
+            }
+        
+        }else{
+
+           die('未获取到角色列表数据');
+        } 
     }
 
 
